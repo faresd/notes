@@ -1,0 +1,1048 @@
+
+git clone ...rack-mauth
+cd ~/projects/rackmauth
+###rvm use 1.8.7-p249@rackmauth
+
+rvm install ruby-1.9.2-p290
+rvm use 1.9.2-p290@rackmauth
+
+gem update --system   ??
+cd rack-mauth
+gem install bundler
+bundle install
+
+rackup simple_app.ru
+
+ruby example/example.rb ???
+
+rack docs:
+http://rack.rubyforge.org/doc/SPEC.html
+http://guides.rubyonrails.org/rails_on_rack.html
+http://rack.rubyforge.org/doc/
+http://rack.rubyforge.org/
+
+
+http://rack.rubyforge.org/doc/SPEC.html:
+A Rack application is an Ruby object (not a class) that responds to call. It takes exactly one argument, the environment and returns an Array of exactly three values: The status, the headers, and the body.
+
+The environment must be an instance of Hash that includes CGI-like headers.
+REQUEST_METHOD:	The HTTP request method, such as “GET” or “POST”. This cannot ever be an empty string, and so is always required.... 
+and other urly stuff - params base ....
+hmmm - body is supposed top be an array that responds to .each
+3rd item is body and its a string - 2nd is headers, 1st is status
+simple_app = lambda { |env| [200, {'Content-Type' => 'application/json'}, "Simple app: Success!\n"] }
+
+
+http://rack.rubyforge.org/doc/:
+rackup is a useful tool for running Rack applications, which uses the Rack::Builder DSL to configure middleware and build up applications easily.
+
+rackup automatically figures out the environment it is run in, and runs your application as FastCGI, CGI, or standalone with Mongrel or WEBrick—all from the same configuration.
+
+http://rack.rubyforge.org/doc/classes/Rack/Builder.html
+
+should be on ruby 1.8 NOT 1.9
+function rackmauth() {
+    cd ~/projects/rack-mauth
+    #rvm use 1.9.2-p290@rackmauth
+    rvm use 1.8.7-p249@rackmauth
+}
+
+
+gem install bundler
+Successfully installed bundler-1.0.21
+
+from matt: for going back to ruby 1.8
+# this sets gems for default system - should investigate this 
+sudo gem update --system 1.5.3
+does this really need to be sudo - wont it now have only sudo permissions???
+
+bundle install
+
+
+http://guides.rubyonrails.org/rails_on_rack.html
+configuring a rack into your rails app
+file environments/<environment>.rb.
+config.middleware.use(new_middleware, args) – Adds the new middleware at the bottom of the middleware stack
+insert_before, insert_after - or any array methods - so could put 1st without having to list another rack app
+
+would bottom be problematic? or is it still before rails rack?
+
+
+forking imedidata to magibson - as dont have write access to imedidata
+to do this just go to repository in github and click fork button
+
+with hard fork could work that in as a new origin in my imedidata local clone
+or could just make a new clone - i think ill do the latter
+
+cd ~/projects
+git clone git@github.com:magibson/imedidata.git magibson-imedidata
+
+woops need a fork for develop also
+go into develop branch on github and select fork
+scratch that - forkin master also forked develop
+so just need to check it out i believe
+
+git checkout develop
+
+git branch feature/mauth
+git checkout feature/mauth
+
+can put .rvmrc file in root of local repo - in ~projects/magibson-imedidata
+with 
+rvm use 1.8.7-p249@imedidata
+
+i think also need to do 
+gem install bundler
+git submodule update --init
+bundle install
+(bundle show)
+
+gembundler.com
+Use a gem that you are actively developing on your file system
+eg gem "nokogiri", :path => "~/Code/nokogiri"
+i think that goes in gem file - run bundle install?
+gem "rack-mauth", :path => "~/projects/rack-mauth"
+put in group development?
+
+##0 oh wait make changes to mauth to move to should_authenticate? method? out of authenticated? method?
+##0.5 rspec for mauth rack
+##0.6 manual scenario for rack
+1 need to run imedidata from fork
+2 put rack-mauth into imedidata rack and test/run
+
+ok changes to mauth made pending matt approval
+
+1 need to run imedidata from fork
+
+
+chad psuedo code(from email):
+
+require 'openssl'
+
+module ApiAuthenticationV2
+
+  PRIVATE_KEY = OpenSSL::PKey::RSA.new(File.read(APP_CONFIG["imedidata_private_key"])) 
+  PUBLIC_KEY = OpenSSL::PKey::RSA.new(File.read(APP_CONFIG["imedidata_public_key"])) 
+
+  #TODO maybe do check of api_id and force it to be sent as a param
+  #TODO use app uuid as current user_id once we fix audit service to accept non-integers
+  def api_authenticate_v2
+    if headers[:app_uuid] #that was a mauth call
+      app = App.find(:first, :conditions => ['id = ?', headers[:app_uuid]])
+      if @app.nil?
+        render :nothing => true, :status => 404 and return 
+      else
+        @request_token = app.build_request_token
+      end
+    else
+      @request_token = RequestToken.find_by_token(PRIVATE_KEY.private_decrypt(Base64::decode64(params.delete(:request_token))))
+      render :nothing => true, :status => 404 and return if @request_token.blank?
+      render :text => "The token has expired.", :status => 403 and return if @request_token.expired?
+      Thread.current[:user_id] = -2
+      @request_token.destroy
+    end
+  end
+
+  def token_encrypt
+    app_public_key = OpenSSL::PKey::RSA.new(@request_token.app.public_key)
+    token = app_public_key.public_encrypt(@request_token.token)
+    encoded_token =  URI.escape(Base64::encode64(token), Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
+  end
+
+  def response_headers
+    response.headers["request_token"] = token_encrypt
+  end
+
+end
+
+
+
+heres notes on imedidata setup:
+https://docs.google.com/a/mdsol.com/document/d/1lU2AdayPO4MKxUauc7dNnBGioIQSAZqr0GbcGM5AG4Q/edit
+
+hmmmm
+maybe easier to just shove fork into old imedidata folder
+http://gitref.org/remotes/
+
+git remote add github git@github.com:schacon/hw.git
+
+git remote add magibson git@github.com:magibson/imedidata.git
+
+well doesnt really matter that much if i just do it from new folder
+issue is database.yml file
+need to just copy it into place - as its a personal config that cant be in github in right location
+
+
+https://docs.google.com/a/mdsol.com/document/d/1lU2AdayPO4MKxUauc7dNnBGioIQSAZqr0GbcGM5AG4Q/edit
+
+cd config
+cp database_environments.yml database.yml
+
+bundle exec rake db:migrate
+bundle exec rake db:test:prepare
+
+run imedidata:
+ % ./script/server
+alias imed or run-imed
+
+i think authmedidata is same as cas
+well actually its sortof a newer version of cas - the world has changed 
+need to install authmedidata
+
+ruby 1.9.2-p290 with authmedidata (for example) as the gemset name. Remember to gem update --system and checkout the gemset before the next step.
+
+mkdir ~/projects/authmedidata
+rvm install 1.9.2-p290
+rvm 1.9.2-p290
+rvm gemset create authmedidata
+brew install oniguruma
+rvm 1.9.2-p290@authmedidata
+gem install bundler
+cd ~/projects
+git clone git@github.com:mdsol/authmedidata.git
+cd authmedidata
+bundle install
+just on master - no need to branch - not modifying
+
+run authmedidata:
+  rails server
+aliased to run-auth
+
+Navigate to http://localhost:3000 
+
+
+setting up jazzhands
+cd ~/projects
+git clone git@github.com:mdsol/jazzhands.git
+cd jazzhands
+from README.md:
+1. rvm use 1.8.7-p302
+put in .rvmrc
+WARN: ruby ruby-1.8.7-p302 is not installed.
+To install do: 'rvm install ruby-1.8.7-p302'
+rvm install ruby-1.8.7-p302
+2. rvm gemset create jazzhands
+3. rvm use 1.8.7-p302@jazzhands
+4. gem install bundler
+5. bundle update
+
+put in jazzhands/config/jazzhands.yml
+  - name: localhost
+    public_key_name: localhost_public_key.pem
+    domain: localhost
+    enabled: true
+    use_ssl: false
+    port: 3000
+
+alias run-jazzhands='cd ~/projects/jazzhands; rvm use 1.8.7-p302@jazzhands; rails server --port 4000'
+
+The Environment is invalid: public_key_name cannot be found at /Users/magibson/projects/jazzhands/config/keys/environments/localhost_public_key.pem
+
+cd config/keys/environments
+#cp localhost_imedidata_public_key.pem 
+
+modify yaml - 
+    public_key_name: localhost_public_key.pem
+=>      public_key_name: localhost_imedidata_public_key.pem
+
+
+from above
+http://guides.rubyonrails.org/rails_on_rack.html
+configuring a rack into your rails app
+file environments/<environment>.rb. -- i think this is config/environment.rb
+config.middleware.use(new_middleware, args) – Adds the new middleware at the bottom of the middleware stack
+insert_before, insert_after - or any array methods - so could put 1st without having to list another rack app
+put this in imedidata/config/environment.rb
+would bottom be problematic? or is it still before rails rack?
+  mauth_config = {
+    :mauth_baseurl => 'https://mauth-sandbox.imedidata.net',
+    :version => 'v1',
+    :passthrough_when_no_mauth_headers => true
+  }
+  config.middleware.use use "Medidata::MAuthMiddleware", mauth_config
+
+havent added in key caching in config - not needed right now i think
+
+   
+in gem file
+ gem "rack-mauth", :path => "~/projects/rack-mauth"
+
+
+
+chad psuedo code(from email):
+in lib/api_authentication_v2.rb
+
+require 'openssl'
+
+module ApiAuthenticationV2
+
+  PRIVATE_KEY = OpenSSL::PKey::RSA.new(File.read(APP_CONFIG["imedidata_private_key"])) 
+  PUBLIC_KEY = OpenSSL::PKey::RSA.new(File.read(APP_CONFIG["imedidata_public_key"])) 
+
+  #TODO maybe do check of api_id and force it to be sent as a param
+  #TODO use app uuid as current user_id once we fix audit service to accept non-integers
+  def api_authenticate_v2
+
+## THIS IS THE NEW BIT
+
+    if headers[:app_uuid] #that was a mauth call
+      app = App.find(:first, :conditions => ['id = ?', headers[:app_uuid]])
+      if @app.nil?
+        render :nothing => true, :status => 404 and return 
+      else
+        @request_token = app.build_request_token
+      end
+
+## END OF NEW BIT
+
+    else
+      @request_token = RequestToken.find_by_token(PRIVATE_KEY.private_decrypt(Base64::decode64(params.delete(:request_token))))
+      render :nothing => true, :status => 404 and return if @request_token.blank?
+      render :text => "The token has expired.", :status => 403 and return if @request_token.expired?
+      Thread.current[:user_id] = -2
+      @request_token.destroy
+    end
+  end
+
+  def token_encrypt
+    app_public_key = OpenSSL::PKey::RSA.new(@request_token.app.public_key)
+    token = app_public_key.public_encrypt(@request_token.token)
+    encoded_token =  URI.escape(Base64::encode64(token), Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
+  end
+
+  def response_headers
+    response.headers["request_token"] = token_encrypt
+  end
+
+end
+
+
+
+need to do a nromal old call via jjazzhands
+/api/v2/study_groups.json
+
+didnt work! hmmmm
+An error occured: undefined method `api_id' for nil:NilClass -- on localhost
+
+works with sandbox though just fine
+
+but then again imedista isnt working - localhost:3000 that is
+
+so how do we test fiddle with this get this working???
+get jazz hands hooked up?
+get app running - actually thats useless as we are moaking api calls
+cucumber?
+a rack-mauth app??? no not rack mauth - but run curl
+poster would also work
+but i think the imedidata app just aint working
+
+ran cucumber - that works and hits the api_au_v2
+now how the hell do we simulate mauth mock it that is
+
+and also my using of mauth didnt work with cuc
+
+  config.middleware.use "Medidata::MAuthMiddleware", mauth_config
+undefined method `new' for "Medidata::MAuthMiddleware":String (NoMethodError)
+
+take out quotes
+  config.middleware.use Medidata::MAuthMiddleware, mauth_config
+uninitialized constant Medidata (NameError)
+
+duh - need to require rack
+require 'rack'
+require 'rack/mauth'
+
+no such file to load -- mauth_signer (LoadError)
+
+gemfile
+    gem 'mauth_signer', :git => 'git@github.com:mdsol/mauth_signer.git', :tag => "v0.6.3"
+bundle install
+
+that worked!
+params
+lets look at rack mauth and study what params headers come in
+
+wait - rails is a rack app that has a call that takes an env
+and in that env is all the mauth stuff!
+    def call(env)
+      mauth_env = Medidata::MAuthMiddleware::MAuthEnv.new(env)
+      if should_authenticate?(mauth_env)
+        authenticated?(mauth_env) ? @app.call(env) : unauthenticated_response
+      else
+        @app.call(env)
+
+
+auth ->
+mv config database.yml.example to database.yml
+rake db:create
+rake db:migrate
+
+
+chad helps with stteing things up - jazzhands:
+cd magibson-imedidata
+./script/console
+in console:
+   uu = User.find_by_admin()
+   uu.login = 'superadmin'
+   uu.password = 'Password1'
+   uu.save(false)
+   false is to not run validations - 
+   	 but still fails because of auditing - doesnt know user "script/console"
+   hack for audit error - fakes out audit
+   Thread.current[:user_id] = -2
+   now uu.save(false) works
+
+in imedidata web app 
+create app - jazzhands... /roles.xml /site...
+it shows app_uid uponb successfully adding app in apps:
+
+add this to app_uid to jazzhands config jazzhands.yml
+  - name: localhost
+    public_key_name: localhost_imedidata_public_key.pem
+    domain: localhost
+    enabled: true
+    use_ssl: false
+    port: 3000
+    apps:
+    - name: JazzHands API Tester
+      private_key_name: sandbox_private_key.pem
+      api_id: 993516ea-3dfb-11e1-a84d-70cd60fffe66
+      api_token: 2eed9f8b48b3fa6786d75ed9e0edeb6f76f19670
+
+notice the app_id, api_token is needed for old way or something like that
+i believe this api_id is what auth needs to use if im going to fake being jazzhands app - and why not
+
+
+curl -v -H 'Authorization: MWS 91111111-1111-1111-1111-111111111111:735a60e492068cd25dee8775e898dc3b9900b70248018ae35f01ee30a0f2d98b86482a7b6a79b73e1fbf75d7ad6a6036ece11cc74dcef9d6e328cde891333269' -H 'x-mws-time: 1326406218' http://localhost:9292/
+
+curl -v -H 'Authorization: MWS 91111111-1111-1111-1111-111111111111:735a60e492068cd25dee8775e898dc3b9900b70248018ae35f01ee30a0f2d98b86482a7b6a79b73e1fbf75d7ad6a6036ece11cc74dcef9d6e328cde891333269' -H 'x-mws-time: 1326406218' http://localhost:3000/api/v2/study_groups.json
+
+curl -v -H 'Authorization: MWS 91111111-1111-1111-1111-111111111111:79f33fa89248b3b4a3e4021312279546d3db290ca09755c395455f95e9df2fefab8cc862eb98748cba3cc7c3c509e4e209ae85a6e7425eb3bc9fcc5988f6f6fc' -H 'x-mws-time: 1326470522' http://localhost:3000/api/v2/study_groups.json
+
+get this
+< HTTP/1.1 401 Unauthorized
+< Connection: close
+< Date: Fri, 13 Jan 2012 16:05:20 GMT
+< Content-Type: text/plain
+< Content-Length: 12
+
+so mauth is not happy
+oh lets put in illegitimate to see it hit the debugger!
+
+this is in imed local env.rb
+  mauth_config = {
+    :mauth_baseurl => 'https://mauth-sandbox.imedidata.net',
+    :version => 'v1',
+    :passthrough_when_no_mauth_headers => true
+  }
+  config.middleware.use "Medidata::MAuthMiddleware", mauth_config
+
+get curl from running example in rackmauth
+curl -v -H 'Authorization: MWS 91111111-1111-1111-1111-111111111111:89e1f3fa43cf6ff81feb6de2707fea7f385fb5a91c2e4a622c247e008f0955b0136085287a67f6eceef94487eb10b9f1440b7f07cc38a2b29eb415fd9424896a' -H 'x-mws-time: 1326472285' http://localhost:   ...
+
+but at end paste in 
+3000/api/v2/study_groups.json
+
+actually just put this line in example.rb silly goose
+puts simple_request('http://localhost:3000', '/api/v2/study_groups.json')
+
+pp request.headers['HTTP_AUTHORIZATION']
+"MWS 91111111-1111-1111-1111-111111111111:410d5d930d0538abefdaab653c82b24ff424ef8dc0b69c088e9bc0bc09a95ad148d87d73acdb8c022870445444e4545b5acf21b9980b0d89a489360db5db571e"
+
+theres the auth string!
+just need to parse it and look for MWS - if there then we are clear - oh and of course grab app_uuid
+
+i need to be an app that my local imedidata recognizes
+
+from jazzhands.yml we see the app_id for jazzhands that we can fake being
+ api_id: 993516ea-3dfb-11e1-a84d-70cd60fffe66
+in example.rb change the @app_uuid
+ but this prob wont work with mauth??
+
+this is the relevant imedidata code
+      app = App.find(:first, :conditions => ['id = ?', app_uuid])
+      if app.nil?
+        render :nothing => true, :status => 404 and return 
+
+
+ok i need to register an app with mauth
+
+ok i need to go into cyber duck and add in the appid i guess the jazzhands app_id why not
+
+in cyberduck
+go to mauth-devlopment folder
+production
+security_tokens
+ive been using 9111111
+geofreey made fake_imedidata_uuid for me
+download that
+put in my own app_uuid  993516ea-3dfb-11e1-a84d-70cd60fffe66
+uploaded to cyber duck as fake-client-to-imedidata in mauth-dev/dev/prod/sec_tokens
+
+put app_uuid
+"app_uuid":"993516ea-3dfb-11e1a84d-70cd60fffe66"
+ and
+ private key
+"private_key":"h2N8gFQmoeI5Z7MAXgrfuIwZeOuGt6zEaSbwFSsKwOlpzbQw/gV6GOJR+LITg+VuibP/C1WF3vIkY7kBKEqmyA=="
+
+not working - not mauthhenticating - i wonder if name of file has to be the app_id ??
+
+i dropped a dash in one of the keys - woops - did that when editing file by mistake
+
+MEDISTRANO check of logs
+to check whats happening on medistrano/sandbox
+go to medistrano.imedidata.net
+go to Paas-Mauth or something like that
+and click on sandbox
+click on SSH under connect -- click Allow
+get a terminal window
+do sudo su - medidata  
+cd /mnt/app/current
+tail -f log/production.log
+and run mauth and see what errors happen
+
+
+the app_id has to be the name of the aws duck file itself
+
+the format of appuid is 8 numbers - 4 - 4 - 4 - 12
+
+
+ok it seems to be authenticating on sandbox now
+Started POST "/mauth/v1/authentication_tickets.json" for 10.212.129.68 at Fri Jan 13 19:42:00 +0000 2012
+  Processing by AuthenticationTicketsController#create as JSON
+  Parameters: {"authentication_ticket"=>{"verb"=>"GET", "b64encoded_post_data"=>"", "app_uuid"=>"993516ea-3dfb-11e1-a84d-70cd60fffe66", "request_time"=>"1326483599", "client_signature"=>"3a42cfe4c4f6da838d1d2d8f40fd38fec7c1fee54103f06c762466c3ed427e10620c2466ee1e074501e2b4670298ce858055d261d9e80adce1740804168053e4", "request_url"=>"/api/v2/study_groups.json"}}
+Rendered text template (0.0ms)
+Completed 204 No Content in 4ms (Views: 0.6ms | ActiveRecord: 7.7ms)
+
+BUT im getting a 404 - but maybe thats rack mauth not mauth
+put debugger in rackmauth
+
+no its the psuedo code in api_authentication needs fleshing out
+was using id for query instead of uuid
+and theres no method called app.build_request_token
+need to write that i think
+
+yes - a request token that doesnt need to be saved to db - did it in app
+  # create request token linked to app, dont save to db
+  def build_temporary_request_token
+    request_token = RequestToken.new
+    request_token.app = app
+    request_token
+  end
+
+TypeError (can't convert nil into String):
+  lib/api_authentication_v2.rb:37:in `public_encrypt'
+
+    token = app_public_key.public_encrypt(@request_token.token)
+move to request_token:
+  # create request token linked to app, dont save to db
+  def self.make_temp_request_token(app)
+    request_token = RequestToken.new
+    request_token.app = app
+    request_token.token = RequestToken.make_token
+  end
+
+
+ok i pushed that code
+seems to work - need more testing
+but need to make gem of rack-mauth - also check with matt about merging
+
+http://guides.rubygems.org/make-your-own-gem/
+should be a gemspec
+and there is 
+rack-mauth.gemspec
+
+cd ~/r
+gem build rack-mauth.gemspec
+  Successfully built RubyGem
+  Name: rack-mauth
+  Version: 0.1.1
+  File: rack-mauth-0.1.1.gem
+
+and where do i put this gem???? 
+i dont know? where do gems get put?
+
+
+rspec - always confusing
+to do a module one needs make a dummy class:
+    class Dummy; include ApiAuthenticationV2; end
+    @dum = Dummy.new
+
+need to mock app - forgot how to do that
+and also request
+
+    auth = request.headers['HTTP_AUTHORIZATION']
+
+        @request_token = app.request_tokens.build(:token => RequestToken.make_token)
+
+what type of object is request?
+ActionController::Request
+    req = mock_model(ActionController::Request)
+how to mock the hash call??
+
+
+app id will need to be inserted into sandbox with cyber duck after matt does his changes
+heres the app id from jhazzhands config
+    - name: JazzHands API Tester
+      private_key_name: sandbox_private_key.pem
+      api_id: 993516ea-3dfb-11e1-a84d-70cd60fffe66
+
+working on rspec
+also need to get gem in there
+
+    # gem "rack-mauth", :path => "~/projects/rack-mauth"
+replaced with
+    gem 'rack-mauth', :git => "git@github.com:mdsol/rack-mauth.git", :tag => "v1.0.0", :require => 'rack/mauth'
+
+which was throwing error
+bundle installFetching git@github.com:mdsol/rack-mauth.git
+remote: Counting objects: 590, done.
+remote: Compressing objects: 100% (262/262), done.
+remote: Total 590 (delta 276), reused 488 (delta 179)
+Receiving objects: 100% (590/590), 104.24 KiB, done.
+Resolving deltas: 100% (276/276), done.
+fatal: ambiguous argument 'v1.0.0': unknown revision or path not in the working tree.
+Use '--' to separate paths from revisions
+Git error: command `git rev-parse v1.0.0` in directory /Users/magibson/.rvm/gems/ruby-1.8.7-p249@imedidata/cache/bundler/git/rack-mauth-7822bfe78051de9bbaa4fdb8a11194f816be7d64 has failed.
+If this error persists you could try removing the cache directory '/Users/magibson/.rvm/gems/ruby-1.8.7-p249@imedidata/cache/bundler/git/rack-mauth-7822bfe78051de9bbaa4fdb8a11194f816be7d64'
+
+because matt forgot to tag it
+now its tagged
+see in github tags tab:
+
+4 tags
+
+v1.0.0.zip — another integration spec ZIP TAR.GZ
+6142e58867 · Uploaded about an hour ago
+...
+
+gem is installed - new matt gem - which is a wipe out of my work but functionally same
+
+getting error from new gem - from running spec:
+/Users/magibson/.rvm/gems/ruby-1.8.7-p249@imedidata/bundler/gems/rack-mauth-6142e5886719/lib/rack/mauth.rb:111:in `initialize': mauth_api_version: missing api mauth_api_version (ArgumentError)
+	from /Users/magibson/.rvm/gems/ruby-1.8.7-p249@imedidata/bundler/gems/rack-mauth-6142e5886719/lib/rack/mauth.rb:16:in `new'
+	from /Users/magibson/.rvm/gems/ruby-1.8.7-p249@imedidata/bundler/gems/rack-mauth-6142e5886719/lib/rack/mauth.rb:16:in `initialize'
+	from /Users/magibson/.rvm/gems/ruby-1.8.7-p249@imedidata/gems/actionpack-2.3.4/lib/action_controller/middleware_stack.rb:72:in `new'
+
+        @mauth_api_version = config[:mauth_api_version] || raise(ArgumentError, 'mauth_api_version: missing api mauth_api_version')
+
+:version has changed to :mauth_api_version!
+
+so matt took key off cyber dick not sure why
+have to put back on as getting unauth from sandbox
+
+have to do refresh in cyber duck - doesnt auto refresh - to see removals
+the mauth-dev production folder is gone
+
+matt says i should use mauth_dev/sandbox/security_tokens dir
+but not sure to be honest how this gets routed???
+
+all that is in imed env.rb:
+  mauth_config = {
+    :mauth_baseurl => 'https://mauth-sandbox.imedidata.net',
+
+so uploaded 9935... file
+
+so the world has changed
+now doing public private key pairs - urgh
+dont think theres imedidata docs on this yet
+on making keys:
+http://help.github.com/mac-set-up-git/
+
+i have keys i think - should i just be using mine?
+
+test and example are blown away - lovely
+
+heres the old curl command
+
+curl -v -H 'Authorization: MWS 91111111-1111-1111-1111-111111111111:79f33fa89248b3b4a3e4021312279546d3db290ca09755c395455f95e9df2fefab8cc862eb98748cba3cc7c3c509e4e209ae85a6e7425eb3bc9fcc5988f6f6fc' -H 'x-mws-time: 1326470522' http://localhost:3000/api/v2/study_groups.json
+
+curl -v -H 'Authorization: MWS 91111111-1111-1111-1111-111111111111:89e1f3fa43cf6ff81feb6de2707fea7f385fb5a91c2e4a622c247e008f0955b0136085287a67f6eceef94487eb10b9f1440b7f07cc38a2b29eb415fd9424896a' -H 'x-mws-time: 1326472285' http://localhost:   ...
+
+but should use new app id
+993516ea-3dfb-11e1-a84d-70cd60fffe66
+
+curl -v -H 'Authorization: MWS 993516ea-3dfb-11e1-a84d-70cd60fffe66:79f33fa89248b3b4a3e4021312279546d3db290ca09755c395455f95e9df2fefab8cc862eb98748cba3cc7c3c509e4e209ae85a6e7425eb3bc9fcc5988f6f6fc' -H 'x-mws-time: 1326470522' http://localhost:3000/api/v2/study_groups.json
+
+curl -v 
+-H 
+  'Authorization: 
+    MWS 993516ea-3dfb-11e1-a84d-70cd60fffe66:79f33fa89248b3b4a3e4021312279546d3db290ca09755c395455f95e9df2fefab8cc862eb98748cba3cc7c3c509e4e209ae85a6e7425eb3bc9fcc5988f6f6fc' 
+-H 
+  'x-mws-time:
+     1326470522'
+http://localhost:3000/api/v2/study_groups.json
+
+i think the only change need to be the signature
+
+has signer changed?? i have no f idea
+
+ok so what the hell to do now
+do we bother testing with curl?
+how do we test this????
+
+theres rspec - is that passing?
+
+yea it passes
+but we should test with curl - ugh!!!!
+lets make a thingy for ducky i guess
+
+heres what the new key looks like - testing_hands_off:
+
+{"security_token":{"app_name":"Matt App","created_at":"2012-01-16T21:02:06Z","app_uuid":"testing_hands_off","public_key_str":"-----BEGIN RSA PUBLIC KEY-----\nMIIBCgKCAQEA2GhmijLqVmuT2D7H0wLfq4LIJ6fpHMyl5Tz1mytNz4/pa0fIzxab\nMDBpC9hhLkzNUPoOFcI9Cz2aEIW+HHqkxCcifmqXEF5MlQz1OHJYKKFXvEPuWNlI\nLCtCiRosw5xwZDrVntufPhsUWTTiHpG9VHdK79VnUVD65yA8f9ma9Gwsx9/ARpet\nEpzttm+183nY6adGytmK32F8l58DmGyV5lGHcouyhddMwLD2VDJm6hlMqlN7Jrn7\nYdzcHCWrUUkan7zwlS/d/AGN9gjFHKa6dJvyTAONTD4s2SHNifhv79eeu1AzNlTI\nb9X0ZgRPPRh/6NfVLsmj6ScVloW2Bf7VHQIDAQAB\n-----END RSA PUBLIC KEY-----\n","can_request_security_tokens":true}}
+
+{"security_token":
+	{"app_name":"Matt App",
+	"created_at":"2012-01-16T21:02:06Z",
+	"app_uuid":"testing_hands_off",
+	"public_key_str":"-----BEGIN RSA PUBLIC KEY-----\nMIIBCgKCAQEA2GhmijLqVmuT2D7H0wLfq4LIJ6fpHMyl5Tz1mytNz4/pa0fIzxab\nMDBpC9hhLkzNUPoOFcI9Cz2aEIW+HHqkxCcifmqXEF5MlQz1OHJYKKFXvEPuWNlI\nLCtCiRosw5xwZDrVntufPhsUWTTiHpG9VHdK79VnUVD65yA8f9ma9Gwsx9/ARpet\nEpzttm+183nY6adGytmK32F8l58DmGyV5lGHcouyhddMwLD2VDJm6hlMqlN7Jrn7\nYdzcHCWrUUkan7zwlS/d/AGN9gjFHKa6dJvyTAONTD4s2SHNifhv79eeu1AzNlTI\nb9X0ZgRPPRh/6NfVLsmj6ScVloW2Bf7VHQIDAQAB\n-----END RSA PUBLIC KEY-----\n",
+	"can_request_security_tokens":true}
+}
+
+{"security_token":
+	{"app_name":"FakeJazzHandsLocal",
+	"created_at":"2012-01-05T20:52:03Z",
+	"app_uuid":"993516ea-3dfb-11e1-a84d-70cd60fffe66",
+	"private_key":"h2N8gFQmoeI5Z7MAXgrfuIwZeOuGt6zEaSbwFSsKwOlpzbQw/gV6GOJR+LITg+VuibP/C1WF3vIkY7kBKEqmyA=="
+	"can_request_security_tokens":true,}
+}
+take public key from my .ssh i guess???
+
+{"security_token":
+	{"app_name":"FakeJazzHandsLocal",
+	"created_at":"2012-01-05T20:52:03Z",
+	"app_uuid":"993516ea-3dfb-11e1-a84d-70cd60fffe66",
+	"public_key_str":"AAAAB3NzaC1yc2EAAAABIwAAAQEAzFFKXyGP2tmS9GAw0yjuDcjYn35KvNsmMc6L8JqLhXIhEF7txP/s9Z4/gq5ESPD1JdcRCUMkoXF9p/b/L25V/+08szyYdWUz4Wwh/wdu41xcT1lUSOmz5ApPO9Z5BTTZprW/BZaI1YYlCugwjjaNrN0vwXghI5Ak6zF3GuSgqnLQYBC3HgAGMsWYy9XT07uLpgDbOOSsz9iDN3e/QVSyPAIrZr7F/x7Ej/ftbiMsn0Mz87fvPEbhoScH422v9nBUH90IW++nKuIYuc5giaLLTO2iyJAIHd5jQFtVgNp52286MV31dcBvzPH1YEnmVRj6M4JJoQUi9g6/bO3CQauYyw==",
+	"can_request_security_tokens":true}
+}
+
+put this in fiddle/rack-mauth
+
+heres my ssh keys:
+
+id_rsa.pub
+ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAzFFKXyGP2tmS9GAw0yjuDcjYn35KvNsmMc6L8JqLhXIhEF7txP/s9Z4/gq5ESPD1JdcRCUMkoXF9p/b/L25V/+08szyYdWUz4Wwh/wdu41xcT1lUSOmz5ApPO9Z5BTTZprW/BZaI1YYlCugwjjaNrN0vwXghI5Ak6zF3GuSgqnLQYBC3HgAGMsWYy9XT07uLpgDbOOSsz9iDN3e/QVSyPAIrZr7F/x7Ej/ftbiMsn0Mz87fvPEbhoScH422v9nBUH90IW++nKuIYuc5giaLLTO2iyJAIHd5jQFtVgNp52286MV31dcBvzPH1YEnmVRj6M4JJoQUi9g6/bO3CQauYyw== magibson@mdsol.com
+
+id_rsa  (private)
+-----BEGIN RSA PRIVATE KEY-----
+MIIEoQIBAAKCAQEAzFFKXyGP2tmS9GAw0yjuDcjYn35KvNsmMc6L8JqLhXIhEF7t
+xP/s9Z4/gq5ESPD1JdcRCUMkoXF9p/b/L25V/+08szyYdWUz4Wwh/wdu41xcT1lU
+SOmz5ApPO9Z5BTTZprW/BZaI1YYlCugwjjaNrN0vwXghI5Ak6zF3GuSgqnLQYBC3
+HgAGMsWYy9XT07uLpgDbOOSsz9iDN3e/QVSyPAIrZr7F/x7Ej/ftbiMsn0Mz87fv
+PEbhoScH422v9nBUH90IW++nKuIYuc5giaLLTO2iyJAIHd5jQFtVgNp52286MV31
+dcBvzPH1YEnmVRj6M4JJoQUi9g6/bO3CQauYywIBIwKCAQEAhkQMTSSu/Yeptoha
+mWQKJlDI3damJFV/f9DfnhxqUGDxKAPeE74fX5Pgl7RYwjfxjeUZ0uL60H3HmkM5
++pj2r36kO0UTutwax1Wv8Lu95d2bvx1x5sV2NsTyPUPL3tmWV5wBL47O8rc86ekJ
+9w3oEoK4+3rT8sxwCEUTwTcnwHYna+0KZ4XIhaHHYbLbZO/M7tm0TCxta+yoslZ5
+iB8lg1PtqOj9r8qwaXYzrUP2BvcltSjhmKIhNNAfSvem2+InXTyOWu14QvbUNQae
+qwj577t5+5BDH6OuQLHYfC74fEd+d5UsXMwZUKZJS3r/uynxPUwJDowH+EYDHGhF
+3sLDKwKBgQD+laNfF114az967EBIcjW4y8C39pHdK7al1J73r1LXiImwYsZZA0PI
+tpqmD2SsUMsoHn1c+D7S6KFYvGcnTTFR7oo8z8/1yPvI45DBRqyp76fjwMQmWf0g
+wDntHcvB69OIomUVQuA0YpQxe47wOY/pRPS3dtUju4YZMlVR9P7oWwKBgQDNdBrk
+BO07PvQa/P/ONzpNFb0ySNeNTc/+EK47JwocDQPk1mlaPkJes1Bc58Zi9fTSc6NR
+Ol9AXQYxnq8QT4KwB52Z4F1ISekjLIF2KG4JMz63fdoXcld8Ha6ZY0zOgGaM70Jl
+CdYrJ0p1v8gjCdnvvcvzr+B4qncnD13vtuh8UQKBgB0YanFEf7X9oNrZK+sFvP8t
+OpiudxH2XgRS0FbSNVp2ARt5ALm3OvJeAwup/OB+QxqHJEUjr2iPnWk6GmrkQCae
+6zomYOjjxQEEEIseBRq8TbOhAHlpXsHqFT+rokIMUrCHloYWRYJUaLUysUAGlBqo
+y4KufsJBUSdzd3cUr2sDAoGAEZw80bdHiLxAzxz/+7uXSG+T370Zykh/is460d7G
+Wi0AVXF2vpefSfIc1MNoxqdeIKrTe/2wZJpCXAZJhQ4hJQf3kNi3idpzEaS6o7pS
+kxMFYC9b1h++Wxh8rg/TYihDTeifSn0vnUyCuaK5YhbJiZPs6QByU3xTWx6TBesb
+PdsCgYB+y7H5MQSw4fFzsoxdDALRpBjbddirKwXxOLiwhV3z1rk0pLoPnrsQddOL
+32wtUFuYNS+wSu/480r9u0JLsriKKcf241z2XCdHJ2slpHDD9imL5wDxmtKm4Th9
+xO9tGPVwzbM5YEKnbtalWcGBv3AjOZshBl3Zut8lIBSftMvTVA==
+-----END RSA PRIVATE KEY-----
+
+put private key in example curl script right???
+which matt rewrote - have in email
+
+require 'rubygems'
+require 'bundler/setup'
+require 'mauth_signer'
+
+#note:  create public and private keys like this
+# require 'openssl'
+# pri_key = OpenSSL::PKey::RSA.new(2048)
+# private_key_str = pri_key.to_s
+# public_key_str = pri_key.public_key.to_s
+
+@app_uuid = "<whatever your app_uuid is>"
+@private_key_str = "<your app's private key as a string>"
+@public_key_str = "<your app's public key, should be stored in an MAuth security token in s3 in the environment in which you are running mauth>"
+
+def generate_url
+  "#{@host}#{@url}"
+end
+
+def simple_request(host, url, verb='GET', post_data='')
+  @host, @url = host, url
+  headers = MAuth::Signer.new(:private_key => @private_key_str).signed_request_headers(:app_uuid => @app_uuid, :request_url => @url, :post_data => post_data, :verb => verb)
+  puts "HEADERS: #{headers.inspect}"
+  puts @private_key
+  puts host
+  puts url
+  puts @app_uuid
+  puts verb
+
+  args = headers.map{|k,v| "-H '#{k}: #{v}'"} * ' '
+  if post_data == ''
+  "curl -v #{args} #{generate_url}"
+  else
+  "curl -v #{args} -d '#{post_data}' #{generate_url}"
+  end
+end
+
+#puts simple_request('https://mauth-sandbox.imedidata.net', '/mauth/v1/security_tokens/')
+#puts simple_request('http://localhost:3000', '/mauth/v1/security_tokens/')
+#puts simple_request('http://localhost:4004', '/mauth/v1/security_tokens/', 'POST', 'foo=bar')
+puts simple_request('http://localhost:9292', '/')
+
+so need to run this in rack mauth master
+to create curl 
+and then run curl against imedidata
+
+calling it ~/r/test-curl-maker
+
+old example.rb is in fiddle/rack-mauth
+
+not sure if you put in begin private rsa key
+
+run ruby script with ruby
+
+ruby test-curl-maker.rb
+git@github.com:mdsol/mauth_signer.git (at v1.0.0) is not checked out. Please run `bundle install`
+
+do bundle-install in master
+
+ruby test-curl-maker.rb
+/Users/magibson/.rvm/gems/ruby-1.8.7-p249@rackmauth/bundler/gems/mauth_signer-efef611ebe93/lib/mauth_signer.rb:38:in `initialize': Neither PUB key nor PRIV key:: nested asn1 error (OpenSSL::PKey::RSAError)
+	from /Users/magibson/.rvm/gems/ruby-1.8.7-p249@rackmauth/bundler/gems/mauth_signer-efef611ebe93/lib/mauth_signer.rb:38:in `new'
+	from /Users/magibson/.rvm/gems/ruby-1.8.7-p249@rackmauth/bundler/gems/mauth_signer-efef611ebe93/lib/mauth_signer.rb:38:in `initialize'
+	from test-curl-maker.rb:27:in `new'
+	from test-curl-maker.rb:27:in `simple_request'
+	from test-curl-maker.rb:47
+
+dam im lost
+begin priv key?
+line breaks?
+
+yes! you need the line breaks and you need begin & end 
+or get funny error above
+
+curl -v -H 'Authorization: MWS 993516ea-3dfb-11e1-a84d-70cd60fffe66:U/DenXYXLrrMahlcaSAqqQUbSW5v/Ho7gqC4G5bi+lX5f/eQDbyfTkIGoWDd+xGBjcN9yL3kCrkVY+ush/kbBTo7nFTgDNmb+6aUiNjzhexm1b0xQnEAx8X4wD2PWT4FnoyBAQQvdk2O8cAcoxv0yot9OlIppo+B7vbit9z4kzNM78aFQyKsAbA9+aDipM4PRrooP+LNNGf0qX6pgxJyv/54Qg3MJK2E6sWVWKSNFafom54VanKTPNtVX4/juWyiDeYKBtciAz/AvOJy8xrmQIRmqKL0x465c0GB8zXy8pY7TkF4Qkjo4bGR2SYfgqtmhmUOgD3o+f6L4ih4fVqmYw==' -H 'x-mws-time: 1326922574' http://localhost:3000/api/v2/study_groups.json
+* About to connect() to localhost port 3000 (#0)
+*   Trying 127.0.0.1... connected
+* Connected to localhost (127.0.0.1) port 3000 (#0)
+> GET /api/v2/study_groups.json HTTP/1.1
+> User-Agent: curl/7.19.7 (universal-apple-darwin10.0) libcurl/7.19.7 OpenSSL/0.9.8r zlib/1.2.3
+> Host: localhost:3000
+> Accept: */*
+> Authorization: MWS 993516ea-3dfb-11e1-a84d-70cd60fffe66:P1UxOHTh9QopO6TtiMXdvW3TXh/tuGKtMPREb4i0S4R+oWejwLIzV+fwYRwKHDn+0AqEmXS18K8uoU8IaBHMEKOMszHwVCGgYAqUDYWZA7EPfS3hIvY+Rr+YTYl2CgK1BFyGm8BLhBSI/3ID5OsoEr2Au4epGaB1p0We/NlW/Zw0Jx+fexeFpqtoHgjhkwhBbsGhnlttbGq0Y7YAzfK5/mDYQQcfLtJ04sn3VyEXEGCaQ6dM7ttwbE5l2ZhoiS8hFb6LauXYztw0MPUYZeQsq11aNzbpBL6Nr+kRmW2FHPsRjnYjs7I3Z472gCM22IW1cpc9SlZIRPEpXB2BF55ioA==
+> x-mws-time: 1326923026
+> 
+< HTTP/1.1 401 Unauthorized
+< Connection: close
+< Date: Wed, 18 Jan 2012 21:43:53 GMT
+< Content-Type: text/plain
+< Content-Length: 12
+< 
+* Closing connection #0
+
+DAM!
+
+try bundle install on imed i guess
+and git pull on rack mauth
+nothing
+try pointing at src rather than git imed to rack mauth
+what about mauth?? need new gem there too? matuh signer really but just going to mauth
+oh also look at output on sandbox
+
+on medistrano is it paas mauth - i think so
+
+heres the error from the logs
+  Processing by AuthenticationTicketsController#create as JSON
+  Parameters: {"authentication_ticket"=>{"verb"=>"GET", "app_uuid"=>"993516ea-3dfb-11e1-a84d-70cd60fffe66", "request_time"=>"1326923493", "client_signature"=>"yTBuLfeq0TvMwghcPAtBQd4Gx/hnYoiDU17cNfzcKEei5zlhf9bZ90s1RWNlhsSvVR75zZOzCa0ed+xBGbMrUY2EvxtAvlBzLPYIOXOZi7DPxDTMi04fu4krCyvZfamTs+VZxbBIR31wzZfFwxs9hTg3rdhqmqGbLQ4r9ZLgfmKFbNnkaKIKvGAIDyr4VHeeiPFhwevK4bTT+x+a6PZevlfzLkJRp4xkW5GlQFNDAS3aCIdJsIQBdFWINZqyAJmAJxshYuj1qxZXTOM8I6TvJuKqhX6ItJcySWGkD248c2RfEf2iNWG58Qq0X6Hfd+7n9iyyDMX4Vi1vxmWftSSH7A==", "b64encoded_body"=>"", "request_url"=>"/api/v2/study_groups.json"}}
+[AWS S3 200 0.101848] get_object(:bucket_name=>"mauth-development",:key=>"sandbox/security_tokens/993516ea-3dfb-11e1-a84d-70cd60fffe66")
+Completed 500 Internal Server Error in 107ms
+wrong final block length
+/mnt/app/shared/bundle/ruby/1.8/gems/encryptor-1.1.3/lib/encryptor.rb:62:in `final'
+/mnt/app/shared/bundle/ruby/1.8/gems/encryptor-1.1.3/lib/encryptor.rb:62:in `crypt'
+/mnt/app/shared/bundle/ruby/1.8/gems/encryptor-1.1.3/lib/encryptor.rb:44:in `decrypt'
+/mnt/app/shared/bundle/ruby/1.8/gems/encryptor-1.1.3/lib/encryptor/string.rb:16:in `decrypt'
+/mnt/app/releases/20120118154630/lib/cache_storage.rb:75:in `conditional_decrypt'
+/mnt/app/releases/20120118154630/lib/s3_storage.rb:49:in `find_in_s3!'
+/mnt/app/releases/20120118154630/app/models/security_token.rb:85:in `find_by_app_uuid!'
+/mnt/app/releases/20120118154630/app/controllers/authentication_tickets_controller.rb:25:in `get_security_token_post_data'
+
+well what the hell do i do with that????
+wrong final block length
+hmmmm
+
+MAKING NEW KEY PAIR WITH GEOFFREY in ruby shell
+in rack mauth ~/r
+irb
+~/r (master) $ irb
+Using /Users/magibson/.rvm/gems/ruby-1.8.7-p249 with gemset rackmauth
+ruby-1.8.7-p249 :001 > require 'openssl'
+ => true 
+Using /Users/magibson/.rvm/gems/ruby-1.8.7-p249 with gemset rackmauth
+ruby-1.8.7-p249 :002 > @private_key = OpenSSL::PKey::RSA.generate( 2048 )
+ => -----BEGIN RSA PRIVATE KEY-----
+MIIEowIBAAKCAQEA34ajaK5gm/UM4PxHyrIF+gcBr6cacLqWdSzfGOz6KdBLCZXz
+HYWX/9sEL7XgWuXhhXsJr8bgNibUToghgK+cE9QVUnipDSogc2Ds2FJE5rlJBFtf
+PLrw11OT20teCTeFpaXl2pE/C+ItlW9Ip2QYNF5v9eHHxMdBzJC7yckiCfLaY58/
+wT+KaxiFZsaw15LMGHeiqMeGt1kRGqfREIm+drOiMjD5P49uOMn2Ye5RbdF1JkhV
+v1wogqABWpAV1d8akpBh3bytoyH4Wgwi4lLeAVSc0glnh6+ED3wq0+7p1X/OufTE
+rEJNDyRRg9hiTLnXMKWpX24yX5TI5cucDp6DPQIDAQABAoIBAB+C5JCCXL4/upQR
+HLHXjP4ldLhlj1WrCED2lXD3H4E7iwiL6h0UU0xPfPSY6EsIM1XU9ZWhLMSVjsKP
+cGGq4A7vjB33QqXHdZGubVVFq872+fMySmfOVtuUPbjhlB0qhZ3HmHLKnR+4wAJc
+ENsAQmVHlvML5FS6Xm1PThnxT+ok3ezJHq7wEdHeWxgKffUrbv6JHK1p4wHn9s3B
+DU/Ljnfi04Q6q7yr5COzarpBiego7NqHqcMmQnZAfzUdYW9sNu9skjYpm0u5JFJv
+5NAD9pLaA2lOCeJo9tkxQyzX+7GNvC0X7fHrrREgHJQsoMOjN5RacOc/xHdy7aWK
+/K0HbmUCgYEA9DXh2obI8I0s2pYRXO5pMNPkpm3ouhjIJGh0cBUO8gkyqwRy3JOl
+NG/mewJRPt3gynBe+T8B0ZEEzKItP3LdMoKQyMiUa/4mKq6Q33ZxabgilrnfG7wR
+QlCWUOmrEf1r6KIKqPtIQVpxR5ms85P2j6OJHWSFm5MojHQ1iawSjfMCgYEA6lEf
+XDGadnT7rxJHRObvW8KzbRmv/N2o0UW5tVv+EyC+IpGghSa62WXQmbk3RDl3VJRe
+q+tkBUzL56xfOFeZ5/YwCvHcizOkqJRk7F0I+mabD1cbVAMtnTUgo4Um32vdGT+Q
+Br9sZkp1pQUKkmAYgVXqVOdpKjrp8o83hh+Zhg8CgYEAlFgOw/HQKd93+afjEDJ6
+j4CHilmFX1YibYtN/6+rDndr4dqn8zl0xy+aL+quc6PQIuizqHAPqL+QzMVO+xXJ
+LB+H14+QKTGO+apksnl+VxvVVv29e1l4mnHdfXUTx6/LVtrn4tIRiDFqUnYVSzj8
+MzDB36rqRiDUJs2IoAJ4muUCgYAt80KnHcMgv8griPYY+QCvifsNxh/RAtb8UyQc
+ALJOpfkjZlOISRQTVfgWbU/9PRe9qmr2Y+71ax4BjLgPoH46EvlQ7CVH1xTPSmqQ
+P55nHIAD/h0J2KW1UpnX92CsJ8bwEJr598gWNzvi5J4yHk4v7t1JUSg6c9s1Cgjl
+cIT22QKBgHayTw+K3CIf8f7j8Bso6JuKhJV4Hz7D5U0HFiKqSl5Hxl+V4LoaYtOR
+pdqtQCNnVLrDcXaLNOknjDEvi1qtA5acbyiRS9dyE/Plv4p96rsyQY6PviU6gbKI
+cmWAExNsM5QZHHIToW855bFXm+rCZvCn3oYUA1tyvDQqZbZUX8pQ
+-----END RSA PRIVATE KEY-----
+ 
+Using /Users/magibson/.rvm/gems/ruby-1.8.7-p249 with gemset rackmauth
+ruby-1.8.7-p249 :003 > @private_key_str = @private_key.to_s
+ => "-----BEGIN RSA PRIVATE KEY-----\nMIIEowIBAAKCAQEA34ajaK5gm/UM4PxHyrIF+gcBr6cacLqWdSzfGOz6KdBLCZXz\nHYWX/9sEL7XgWuXhhXsJr8bgNibUToghgK+cE9QVUnipDSogc2Ds2FJE5rlJBFtf\nPLrw11OT20teCTeFpaXl2pE/C+ItlW9Ip2QYNF5v9eHHxMdBzJC7yckiCfLaY58/\nwT+KaxiFZsaw15LMGHeiqMeGt1kRGqfREIm+drOiMjD5P49uOMn2Ye5RbdF1JkhV\nv1wogqABWpAV1d8akpBh3bytoyH4Wgwi4lLeAVSc0glnh6+ED3wq0+7p1X/OufTE\nrEJNDyRRg9hiTLnXMKWpX24yX5TI5cucDp6DPQIDAQABAoIBAB+C5JCCXL4/upQR\nHLHXjP4ldLhlj1WrCED2lXD3H4E7iwiL6h0UU0xPfPSY6EsIM1XU9ZWhLMSVjsKP\ncGGq4A7vjB33QqXHdZGubVVFq872+fMySmfOVtuUPbjhlB0qhZ3HmHLKnR+4wAJc\nENsAQmVHlvML5FS6Xm1PThnxT+ok3ezJHq7wEdHeWxgKffUrbv6JHK1p4wHn9s3B\nDU/Ljnfi04Q6q7yr5COzarpBiego7NqHqcMmQnZAfzUdYW9sNu9skjYpm0u5JFJv\n5NAD9pLaA2lOCeJo9tkxQyzX+7GNvC0X7fHrrREgHJQsoMOjN5RacOc/xHdy7aWK\n/K0HbmUCgYEA9DXh2obI8I0s2pYRXO5pMNPkpm3ouhjIJGh0cBUO8gkyqwRy3JOl\nNG/mewJRPt3gynBe+T8B0ZEEzKItP3LdMoKQyMiUa/4mKq6Q33ZxabgilrnfG7wR\nQlCWUOmrEf1r6KIKqPtIQVpxR5ms85P2j6OJHWSFm5MojHQ1iawSjfMCgYEA6lEf\nXDGadnT7rxJHRObvW8KzbRmv/N2o0UW5tVv+EyC+IpGghSa62WXQmbk3RDl3VJRe\nq+tkBUzL56xfOFeZ5/YwCvHcizOkqJRk7F0I+mabD1cbVAMtnTUgo4Um32vdGT+Q\nBr9sZkp1pQUKkmAYgVXqVOdpKjrp8o83hh+Zhg8CgYEAlFgOw/HQKd93+afjEDJ6\nj4CHilmFX1YibYtN/6+rDndr4dqn8zl0xy+aL+quc6PQIuizqHAPqL+QzMVO+xXJ\nLB+H14+QKTGO+apksnl+VxvVVv29e1l4mnHdfXUTx6/LVtrn4tIRiDFqUnYVSzj8\nMzDB36rqRiDUJs2IoAJ4muUCgYAt80KnHcMgv8griPYY+QCvifsNxh/RAtb8UyQc\nALJOpfkjZlOISRQTVfgWbU/9PRe9qmr2Y+71ax4BjLgPoH46EvlQ7CVH1xTPSmqQ\nP55nHIAD/h0J2KW1UpnX92CsJ8bwEJr598gWNzvi5J4yHk4v7t1JUSg6c9s1Cgjl\ncIT22QKBgHayTw+K3CIf8f7j8Bso6JuKhJV4Hz7D5U0HFiKqSl5Hxl+V4LoaYtOR\npdqtQCNnVLrDcXaLNOknjDEvi1qtA5acbyiRS9dyE/Plv4p96rsyQY6PviU6gbKI\ncmWAExNsM5QZHHIToW855bFXm+rCZvCn3oYUA1tyvDQqZbZUX8pQ\n-----END RSA PRIVATE KEY-----\n" 
+Using /Users/magibson/.rvm/gems/ruby-1.8.7-p249 with gemset rackmauth
+ruby-1.8.7-p249 :004 > @public_key_str = @private_key.public_key.to_s
+ => "-----BEGIN RSA PUBLIC KEY-----\nMIIBCgKCAQEA34ajaK5gm/UM4PxHyrIF+gcBr6cacLqWdSzfGOz6KdBLCZXzHYWX\n/9sEL7XgWuXhhXsJr8bgNibUToghgK+cE9QVUnipDSogc2Ds2FJE5rlJBFtfPLrw\n11OT20teCTeFpaXl2pE/C+ItlW9Ip2QYNF5v9eHHxMdBzJC7yckiCfLaY58/wT+K\naxiFZsaw15LMGHeiqMeGt1kRGqfREIm+drOiMjD5P49uOMn2Ye5RbdF1JkhVv1wo\ngqABWpAV1d8akpBh3bytoyH4Wgwi4lLeAVSc0glnh6+ED3wq0+7p1X/OufTErEJN\nDyRRg9hiTLnXMKWpX24yX5TI5cucDp6DPQIDAQAB\n-----END RSA PUBLIC KEY-----\n" 
+Using /Users/magibson/.rvm/gems/ruby-1.8.7-p249 with gemset rackmauth
+ruby-1.8.7-p249 :005 > 
+
+i think the line returns need to be \n - that might be the problem
+
+so according to matts email have to do his way - and not through cyber duck
+
+Hi Guys,
+
+I just made a change to MAuth which requires you to regenerate your Security Tokens.  Fun, right?
+
+To remove old SecurityTokens, do the following in a rails console in the environment (e.g. development, sandbox) in which you are testing:
+
+SecurityToken.find_by_app_uuid!("your app_uuid here").destroy!
+
+to recreate tokens, do
+
+SecurityToken.create!(:app_name => "whatever you want", :app_uuid => "your app's uuid here", :public_key_str => "your app's public key string here")
+is that synonomous with putting token into aws via cyber duck by hand?
+No, it isn't synonymous.  In order for authentication to work, you have to use the method I described.
+
+going into medistrano sandbox for mauth
+
+
+do sudo su - medidata  
+cd /mnt/app/current
+
+no script/console
+trying irb...
+
+SecurityToken.find_by_app_uuid!("993516ea-3dfb-11e1-a84d-70cd60fffe66").destroy!
+NameError: uninitialized constant SecurityToken
+from example file
+require 'rubygems'
+require 'bundler/setup'
+no dice
+require 'mauth_signer'
+no dice
+require 'rack/mauth'
+LoadError: no such file to load -- rack/mauth
+require 'rack'
+
+geoffrey says
+RAILS_ENV=sandbox bundle exec rails console
+actually thats wrong its
+RAILS_ENV=production bundle exec rails console
+ugandhar figured that out by looking in config/app_uuid.yml - on gmc its config/parly.yml
+who knows why its app_uuid.yml but seems to be
+
+
+SecurityToken.create!(:app_name => "mark-jazzhand-imed-local-client", :app_uuid => "993516ea-3dfb-11e1-a84d-70cd60fffe66", :public_key_str => "-----BEGIN RSA PUBLIC KEY-----\nMIIBCgKCAQEA34ajaK5gm/UM4PxHyrIF+gcBr6cacLqWdSzfGOz6KdBLCZXzHYWX\n/9sEL7XgWuXhhXsJr8bgNibUToghgK+cE9QVUnipDSogc2Ds2FJE5rlJBFtfPLrw\n11OT20teCTeFpaXl2pE/C+ItlW9Ip2QYNF5v9eHHxMdBzJC7yckiCfLaY58/wT+K\naxiFZsaw15LMGHeiqMeGt1kRGqfREIm+drOiMjD5P49uOMn2Ye5RbdF1JkhVv1wo\ngqABWpAV1d8akpBh3bytoyH4Wgwi4lLeAVSc0glnh6+ED3wq0+7p1X/OufTErEJN\nDyRRg9hiTLnXMKWpX24yX5TI5cucDp6DPQIDAQAB\n-----END RSA PUBLIC KEY-----\n")
+
+ah! had to delete the crap i put on cyber duck 1st!
+
+and it worked
+
+irb(main):010:0> SecurityToken.create!(:app_name => "mark-jazzhand-imed-local-client", :app_uuid => "993516ea-3dfb-11e1-a84d-70cd60fffe66", :public_key_str => "-----BEGIN RSA PUBLIC KEY-----\nMIIBCgKCAQEA34ajaK5gm/UM4PxHyrIF+gcBr6cacLqWdSzfGOz6KdBLCZXzHYWX\n/9sEL7XgWuXhhXsJr8bgNibUToghgK+cE9QVUnipDSogc2Ds2FJE5rlJBFtfPLrw\n11OT20teCTeFpaXl2pE/C+ItlW9Ip2QYNF5v9eHHxMdBzJC7yckiCfLaY58/wT+K\naxiFZsaw15LMGHeiqMeGt1kRGqfREIm+drOiMjD5P49uOMn2Ye5RbdF1JkhVv1wo\ngqABWpAV1d8akpBh3bytoyH4Wgwi4lLeAVSc0glnh6+ED3wq0+7p1X/OufTErEJN\nDyRRg9hiTLnXMKWpX24yX5TI5cucDp6DPQIDAQAB\n-----END RSA PUBLIC KEY-----\n")
+=> #<SecurityToken:0xb647712c @errors=#<OrderedHash {}>, @app_uuid="993516ea-3dfb-11e1-a84d-70cd60fffe66", @new_record=true, @app_name="mark-jazzhand-imed-local-client", @created_at=Thu Jan 19 16:36:37 UTC 2012, @can_request_security_tokens=true, @public_key_str="-----BEGIN RSA PUBLIC KEY-----\nMIIBCgKCAQEA34ajaK5gm/UM4PxHyrIF+gcBr6cacLqWdSzfGOz6KdBLCZXzHYWX\n/9sEL7XgWuXhhXsJr8bgNibUToghgK+cE9QVUnipDSogc2Ds2FJE5rlJBFtfPLrw\n11OT20teCTeFpaXl2pE/C+ItlW9Ip2QYNF5v9eHHxMdBzJC7yckiCfLaY58/wT+K\naxiFZsaw15LMGHeiqMeGt1kRGqfREIm+drOiMjD5P49uOMn2Ye5RbdF1JkhVv1wo\ngqABWpAV1d8akpBh3bytoyH4Wgwi4lLeAVSc0glnh6+ED3wq0+7p1X/OufTErEJN\nDyRRg9hiTLnXMKWpX24yX5TI5cucDp6DPQIDAQAB\n-----END RSA PUBLIC KEY-----\n", @validation_context=nil>
+
+looking at cyberduck at key created it seems it encrypts the public key
+and doesnt put private key there which seems normal though geofreey questions
+
+wait ive lost track - this is some new private public pair
+
+
+put new pair into test-curl-maker
+with \n?
+"-----BEGIN RSA PRIVATE KEY-----\nMIIEowIBAAKCAQEA34ajaK5gm/UM4PxHyrIF+gcBr6cacLqWdSzfGOz6KdBLCZXz\nHYWX/9sEL7XgWuXhhXsJr8bgNibUToghgK+cE9QVUnipDSogc2Ds2FJE5rlJBFtf\nPLrw11OT20teCTeFpaXl2pE/C+ItlW9Ip2QYNF5v9eHHxMdBzJC7yckiCfLaY58/\nwT+KaxiFZsaw15LMGHeiqMeGt1kRGqfREIm+drOiMjD5P49uOMn2Ye5RbdF1JkhV\nv1wogqABWpAV1d8akpBh3bytoyH4Wgwi4lLeAVSc0glnh6+ED3wq0+7p1X/OufTE\nrEJNDyRRg9hiTLnXMKWpX24yX5TI5cucDp6DPQIDAQABAoIBAB+C5JCCXL4/upQR\nHLHXjP4ldLhlj1WrCED2lXD3H4E7iwiL6h0UU0xPfPSY6EsIM1XU9ZWhLMSVjsKP\ncGGq4A7vjB33QqXHdZGubVVFq872+fMySmfOVtuUPbjhlB0qhZ3HmHLKnR+4wAJc\nENsAQmVHlvML5FS6Xm1PThnxT+ok3ezJHq7wEdHeWxgKffUrbv6JHK1p4wHn9s3B\nDU/Ljnfi04Q6q7yr5COzarpBiego7NqHqcMmQnZAfzUdYW9sNu9skjYpm0u5JFJv\n5NAD9pLaA2lOCeJo9tkxQyzX+7GNvC0X7fHrrREgHJQsoMOjN5RacOc/xHdy7aWK\n/K0HbmUCgYEA9DXh2obI8I0s2pYRXO5pMNPkpm3ouhjIJGh0cBUO8gkyqwRy3JOl\nNG/mewJRPt3gynBe+T8B0ZEEzKItP3LdMoKQyMiUa/4mKq6Q33ZxabgilrnfG7wR\nQlCWUOmrEf1r6KIKqPtIQVpxR5ms85P2j6OJHWSFm5MojHQ1iawSjfMCgYEA6lEf\nXDGadnT7rxJHRObvW8KzbRmv/N2o0UW5tVv+EyC+IpGghSa62WXQmbk3RDl3VJRe\nq+tkBUzL56xfOFeZ5/YwCvHcizOkqJRk7F0I+mabD1cbVAMtnTUgo4Um32vdGT+Q\nBr9sZkp1pQUKkmAYgVXqVOdpKjrp8o83hh+Zhg8CgYEAlFgOw/HQKd93+afjEDJ6\nj4CHilmFX1YibYtN/6+rDndr4dqn8zl0xy+aL+quc6PQIuizqHAPqL+QzMVO+xXJ\nLB+H14+QKTGO+apksnl+VxvVVv29e1l4mnHdfXUTx6/LVtrn4tIRiDFqUnYVSzj8\nMzDB36rqRiDUJs2IoAJ4muUCgYAt80KnHcMgv8griPYY+QCvifsNxh/RAtb8UyQc\nALJOpfkjZlOISRQTVfgWbU/9PRe9qmr2Y+71ax4BjLgPoH46EvlQ7CVH1xTPSmqQ\nP55nHIAD/h0J2KW1UpnX92CsJ8bwEJr598gWNzvi5J4yHk4v7t1JUSg6c9s1Cgjl\ncIT22QKBgHayTw+K3CIf8f7j8Bso6JuKhJV4Hz7D5U0HFiKqSl5Hxl+V4LoaYtOR\npdqtQCNnVLrDcXaLNOknjDEvi1qtA5acbyiRS9dyE/Plv4p96rsyQY6PviU6gbKI\ncmWAExNsM5QZHHIToW855bFXm+rCZvCn3oYUA1tyvDQqZbZUX8pQ\n-----END RSA PRIVATE KEY-----\n"
+
+ruby test-curl-maker.rb
+HEADERS: {"Authorization"=>"MWS 993516ea-3dfb-11e1-a84d-70cd60fffe66:lyfN0lxXqFsXjhhclEj158jFG8j+4jtW/DoGfT3j+blax4fLMRahzqVIBQTKjTjl2gUsRozPQGQKr+/fPOF72lXln4xZUXv5zYO/vxWpeQN4iVEgSEvDJqGVLgW8S1LtU1TXWlK18AzQfEdiUnEkE3eHd6P65DzFdC+ngH/RLHR99jzVwXx/A1Hhokd46nGimFAGaYKvD0sPY2rRfVZJz1YmfbWW28Hz+1WWSM/5JzYVhorIta1GsvfRjuWTGugksQlU00UdVyg3gkKf+h96VM/HEAN2qMZQaectNd30h+frABrQBPblhLd063omwZHZ7DcUhpptfZOZJsjJ+8W0hQ==", "x-mws-time"=>"1326992698"}
+nil
+http://localhost:3000
+/api/v2/study_groups.json
+993516ea-3dfb-11e1-a84d-70cd60fffe66
+GET
+curl -v -H 'Authorization: MWS 993516ea-3dfb-11e1-a84d-70cd60fffe66:lyfN0lxXqFsXjhhclEj158jFG8j+4jtW/DoGfT3j+blax4fLMRahzqVIBQTKjTjl2gUsRozPQGQKr+/fPOF72lXln4xZUXv5zYO/vxWpeQN4iVEgSEvDJqGVLgW8S1LtU1TXWlK18AzQfEdiUnEkE3eHd6P65DzFdC+ngH/RLHR99jzVwXx/A1Hhokd46nGimFAGaYKvD0sPY2rRfVZJz1YmfbWW28Hz+1WWSM/5JzYVhorIta1GsvfRjuWTGugksQlU00UdVyg3gkKf+h96VM/HEAN2qMZQaectNd30h+frABrQBPblhLd063omwZHZ7DcUhpptfZOZJsjJ+8W0hQ==' -H 'x-mws-time: 1326992698' http://localhost:3000/api/v2/study_groups.json
+
+
+holy shit it worked
+curl -v -H 'Authorization: MWS 993516ea-3dfb-11e1-a84d-70cd60fffe66:lyfN0lxXqFsXjhhclEj158jFG8j+4jtW/DoGfT3j+blax4fLMRahzqVIBQTKjTjl2gUsRozPQGQKr+/fPOF72lXln4xZUXv5zYO/vxWpeQN4iVEgSEvDJqGVLgW8S1LtU1TXWlK18AzQfEdiUnEkE3eHd6P65DzFdC+ngH/RLHR99jzVwXx/A1Hhokd46nGimFAGaYKvD0sPY2rRfVZJz1YmfbWW28Hz+1WWSM/5JzYVhorIta1GsvfRjuWTGugksQlU00UdVyg3gkKf+h96VM/HEAN2qMZQaectNd30h+frABrQBPblhLd063omwZHZ7DcUhpptfZOZJsjJ+8W0hQ==' -H 'x-mws-time: 1326992698' http://localhost:3000/api/v2/study_groups.json
+* About to connect() to localhost port 3000 (#0)
+*   Trying 127.0.0.1... connected
+* Connected to localhost (127.0.0.1) port 3000 (#0)
+> GET /api/v2/study_groups.json HTTP/1.1
+> User-Agent: curl/7.19.7 (universal-apple-darwin10.0) libcurl/7.19.7 OpenSSL/0.9.8r zlib/1.2.3
+> Host: localhost:3000
+> Accept: */*
+> Authorization: MWS 993516ea-3dfb-11e1-a84d-70cd60fffe66:lyfN0lxXqFsXjhhclEj158jFG8j+4jtW/DoGfT3j+blax4fLMRahzqVIBQTKjTjl2gUsRozPQGQKr+/fPOF72lXln4xZUXv5zYO/vxWpeQN4iVEgSEvDJqGVLgW8S1LtU1TXWlK18AzQfEdiUnEkE3eHd6P65DzFdC+ngH/RLHR99jzVwXx/A1Hhokd46nGimFAGaYKvD0sPY2rRfVZJz1YmfbWW28Hz+1WWSM/5JzYVhorIta1GsvfRjuWTGugksQlU00UdVyg3gkKf+h96VM/HEAN2qMZQaectNd30h+frABrQBPblhLd063omwZHZ7DcUhpptfZOZJsjJ+8W0hQ==
+> x-mws-time: 1326992698
+> 
+< HTTP/1.1 200 OK
+< Connection: close
+< Date: Thu, 19 Jan 2012 17:05:30 GMT
+< request_token: PbKBkytcjAYPSkycorn3Lz%2Bvke0o34ccK%2Fwa64i%2BW9gU31qeEjhDIVCsayu4%0ANQyDO%2FsgSbsVuI4uxcIfCJ2IbHmFrUWG94pm4FFyKFA5j7cKh3npyBnsokg2%0AYGEZM9Zg%2B3Eh6VoYbvuLxn3TV0hfOM5Fp17RBRDYcZcnAViZJXU%3D%0A
+< ETag: "09087c39dee4969c472c3545663ace33"
+< Content-Type: application/json; charset=utf-8
+< X-Runtime: 229
+< Content-Length: 171
+< Set-Cookie: _session_id=bcac22ec7b00e2f8f4b49a4cca10fba2; path=/; HttpOnly
+< Cache-Control: private, max-age=0, must-revalidate
+< 
+* Closing connection #0
+{"study_groups":[{"uuid":"5446b210-a273-11e0-9e1a-12313d21beb5","href":"http://localhost:3000/api/v2/study_groups/5446b210-a273-11e0-9e1a-12313d21beb5","name":"Arsenal"}]} 
+
+works with \n or line return it seems actually
+
+check spec - maybe add to it - and pr at last!
+
+spec spec/lib/api_authentication_v2_spec.rb
+
+test jazzhands
+start it 
+localhost:4000
+/api/v2/study_groups.json
+rspec broken
+
+
+
+put config in yaml file
+reading yaml file in preinitializer - rails 2
+but dont have access to env in preinit
+getting hash in env.rb or yaml config from preinit - and checking with env there
+have to have :tag in tags in yaml file as hash is keyed on symbols not strings! this eluded me!
+
+

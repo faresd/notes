@@ -1,0 +1,8 @@
+put .gitignore in vn/apps!
+
+iir has to sign a request with mauth - weve got mauth signer - make sure on latest
+view show study
+controller query model
+model sign request and send request off to imedidata
+make request just like curlmaker does
+

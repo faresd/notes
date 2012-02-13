@@ -1,0 +1,198 @@
+feature/step_definition/performance_steps.rb - comment out line 56 - take out simulation which hangs
+when reunning all cucumbers
+
+features/support/paths.rb has path mapping from feature text
+
+cucumber -p selenium uses selenium profile for cuc for seeing headless things in browser or something like that
+
+melting pot is the catchall/miscelaneous story
+
+feature/support/base.rb is the base for all scenarios - things to do bef aft all scenarios - where i put writing out to log
+scenario name - where i looked shamus to get ideas about - which is a submodule
+
+rake app:run for running balance
+
+detect returns 1st item in list that meets criteria
+
+new task is to migrate over 3 sceanrios tweek them for migration - resupply alg, dispense, shipme
+resupply checks supplies at sites and if low sends out more
+
+medistrano.imedidata.net - deployment site - need ssh access - john lewis
+
+rake cruise:coverage tests all active features
+
+balanceuser Password3 gets into balance app login password
+
+sometimes get annoying acts_as_auditable Category Not Found for Model: Subject 
+runtime error
+1st time around this was solved by commmenting and uncommenting
+
+
+if you kill a test really early on you can leave the seeding in a messed up state that it cant recover from
+seeding sets up stuff for the test
+get this error:
+Category Not Found for Model: Subject (RuntimeError)
+/Users/magibson/projects/balance/vendor/plugins/acts_as_auditable/lib/acts_as_auditable.rb:54:in `acts_as_auditable'
+RAILS_ENV=test bundle exec rake db:seed
+will kickstart seeding again
+
+
+https://sites.google.com/a/mdsol.com/knowledgebase/home/products/balance/the-balance-team
+
+Commands
+To update all of the code and features on your machine run this command:
+
+rake app:update
+To run the application locally run this command
+
+rake app:run
+
+Type localhost:3000 into your browser and login with the username balanceuser and password Password3
+
+If your system is having trouble or you want to reset your database to the default studies run:
+
+rake app:reset
+
+ok so reset has to have 
+gem "fakeweb"
+in Gemfile (in imedidata section)
+then run bundle install
+then run rake app:reset - 5 minutes!
+and then take out fakeweb
+and then run bundle install
+and it takes 5 minutes to run
+oish!
+
+chris has a better way 
+just make a mysql dump
+mysqldump -u root -A > master-dump.sql
+or > mybranch.sql
+for future
+and then run
+mysql -u root < master-dump.sql
+
+
+heres what a text field looks like
+<Nokogiri::XML::Element:0x85c1d9fc name="input" attributes=[#<Nokogiri::XML::Attr:0x85c15d88 name="type" value="text">, #<Nokogiri::XML::Attr:0x85c15d74 name="value" value="BatchId:XXX">, #<Nokogiri::XML::Attr:0x85c15d60 name="size" value="30">, #<Nokogiri::XML::Attr:0x85c15d38 name="name" value="inventory_batch[customer_id1]">, #<Nokogiri::XML::Attr:0x85c15d10 name="id" value="inventory_batch_customer_id1">]>
+
+
+to manually disable AWS go into config/amazon_s3.yml and do
+  #access_key_id: AKIAJKVKKC54W675KOGA
+  access_key_id: BAD_KEY_ID
+
+
+debugging in dev mode:
+comment out 1st line in b/Procfile
+#balance: bundle exec script/server -p 3000 
+then run with 
+script/server -u -p 3000
+and run the foreman run in a SECOND console 
+- aliased to run which will now not run balance since its commented out 
+but will run everything else
+-u runs it in debugger mode
+could try putting -u in Procfile but then 
+the other processes will spew into your debug session
+
+
+
+12/29
+HOW DOES BALANCE RETRIEVE STUDIES - in comparison with gmc
+ben mentioned "cookie setting to trap multiple synchs"
+in particular when going from imedidata to balance balance has to retrieve latest
+studies in case a new study was added in imedidata
+
+imdeidata balance link:
+http://localhost:3000/?study_id=2&study_uuid=57dbbf8e-0bbd-11e1-a2a7-70cd60fffe66
+ultimately ends up here
+http://localhost:3000/studies/1/randomization_designs/1/edit
+via route below...
+
+root        /              {:controller=>"application", :action=>"login"}
+
+  def login
+    redirect_to studies_path(params.reject{|k,v| !%w(study_id studygroup_id study_group_uuid).include?(k.to_s) })
+
+studies GET    /studies(.:format)             {:controller=>"studies", :action=>"index"}
+
+StudiesController
+  # Get a list of studies bassed on the information stored in iMedidata and render the list page
+  def index
+    if params[:study_id]
+      # When the study id is specified we must force a sync in case a new study was 
+      # created and the user already logged into balance
+      balance_imed_sync(User.current.id)
+      User.current.sync!
+
+      study = Study.find_by_external_id(params[:study_id])
+      if User.current.can_design_study?(study)
+        redirect_to edit_study_randomization_design_path(study, study.study_design)
+      else
+        redirect_to study_sites_path(study)
+      end
+
+    ### no study id - study group@
+    else
+
+      if !params[:page] && !params[:name_substr]
+        balance_imed_sync(User.current.id)
+      end
+
+      User.current.sync!
+      @user_studies = User.current.studies
+
+      # build list of all this user's study groups for filter
+      @study_groups = @user_studies.parent_studies
+
+      # update medidata_study_group_id with either studygroup_id, or study_group_uuid, if either is passed along from imedidata
+      params[:medidata_study_group_id] = if params[:medidata_study_group_id].present?
+        params[:medidata_study_group_id]
+      elsif params[:studygroup_id].present?
+        params[:studygroup_id]
+      elsif params[:study_group_uuid].present?
+        MedidataStudyGroup.find_by_uuid!(params[:study_group_uuid]).id
+      end
+      @studies = form_scope_search(@user_studies, [:name_substr, :live, :medidata_study_group_id]).scoped(
+        :order => "medidata_studies.name ASC"
+      )
+      @pager = Pagem.new(@studies, params)
+      @studies = @pager.paged_scope
+      respond_to do |format|
+        format.html 
+      end
+    end
+  end
+
+
+http://localhost:3000/?study_id=2&study_uuid=57dbbf8e-0bbd-11e1-a2a7-70cd60fffe66
+buit wait this is already just looking for a study
+when are we retrieving all studies??
+when you click on a study group of course....
+http://localhost:3000/?studygroup_id=1&studygroup_uuid=56e1ad82-0bbd-11e1-a2a7-70cd60fffe66
+
+which ends up here
+http://localhost:3000/studies?studygroup_id=1
+showing a list of studies
+
+to app controller
+to studies index action
+above
+
+
+hmmm what does this do?
+it seems if more than 1 request in 10 seconds are ignored -
+only do 1 request every 10 seconds - 10 default
+this is what ben is talking about cookie/session trapping multiple syncs
+  # Synchronize imedidata and balance data (studies, roles, etc).  Time since
+  # last sync must be more than delta seconds.
+  def balance_imed_sync(user_id, delta=10)
+    now = Time.now
+    session[:balance_imed_sync_time] ||= now
+
+    if session[:balance_imed_sync_time] + delta <= now
+      User.find_remote(user_id).make_current!
+      session[:balance_imed_sync_time] = Time.now
+    end
+
+    I18n.locale = User.current.locale || "eng"
+    get_current_nav
+  end

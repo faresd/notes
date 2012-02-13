@@ -1,0 +1,2900 @@
+first thing is to set up imedidata to run locally
+particularly the branch that has mauth - for now thats my fork
+
+so its a submodule - so need to understand how to set up a submodule in rails/git
+is it a git thing - i think its a git thing not a rails thing - well that shows my ignorance
+
+#1) get access to iir repo - isaac
+#2) git clone it? its empty?
+#2.1 - make develop branch - push to origin
+#2.2 - make init-rails branch???
+#3) do rails init! setup all the dirs
+#3.1 - pr for rails init??
+#4) git submodule add imedidata
+#4.1) make new branch
+#5) make gemset for imedidata!
+#6) get foreman gem for iir
+#7) get subcontractor gem
+#8) make procfile with both iir & imedidata - copy balance 
+#   - check out rails3upgrade branch with yis subcontractor gemset stuff
+#9) test running it
+# 9B ) engineering page with install instructions - iir foreman subcontractor - 1st cut
+# 10) put in mauth signer - in gemfile
+# 11) make public private key pair
+12) install keys with matts commands
+13) make a controller & view & model? to query imedidata for study and just show study
+
+#1] 
+or #2]
+https://github.com/mdsol/iir
+its empty
+has directions
+add README - do we do readmes?
+README.md apparently which just has a link to knowledge base
+gmc: README.md:
+[[https://sites.google.com/a/mdsol.com/knowledgebase/home/products/grants-manager-contracting]]
+dont know what dounle brackets are about or .md for that matter
+.md is Markdown - simplified html apparently...
+http://en.wikipedia.org/wiki/Markdown
+
+mkdir iir
+  cd iir
+  git init
+  touch README.md
+  git add README.md
+  git commit -m 'first commit'
+  git remote add origin git@github.com:mdsol/iir.git
+  git push -u origin master
+
+#3) - do rails init
+well need all the rails gems and all
+need to read up on this
+
+rvm?
+http://guides.rubyonrails.org/getting_started.html
+section 3.2
+rails new iir?
+rails new -h
+/System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/lib/ruby/1.8/rubygems.rb:827:in `report_activate_error': Could not find RubyGem rails (>= 0) (Gem::LoadError)
+	from /System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/lib/ruby/1.8/rubygems.rb:261:in `activate'
+	from /System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/lib/ruby/1.8/rubygems.rb:68:in `gem'
+	from /usr/bin/rails:18
+
+gem install rails??
+rvm gemset create iir
+rvm gemset list
+rvm gemset use iir
+rvm use 1.8.7-p352@iir - NO
+NO - use 1.9.2!
+rvm use 1.9.2-p290@iir
+
+p290?
+1.9.2-p290 it is - only version cloud team supports - dont suppot 1.9.3 that is
+.rvm.rc
+its tempting to change ~/i to iir from imedidata
+
+gem install rails -v version#??
+3.1.3 for rails - NOT 3.2
+gem install rails -v 3.1.3
+
+cd ~/projects
+rails new iir
+
+edit gemfile
+README.md 
+take out README default
+(gem install bundler?)
+bundle install
+
+dev - co dev
+pdev - pull dev
+gb feature/imed-submod
+co feature/imed-submod
+
+
+
+IMEDIDATA SUBMODULE 
+
+
+imedidata submodule - master? develop? oh actually the branch with mauth
+alias add-locale-update="cd ~/i/config/locales; git fetch; git checkout origin/HEAD; cd ../..; git add config/locales"
+read up on submods
+http://book.git-scm.com/5_submodules.html
+http://progit.org/book/ch6-6.html
+
+mkdir vendor/apps
+git add dir???
+
+cd vendor/apps
+git submodule add ????imed-branch?? imedidata
+git@github.com:mdsol/imedidata.git
+but how do i specify develop branch
+
+
+(for folks cloning iir will need to do git submodule init and git submodule update)
+
+to a particular branch:
+http://twoguysarguing.wordpress.com/2010/11/14/tie-git-submodules-to-a-particular-commit-or-branch/
+
+git submodule add git://github.com/asynchrony/qunit.git qunit
+
+
+cd vendor/apps/imedidata
+change directory to the submodule folder and switch branches just like you would in a normal repo.
+
+git checkout -b dev_branch origin/dev_branch
+Now the submodule is fixed on the development branch instead of HEAD of master. 
+Commiting these changes will persist the new submodule tracking your desired branch.
+
+ok not the develop branch - as its been reverted cos rspec fails - woops - but can work off my feature branch
+The next time you (or someone else) clones this repo, they will need to do one of two things.
+
+A) Add the –recursive flag to their git clone command
+
+git clone REPO_URL --recursive
+B) manually initialize and the submodules after the clone
+
+git clone REPO_URL
+git submodule update --init --recursive
+
+not sure what the recrusive thing is all about - because its not master? article doesnt say
+
+recrusive gets nested submodules - but is the above a nested submodule? well whatever
+If you git clone with --recursive, you can get all the git submodules too.
+
+mkdir vendor/apps
+##cd vendor/apps/imedidata
+##cd vendor/apps  i think
+##git submodule add git@github.com:mdsol/imedidata.git 
+You need to run this command from the toplevel of the working tree.
+woops
+
+cd ~/iir
+##git submodule add git@github.com:mdsol/imedidata.git vendor/apps
+'vendor/apps' already exists and is not a valid git repo
+rmdir vendor/apps
+ah - you dont create apps
+wrong again
+
+git submodule add git@github.com:mdsol/imedidata.git vendor/apps/imedidata
+need to rm wrong submodule
+To remove a submodule you need to:
+
+Delete the relevant line from the .gitmodules file.
+Delete the relevant section from .git/config. -- not in there
+Run git rm --cached path_to_submodule (no trailing slash).
+Commit and delete the now untracked submodule files.
+
+*** this is the one:
+git submodule add git@github.com:mdsol/imedidata.git vendor/apps/imedidata
+
+git checkout -b dev_branch origin/dev_branch
+
+git checkout -b 
+git checkout -b BRANCH_NAME creates a new branch and goes to new branch but git branch BRANCH_NAME creates a new branch and holds you still on the same branch.
+man that was hard to find
+so 
+git checkout -b name  origin/or-branch
+is shorthand for
+git branch b-name
+git checkout b-name?
+??
+
+cd vendor/apps/imedidata
+git checkout -b feature/mauth origin/feature/mauth 
+??
+fatal: git checkout: updating paths is incompatible with switching branches.
+Did you intend to checkout 'origin/feature/mauth' which can not be resolved as commit?
+
+woops - i think i need to commit and push first
+
+git commit -m "adding imedidata submodule"
+feature/imed-submod 20134bd] adding imedidata submodule
+ 2 files changed, 4 insertions(+), 0 deletions(-)
+ create mode 100644 .gitmodules
+ create mode 160000 vendor/apps/imedidata
+
+pb
+
+cd vendor/apps/imedidata
+git checkout -b feature/mauth origin/feature/mauth 
+fatal: git checkout: updating paths is incompatible with switching branches.
+Did you intend to checkout 'origin/feature/mauth' which can not be resolved as commit?
+
+git checkout feature/mauth
+error: pathspec 'feature/mauth' did not match any file(s) known to git.
+
+git branch -a  all branches remote & local
+git branch -r  remote branches
+git branch     local
+
+feature/mauth was blown away
+
+git checkout feature/support_mauth
+Branch feature/support_mauth set up to track remote branch feature/support_mauth from origin.
+Switched to a new branch 'feature/support_mauth'
+that seemed to work
+commit and push at root?
+
+
+make gemset for imedidata!
+cd vendor/apps/imedidata  ??
+rvm list
+rvm gemset list
+rvm gemset create imedidata
+p249 is the sanctioned cloud ruby for imedidata
+rvm use 1.8.7-p249@imedidata
+
+yi says to do a rvm gemset empty to clear out the gemset
+so i think 1.8.7-p249@imedidata already exists on my system for imed which is fine
+but good to clear it out and redo
+as bundle install will leave old crap lying around apparently
+according to yi bundle update goes solely off gemfile lock file
+so you can muck with lock file and try things out without mucking with gemfile
+
+how do i list gems i n gemset
+rvm help gemset
+rvm gemset list
+
+gem list
+
+rvm gemset empty
+bundle install
+-bash: bundle: command not found
+
+need to install bundle
+
+gem install bundler
+
+bundle install
+#5 make gemset for imedidata is donw
+onto #6
+6) get foreman gem for iir
+http://rubygems.org/gems/foreman
+gem install foreman
+
+
+cd ~/iir
+actually this is not what we want
+gem install foreman
+this installs into the gemset - however its not in the gemfile
+so  someone else who does bundle install will not get foreman
+need to add to gemfile:
+gem "foreman", "~> 0.36.1"
+and then do bundle install
+woops forgor to switch back to iir gemset and ruby
+got error on bundle install
+Gem::InstallError: linecache19 requires Ruby version >= 1.9.2.
+adding .rvmrc
+
+doing clean and redo with bad bundle install with wrong ruby version - why not
+
+ok foreman is in
+time for subcontractor
+they should go in group :development
+group :development do
+  gem "foreman", "~> 0.36.1"
+  gem "subcontractor", "~> 0.3.1"
+end
+#7 is done
+#8 
+8) make procfile with both iir & imedidata - copy balance 
+   - check out rails3upgrade branch with yis subcontractor gemset stuff
+
+#balance: bundle exec rails server -p 3000 
+imedidata: cd vendor/apps/imedidata; subcontract --rvm ruby-1.8.7-p174@oldgems -- bundle exec script/server -p 3001 
+cas: cd vendor/apps/castronaut/; RACK_ENV=balance_development subcontract --rvm ruby-1.8.7-p174@casgems -- bundle exec bin/castronaut 
+delayed_job: script/delayed_job run
+redis: redis-server 
+
+rails server -p 3000 
+will start up iir rails - unclear if bundle exec is needed - not needed for me leave out for now
+
+how do i run foreman?
+foreman start i think???
+
+imedidata not ready to run yet - need to do db stuff and all
+wont we need cas?? or just using as service so dont need to
+
+but also my proc file aint working
+the cd aint working
+got cd working - needed space
+
+imedidata has to go through full setup - db file and all
+
+yales set up doc
+https://docs.google.com/a/mdsol.com/document/d/1lU2AdayPO4MKxUauc7dNnBGioIQSAZqr0GbcGM5AG4Q/edit?pli=1
+
+do we need to int imedidatas submodules?
+
+git submodule init; git submodule update
+or 
+git submodule update --recursive
+or 
+git submodule update --init --recursive
+Download the database.yml file and move it to config/database.yml.
+
+% mv ~/Downloads/database.yml config/database.yml
+ill grab db file from my other imedidata
+cp ~/i/config/database.yml config
+
+mysql -u root
+> create database imedidata_development;
+> create database imedidata_test;
+> exit
+already have the above db i believe
+
+and have this i think
+import the database file provided by Madalina:
+
+% mysql -u root imedidata_development < imedidata-backup.sql
+
+Finally, prepare the database with rake:
+
+% bundle exec rake db:migrate
+% bundle exec rake db:test:prepare
+
+do we need cas? maybe not yet?
+
+ok we got foreman issues
+we can go back to old version of foreman and prob should
+but before we do letsw try a few things
+look around more for docs
+the cd doesnt seem to work - but it does
+put debugger deep in the gem ???
+try running from iir root - with full path - imed that is
+maybe make a 1.9.2 imed gemset? or actually that prob wont work since imed is 1.8.7 ??
+
+
+this will run
+vendor/apps/imedidata/script/server -p 3001
+foreman check validates a foreman file
+
+and it will run if in 1.8.7@im
+
+now lets try with subcontractor
+we are still in 0.3 foreman
+
+so imedidata localhost:3001 isnt working 
+and thats probably because their is no cas
+
+this seems to work!
+imedidata: subcontract --rvm ruby-1.8.7-p249@imedidata -- vendor/apps/imedidata/script/server -p 3001
+
+ben says we need bundle exec ?? but do we? i think thats if you havent cleaned out your gemfile?
+
+check this out! 
+http://rubydoc.info/gems/subcontractor/0.3.1/frames
+rails: rails s
+another_app: subcontract --rvm ruby-1.8.7-p249@another_app --chdir ../another_app --signal INT -- rails s -p 3001
+
+notice the --chdir!
+subcontract --help
+USAGE: subcontract [options] -- executable
+    -r, --rvm RVM                    run in a specific RVM
+    -d, --chdir PATH                 chdir to PATH before starting process
+    -s, --signal SIGNAL              signal to send to process to kill it, default TERM
+
+
+not dying nicely with ctrl C
+leaves stray process
+psr
+131:magibson  4318   0.0  0.0  2425716    276 s009  R+   11:51AM   0:00.00 grep -n ruby
+134:magibson  4206   0.0  1.8  2585704 155156 s011  S+   11:50AM   0:06.15 ruby /Users/magibson/projects/iir/vendor/apps/imedidata/script/server -p 3001
+135:magibson  4154   0.0  0.0  2435544   1804 s011  Ss+  11:50AM   0:00.06 bash /Users/magibson/.rvm/bin/rvm ruby-1.8.7-p249@imedidata exec script/server -p 3001
+-s, --signal SIGNAL              signal to send to process to kill it, default TERM
+--signal INT
+
+with INT or TERM still not dying 
+ugh! is there any other signals?
+try bundle exec
+and try old foreman
+maybe new foreman doesnt play well with subcontractor - subcon not up to date?
+
+http://book.chinaunix.net/special/ebook/oreilly/Learning_bash_Shell/0596009658/bash3-CHP-8-SECT-3.html
+there also seems to be QUIT and KILL
+INT is ctrlC, TERM is same as KILL
+
+emailed subcontractor dude:
+tony.pitluga@gmail.com
+
+Hi Tony,
+First of all thanks for subcontractor - very handy tool.
+I am trying to use subcontractor with ruby 1.9 and on doing a ctrl-C got:
+
+
+/Users/magibson/.rvm/gems/ruby-1.9.2-p290@iir/gems/subcontractor-0.3.1/lib/subcontractor/cli.rb:37:in
+`find_child_pids': undefined method `map' for
+#<String:0x0000010204ebf8> (NoMethodError)
+
+and in 1.9 the map function was removed from String. And i saw your
+comment on github:
+
+
+This was definitely a bug. It looks like slanger was spawning three
+levels of processes. Subcontractor would not find the 3rd child and
+that was the one that was not getting killed. I've updated the code to
+recursively search for children until no more are found, so it should
+be much more reliable. This fix is in version 0.3.1.
+
+Is 0.3.1 stable? has it been tested with ruby 1.9? It seems 0.3 is the
+release that is advertised on your site.
+thanks for your help!
+
+
+well lets try getting the latest code i guess
+
+why not fork it - what the heck - in case need to make changes
+
+forked it on github
+git@github.com:magibson/subcontractor.git
+cd ~/projects
+git clone git@github.com:magibson/subcontractor.git
+
+~/projects/subcontractor (master) $ m .rvmrc
+rvm ruby-1.8.7-p249@subcontractor
+!!
+clearly hes not using 1.9!! prob not tested on 1.9!
+
+crazy idea - have foreman/subcontractor run in 1.8 but subcontract iir to run in 1.9 ?? 
+and imed in 1.8 of course
+
+the source for subcontractor is tiny! this will be easy!
+
+how do i point to src - thats in rack mauth notes
+
+ # gem "rack-mauth", :path => "~/projects/rack-mauth"
+gem "subcontractor", :path => "~/projects/subcontractor"
+
+
+dam cant get it to work pointing to src
+
+build a gem?
+http://matschaffer.com/2010/12/your-own-gem/
+gem build my_awesome_gem.gemspec
+
+
+http://stackoverflow.com/questions/4271947/how-to-use-bundler-with-offline-gem-file
+I'm using Rails 3.0.3, new to Rails 3 and bundler.
+
+I got this same error with:
+
+gem 'mygem', :path => '/path/to/gem'
+Resolved by specifying the version number:
+
+gem 'mygem', '0.0.1', :path => '/path/to/gem'
+
+Copy the gem in to vendor/cache directory in your application's root folder.
+bundle install --local
+This will install the local gem.
+
+ah ethan help
+need to do 
+bundle exec foreman start
+but now get this error
+
+bundle exec foreman start
+15:54:15 imedidata.1  | started with pid 7962
+15:54:17 imedidata.1  | Could not find linecache19-0.5.12 in any of the sources
+15:54:17 imedidata.1  | Run `bundle install` to install missing gems.
+15:54:17 imedidata.1  | process terminated
+
+but i think bundle exec is blowing away subcontractor - oish
+imedidata: subcontract --rvm ruby-1.8.7-p249@imedidata --chdir vendor/apps/imedidata -- script/server -p 3001
+
+linecache19 is in iir but not in imedidata
+imedidata has just linecache (0.46)
+
+lets try doing a local install of the gem
+we could also do submodule?
+
+gem build subcontractor.gemspec
+mkdir ~/iir/vendor/cache
+cp subcontractor-0.3.0.gem ~/iir/vendor/cache/
+cd ~/iir
+bundle install --local
+
+change gemfile:
+ gem "subcontractor"
+
+wow that worked
+
+cli.rb line 37 put in split after line
+      child_pids = lines.split.map(&:split).select do |(child_pid, parent_pid)|
+
+cant get it to use new gem locally
+i think you have to clear out gemset? - delete subcontractor by hand?
+comment out subcontractor from gemfile
+bundle install
+then copy subcontractor into vendor/cache
+uncomment out subcontracotr from gemfile
+then do bundle install --local
+
+config/application.rb can put in your own requires - thats where the bundler stuff gets required
+
+friday 1/27/12
+
+ok so where are we at 
+unfortunately no email from tony
+worse comes to worse we put in our own gem
+
+oh need to move changes to my fork for safe keeping - will get wiped out on bundle install where it is now
+i put changes straight in 
+
+ ~/.rvm/gems/ruby-1.9.2-p290@iir/gems/subcontractor-0.3.1/lib/subcontractor/cli.rb
+change is
+      child_pids = lines.split("\n").collect{|x| x.split("\s")}.select do |(child_pid, parent_pid)|
+line 38
+
+putting in fork cli 
+
+also i think the source gemming could work if i didnt use name subcontractor as thats an official gem
+called it subcontractor19 and probably take out gemspec as well
+as i think it was getting confused with actual gem repo with naming and all
+this is wrong fix
+      child_pids = lines.split.map(&:split).select do |(child_pid, parent_pid)|
+
+crucial bug was did '\n' which is not at all "\n" - look out for that!
+
+where we at
+so actually we did #8 and #9
+i think we are ready for a pr
+and then on to 10 mauth signer
+dont think i need to do cas right now but it does mean cant test it out on web yet just via api - curl jazzhands poster
+lets clean up and make a pr
+lets do a stash and put in new branch - feature/foreman-subcontract-setup
+
+oh havent tried bundle exec yet in subcon
+and havent tried with iir
+
+bundle exec works in subcon - phew
+iir & imed both work - phew
+things that didnt work - 
+cd command is NOT the way to go with subcon - need to use chdir!!
+signal not necasary
+bundle exec not needed for me but may be needed for others
+#imedidata: cd vendor/apps/imedidata ; subcontract --rvm ruby-1.8.7-p249@imedidata -- bundle exec script/server -p 3001
+# imedidata: cd vendor/apps/imedidata; bundle exec script/server -p 3001
+#imedidata: cd vendor/apps/imedidata ; bundle exec script/server -p 3001
+# imedidata:  bundle exec vendor/apps/imedidata/script/server -p 3001
+# imedidata:  vendor/apps/imedidata/script/server -p 3001
+#imedidata:  vendor/apps/imedidata/script/server -p 3001
+#im: script/server -p 3001
+#imedidata: subcontract --rvm ruby-1.8.7-p249@imedidata -- vendor/apps/imedidata/script/server -p 3001
+#imedidata: subcontract --rvm ruby-1.8.7-p249@imedidata -- bundle exec vendor/apps/imedidata/script/server -p 3001
+#imedidata: subcontract --rvm ruby-1.8.7-p249@imedidata --chdir vendor/apps/imedidata --signal QUIT -- script/server -p 3001
+#imedidata: subcontract --rvm ruby-1.8.7-p249@imedidata --chdir vendor/apps/imedidata -- script/server -p 3001
+
+cleaned up Procfile:
+iir: rails server -p 3000
+imedidata: subcontract --rvm ruby-1.8.7-p249@imedidata --chdir vendor/apps/imedidata -- bundle exec script/server -p 3001
+
+4 subcontractor entries to choose from
+  # gem "subcontractor", "~> 0.3.1"
+  # gem "subcontractor", :path => "~/projects/subcontractor"
+  #gem "subcontractor", '0.3.0', :path => "~/projects/subcontractor"
+  gem "subcontractor"
+
+
+why does vendor apps imedidata now say -dirty?? at end of subproject commit 204920394820394802938-dirty
+  
+  
+gem install subcontractor --system
+so system by default is 1.8.7
+so then will be installed as 1.8.7
+and will run from command line as 1.8.7
+and thus wont need changes
+this is a crazy theory of ugandhars
+same with foreman - maybe
+
+but heres what needs to happen
+ideally tony will change the gem
+if not i can temproraly set the gem up in github magibson
+and if need be we can set up a mdsol subcontractor repo with isaac and get the gem there
+
+alternatively we can do ugandhars solution where one installs gem not from gemfile but on command line
+and then it should run as 1.8 - and prob foreman that way too
+
+the advantadge of the other way is that now the developer doesnt have to separately install foreman and subcontractor
+but gets it from the gemfile install
+
+but for now since im the only 1 using iir then i can just keep it working proper locally until
+theres a 2nd iir developer popping in - by that time tony hopefully will have made change
+
+well see what ben says on commit
+
+stash wont grab an unadded file
+i think i need to add it and then stash it then make branch
+
+the -dirty flag means ive made changes - which i did - to imedidata
+i put a test procfile in which ill delete
+m Procfile 
+imtest: cd . ; bundle exec script/server -p 3001
+
+and .rvmrc which i guess i could delete too? or could keep and just dont commit the -dirty
+
+m .rvmrc 
+rvm use ruby-1.8.7-p249@imedidata
+
+double clicking a black no git file in gitx will do an add which should be grabbed by stash i think
+
+cool gonna do pr to tony once he has a feature branch in place
+
+ok did pr for foreman stuff
+on to #10 - mauth signer
+just need to gem install mauth signer - lets look at what we did in imedidata
+
+  gem 'mauth_signer', :git => 'git@github.com:mdsol/mauth_signer.git', :tag => "v0.6.3"
+check that this is latest with matt i suppose
+on https://sites.google.com/a/mdsol.com/knowledgebase/home/departments/engineering/on-demand-portfolio/services/core-services/mauth/rack-mauth 
+its updated
+gem 'rack-mauth', :git => "git@github.com:mdsol/rack-mauth.git", :tag => "v1.0.1", :require => 'rack/mauth'
+gem 'mauth_signer', :git => 'git@github.com:mdsol/mauth_signer.git', :tag => 'v1.0.1'
+
+from ben 
+Foreman needs to be part of the system gem set.  If you bundle exec foreman start it will load the current projects gemset and muck with the other apps that start up.
+
+dam - who knew - well im learning and i learned a lot in the process
+
+taking out of gemfile!
+group :development do
+  # gem "foreman", "~> 0.27" # foreman 0.36 working ok, no need at this point to do 0.27
+  # Procfile should use subcon --chdir NOT cd command
+  gem "foreman", "~> 0.36"
+  gem "subcontractor", "~> 0.3.1"
+end
+
+do bundle wipeout and test
+
+set up engineering page with setup instructions
+
+gem uninstall foreman
+gem uninstall subcontractor
+
+gem install foreman --system 
+gem install subcontractor --system
+that doesnt work
+how does balance do this - course balance is 1.8
+
+rvm default?
+goes to ruby-1.8.7-p352
+
+bundle exec foreman start 
+
+
+rvm use system
+
+WARNING:  Installing to ~/.gem since /Library/Ruby/Gems/1.8 and
+	  /usr/bin aren't both writable.
+WARNING:  You don't have /Users/magibson/.gem/ruby/1.8/bin in your PATH,
+	  gem executables will not run.
+ERROR:  Error installing foreman:
+	thor requires RubyGems version >= 1.3.6
+
+# installing stuff into system land
+rvm use system
+# update to latest rubygems
+sudo gem update --system
+# install foramen into system with latest rubygems doing the install!
+sudo gem install foreman
+sudo gem install subcontractor
+
+
+monday 1/30/11
+ok where are we at
+so after much discussion with ugandhar ben yi & geoffrey going to actually stick with putting
+foreman and sunctonractor in gemset
+which is how the last commit had it
+i think just need to update to latest version of subcontractor - which is my change! for 1.9
+and thats about it - should it auto update to newer versions? funny symbol in gemfile?
+
+potential rake tasks??
+1) run - foreman start ?
+2) clean gemset - "rvm gemset empty; gem install bundler; bundle install"
+3) run debug - just run iir in debug mode - not with foreman - no need to use foreman
+3b) run supprting debug tasks - run foreman with all but iir - make special foreman file for this
+  -- currently just imedidata - eventually also cas and others
+
+need to learn rake
+from top of ~/iir/Rakefile
+# Add your own tasks in files placed in lib/tasks ending in .rake,
+# for example lib/tasks/capistrano.rake, and they will automatically be available to Rake.
+
+nothing currently in iir/lib/tasks
+rake tasks are written in ruby - how nice!
+
+oh 9B - install instrcuctions on new engineer page
+
+ Benjamin:  correct, don't put it in the Gemfile and document foreman and subcontractor as required system gems on medinet
+in addition to bundler
+ me:  right should i start a new iir tech page?
+or add to an existing page on medinet?
+ Sent at 1:15 PM on Friday
+ Benjamin:  The current page is kind of product oriented, I would make an engineering type page with setup info etc.
+Same spots as iMedidata and Balance
+under PaaS teams
+
+tues 1/31
+
+install instructions are in - 1st cut - and 2nd cut
+will need additional iterations as someone tries it with nothing previously installed
+
+10) put in mauth signer
+seems to me thats just grabbing it - putting in gemfile - trivial right
+13 will need some expanding
+start a new branch i think
+ 
+gem 'mauth_signer', :git => 'git@github.com:mdsol/mauth_signer.git', :tag => 'v1.0.0'
+
+i think this can be
+
+gem 'mauth_signer', :git => 'git@github.com:mdsol/mauth_signer.git', '>=v1.0.0'
+i think tag is optional and i think the version can take >= and ~>
+put in gemfile
+
+dont forget to pull latest into develop!
+
+dev
+pdev
+git checkout feature/mauth-signer
+ git merge develop
+
+gem 'mauth_signer', :git => 'git@github.com:mdsol/mauth_signer.git', '>=v1.0.0'
+bundle install
+has to have :tag - unclear what michael showed me
+gem 'mauth_signer', :git => 'git@github.com:mdsol/mauth_signer.git', :tag => '>=v1.0.0'
+
+ok thats trivial of course
+
+on to 11
+11) make public private key pair
+can just use the ones i already have
+actually i already have that token on server so maybe make a new pair so dont get muddled? may not actually matter?
+
+
+12) install keys with matts commands
+To remove old SecurityTokens, do the following in a rails console in the environment (e.g. development, sandbox) in which you are testing:
+
+SecurityToken.find_by_app_uuid!("your app_uuid here").destroy!
+
+i need an app uuid
+i think i can make it up anyway i want 
+jazzhands had some formal process but i dont think thats needed here for now
+so just "iir-dev-test-app-uuid" will do
+oh wait does imedidata need to know my app uuid - i dont think so 
+i think that would just be for old system
+
+ok 1st need to go into imedidata local and create an app as admin 
+oh for that i would need to be able to go to webpage
+
+once create app then query for app_uuid
+App.last or something
+
+imedidata new setup page:
+https://sites.google.com/a/mdsol.com/knowledgebase/home/departments/engineering/on-demand-portfolio/paas-high-performance-teams/imedidata-engineering/imedidata-install-setup
+
+time to install authmedidata!
+
+Part 3: Install authmedidata
+
+In a new shell, follow the rvm instructions from before, using ruby 1.9.2-p290 with authmedidata (for example) as the gemset name. Remember to gem update --system and checkout the gemset before the next step.
+
+Now clone the authmedidata repository, install the gems and run the server:
+
+% git clone git@github.com:mdsol/authmedidata.git
+% bundle install
+% rails server
+
+Your environment should be fully configured at this point. Navigate to http://localhost:3000 to view the running iMedidata app.
+
+cd vendor/apps
+how do i make a new submodule i forgot again
+git submodule add git@github.com:mdsol/imedidata.git vendor/apps/imedidata ->
+git submodule add git@github.com:mdsol/authmedidata.git vendor/apps/authmedidata
+
+this does git add for you - just need to do git commit & push
+
+make gemset for mauth!
+cd vendor/apps/imedidata  ??
+rvm list
+rvm gemset list
+rvm gemset create imedidata
+p249 is the sanctioned cloud ruby for imedidata
+rvm use 1.8.7-p249@imedidata
+
+pd vendor/apps/authmedidata
+rvm use ruby-1.9.2-p290
+rvm gemset create authmedidata
+rvm use ruby-1.9.2-p290@authmedidata
+# clean it out why not
+rvm gemset empty
+gem install bundler
+bundle install
+
+add to foreman and try running - dont need to set up db???
+rails server runs it
+
+rails server
+=> Booting WEBrick
+=> Rails 3.1.0 application starting in development on http://0.0.0.0:4567
+=> Call with -d to detach
+=> Ctrl-C to shutdown server
+[2012-01-31 14:08:16] INFO  WEBrick 1.3.1
+[2012-01-31 14:08:16] INFO  ruby 1.9.2 (2011-07-09) [x86_64-darwin10.8.0]
+[2012-01-31 14:08:16] INFO  WEBrick::HTTPServer#start: pid=60059 port=4567
+
+seems to work on port 4567
+
+ok lets try from foreman
+authmedidata: subcontract --rvm ruby-1.9.2-p290@authmedidata --chdir vendor/apps/authmedidata -- rails server
+
+cd iir
+have to be in iir gemset!
+iir
+cur
+fs
+
+well holy crap it worked
+localhost 3000 just shows a generic rails page
+hmmm - need to get to imedidata
+should look at what balance does i guess
+probably routes.rb
+
+we need to get into imedidata to and create an app
+
+http://localhost:4567/
+doesnt work
+i think this is because db hasnt been setup in authmedidata yet
+ActiveRecord::ConnectionNotEstablished
+
+the imedidata nor balance show a database file that needs copying oddly but im quite sure there is
+lets look at balance
+balance is out of date - its doing castronaut not authmedi - and maybe castro doesnt require
+a db?
+
+cp ~/projects/authmedidata/config/database.yml ~/iir/config/authmedidata_database.yml
+git add
+add to docs!
+cp config/authmedidata_database.yml vendor/apps/authmedidata/config/database.yml
+
+uh oh - authmedidata didnt seem to die from foreman??
+ugandhar may be right? but wait then subcontract wouldnt even be recognized
+wouldnt even launch
+
+dam still getting connection not established even with db yaml in place
+
+not dying for kill - and it spews a lot on kill with active record connection not established
+i think i have to do some rake db stuff
+
+i might need to do this - why isnt this in gemfile?
+env ARCHFLAGS="-arch x86_64" gem install mysql -- --with-mysql-dir=/usr/local --with-mysql-config=/usr/local/mysql/bin/mysql_config
+
+do for both imedi and auth ?
+
+did it for imedi - still doesnt work
+gonna do for auth now
+
+still not working
+auth ->
+mv config database.yml.example to database.yml
+rake db:create
+rake db:migrate
+!!! from chad - not on imedidata webpage - not on balance webpage
+does balance do seomthing fancy with imedidata db??
+rake db:create
+WARNING: 'require 'rake/rdoctask'' is deprecated.  Please use 'require 'rdoc/task' (in RDoc 2.4.2+)' instead.
+    at /Users/magibson/.rvm/gems/ruby-1.8.7-p249@imedidata/gems/rake-0.9.2.2/lib/rake/rdoctask.rb
+WARNING: Global access to Rake DSL methods is deprecated.  Please include
+    ...  Rake::DSL into classes and modules which use the Rake DSL methods.
+WARNING: DSL method Cucumber::Rake::Task#desc called at /Users/magibson/.rvm/gems/ruby-1.8.7-p249@imedidata/gems/cucumber-0.8.5/lib/cucumber/rake/task.rb:140:in `define_task'
+WARNING: DSL method Cucumber::Rake::Task#task called at /Users/magibson/.rvm/gems/ruby-1.8.7-p249@imedidata/gems/cucumber-0.8.5/lib/cucumber/rake/task.rb:141:in `define_task'
+imedidata_development already exists
+
+bundle exec?
+already exists - were ok
+put in docs
+
+rake db:migrate
+
+woops i never put database file - i messed up the copy
+cp config/authmedidata_database.yml config/database.yml
+
+ok now its working
+well 4567 is directing to 3000 at least
+not dying well - argh! may have to go into subcontract??
+
+1 - dam we have to figure out why authmedidata wont get killed
+2 - need to bring up imedidata login page
+
+1 is important - we cant forget 
+but lets do 2 and revisit 1
+1 i suspect is a subcontract bug that prob not too hard to fix ??
+
+balance rt (rake routes)
+ root      /    {:controller=>"application", :action=>"login"}
+
+routes.rb
+  #Default
+  map.root :controller => 'application', :action => 'login'
+thats old rails 2
+
+heres docs on rails 3 routes:
+
+3.14 Using root
+You can specify what Rails should route "/" to with the root method:
+
+root :to => 'pages#main'
+You should put the root route at the top of the file, because it is the most popular route and should be matched first. You also need to delete the public/index.html file for the root route to take effect.
+
+  in routes.rb itself
+  # You can have the root of your site routed with "root"
+  # just remember to delete public/index.html.
+  #  root :to => 'welcome#index'
+
+  # The priority is based upon order of creation:
+  # first created -> highest priority.
+
+  # You can have the root of your site routed with "root"
+  # just remember to delete public/index.html.
+  root :to => 'welcome#index'
+
+from routes.rb that will prob be deleted
+  # Sample of regular route:
+  #   match 'products/:id' => 'catalog#view'
+  # Keep in mind you can assign values other than :controller and :action
+
+  # Sample of named route:
+  #   match 'products/:id/purchase' => 'catalog#purchase', :as => :purchase
+  # This route can be invoked with purchase_url(:id => product.id)
+
+  # Sample resource route (maps HTTP verbs to controller actions automatically):
+  #   resources :products
+
+  # Sample resource route with options:
+  #   resources :products do
+  #     member do
+  #       get 'short'
+  #       post 'toggle'
+  #     end
+  #
+  #     collection do
+  #       get 'sold'
+  #     end
+  #   end
+
+  # Sample resource route with sub-resources:
+  #   resources :products do
+  #     resources :comments, :sales
+  #     resource :seller
+  #   end
+
+  # Sample resource route with more complex sub-resources
+  #   resources :products do
+  #     resources :comments
+  #     resources :sales do
+  #       get 'recent', :on => :collection
+  #     end
+  #   end
+
+  # Sample resource route within a namespace:
+  #   namespace :admin do
+  #     # Directs /admin/products/* to Admin::ProductsController
+  #     # (app/controllers/admin/products_controller.rb)
+  #     resources :products
+  #   end
+
+
+  # See how all your routes lay out with "rake routes"
+
+  # This is a legacy wild controller route that's not recommended for RESTful applications.
+  # Note: This route will make all actions in every controller accessible via GET requests.
+  # match ':controller(/:action(/:id(.:format)))'
+
+  # You can have the root of your site routed with "root"
+  # just remember to delete public/index.html.
+  root :to => 'welcome#index'
+
+but there is no public/index.html??? at least not in app???
+oh i see its litereally in iir/public/inedix.html
+
+mv public/index.html ~/fiddle/iir/
+need to remove from git too
+
+balance application_controller.login
+  # Action to log the user in
+  def login
+    redirect_to studies_path(params.reject{|k,v| !%w(study_id studygroup_id study_group_uuid).include?(k.to_s) })
+  end
+# Filters added to this controller apply to all controllers in the application.
+# Likewise, all the methods added will be available for all controllers.
+class ApplicationController < ActionController::Base
+  before_filter :auto_session_timeout, :except => :logout
+  before_filter :set_session_user_id, :except => :logout
+  before_filter :check_balance_imed_sync_required, :except => :logout
+
+hmmm - redirecting to studies path
+
+gmc has some gmc library plugin submodule in vendor/plugins
+
+put tasks on rally!!!!
+seed imedidata db
+balance used bootstrap.rb that is inside of imedidata no less
+but iir is going to just load up a small db like imedidata does
+chad is going to send an imedidata db
+
+tasks to put on board
+
+2/1
+email to kevin jay ben
+hey
+i havent been very good about adding tasks that ive been working on to
+the rally board
+as ive been doing more than what is listed in rally
+and rally still seems to be broken at the moment
+is there a way to add tasks?
+
+i need to add:
+
+-1) document setting up iir - done - but is continuous really
+0) put authmedidata into iir - done - ben just made pr for this
+1) seed iir imedidata database with small database (get from chad) 2 hours
+2) document db seeding on knowledge base - .5 hour
+3) research how balance & gmc do login - 2 hours
+4) implement login on iir imitating balance - 4 hours
+5) create application in local imed for iir & save to seed db - 1 hour
+6) install keys in mauth sandbox for iir w app id & key pair
+
+another item just cropped up
+research how authmedidata(cas's replacement) needs to work - 3 hours
+implement login using authmedidata in iir - 2 hours
+
+im guessing too late now but tasks i did at end of last sprint that i
+shouldve put in rally:
+initialize iir rails app,fix subcontractor for 1.9, make gemset for
+imedidata, get subcontractor working in foreman/procfile, document
+making gemsets for setup
+
+putting in mauth signer gem is done
+
+db setup is waiting on chad
+
+lets research how balance does login
+
+balance rt (rake routes)
+ root      /    {:controller=>"application", :action=>"login"}
+
+class ApplicationController < ActionController::Base
+  before_filter :auto_session_timeout, :except => :logout
+  before_filter :set_session_user_id, :except => :logout
+  before_filter :check_balance_imed_sync_required, :except => :logout
+
+  # Action to log the user in
+  def login
+    redirect_to studies_path(params.reject{|k,v| !%w(study_id studygroup_id study_group_uuid).include?(k.to_s) })
+  end
+
+timeout not interesting of course
+
+  # Sets a session's user_id attribute for CAS.
+  def set_session_user_id
+    cas_attrs = session[:cas_extra_attributes]
+    @session_user_id = cas_attrs[:user_id] unless cas_attrs.blank?
+  end
+
+thats just setting vars - not calling any methods
+
+  # Sync user and study info. with imedidata if not already done in this session
+  def check_balance_imed_sync_required
+    if !session[:balance_imed_sync_time]
+      balance_imed_sync(@session_user_id, 0)
+    end
+  end
+
+  # Synchronize imedidata and balance data (studies, roles, etc).  Time since
+  # last sync must be more than delta seconds.
+  def balance_imed_sync(user_id, delta=10)
+    now = Time.now
+    session[:balance_imed_sync_time] ||= now
+
+    if session[:balance_imed_sync_time] + delta <= now
+      User.find_remote(user_id).make_current!
+      session[:balance_imed_sync_time] = Time.now
+    end
+
+    I18n.locale = User.current.locale || "eng"
+    get_current_nav
+  end
+
+so app_control is calling in pre filter check_bal_im_sy_req
+which calls bal_im_sync
+which calls User.find_remote(user_id).make_current
+
+we should start balance and put a breakpoint in
+theres some if's in there so unclear if this is the path taken
+
+bal
+comment out 1st foreman line
+sep terminal: debug-run-bal
+localhost:3000
+
+User.find_remote is i think the crucial bit
+
+though i cant get a breakpoint to hit on going to balance login page
+
+class User < MedidataUser
+
+  # Returns the remote user with a given ID.  
+  def self.find_remote(user_id)
+debugger
+    get_remote_user(user_id)
+  end
+
+wheres MedidataUser?
+vendor/plugins/imedidata_client/lib/imedidata_client/medidata_user.rb
+1:class MedidataUser < ActiveRecord::Base
+
+its a plugin - imedidata_client
+which i think is a submodule?
+where are submodules listed?
+where do i get this submodule?
+
+  def self.get_remote_user(user_id)
+    user = self.create_and_cache(user_id)
+    if user
+      user.associate_studies
+      MedidataStudyGroup.fetch_all
+    end
+    return user
+  end
+
+yes its in github
+
+~/b (master) $ git submodule status
+ c729b7c10bbaea038f4d061b04bbd9def7a07c41 vendor/apps/castronaut (branched-v2010.1.0-298-gc729b7c)
+ edf44b715386b677e2264fabcfe3c62f85622639 vendor/apps/imedidata (release2011.1.4.2-675-gedf44b7)
+ 6fee9373e52a6e7591820a9133537169834009eb vendor/plugins/acts_as_auditable (v2010.1.0-15-g6fee937)
+ 0473d6c0867fe5e327ec8084943e7b04c47563c2 vendor/plugins/imedidata_client (balance-release-2011.2.0-34-g0473d6c)
+ 5bb763e5a8059d35e81ad25579558fda37062e05 vendor/plugins/medidata_buttons (v2010.1.0-23-g5bb763e)
+ 75d741453f54c3a9c45368e8edf69732e969363c vendor/plugins/rubycas-client (remotes/origin/session_stores)
+ a77bd87143e8587e90d60fc1fb0ebcbddff3d3fc vendor/plugins/shamus (0.0.1-3-ga77bd87)
+ cf5e4407d1e6127db415fd2f7886a79e6921ec22 vendor/plugins/watirworld (cf5e440)
+
+how bout that
+
+email to chad:
+
+hey chad
+well first a reminder to send me your imedidata db - thanks
+
+so i am working on setting up authmedidata in iir
+got it as a submodule, got it working in foreman with subcontractor
+(theres a bug that it doesnt get killed - todo)
+
+but now im looking at how balance does login - and its using cas 1st of all
+is there a client that is using authmedidata that i can look at for an
+example - i know its relatively new
+
+so i know balance uses imedidata-client plugin and so does gmc
+but ben is saying thats not necasary for iir - and besides its all different now
+
+so looking at balance i see that in plugin imedidata_client/init.rb -
+im guessing init.rb gets called when the plugin is included?
+theres this
+
+CLOUD_ENV = YAML.load_file("#{RAILS_ROOT}/config/cloud.yml")[RAILS_ENV]
+
+require 'casclient'
+require 'casclient/frameworks/rails/filter'
+
+CASClient::Frameworks::Rails::Filter.configure(
+ :cas_base_url => CLOUD_ENV['cas_base_url']
+)
+
+a bunch of requires
+
+ActionController::Base.send :include, Medidata::Client
+
+so from talking to ben my sense is that i need to do something
+likewise in iir - though dont need to do it as a plugin - at least for
+now.
+but it should now talk to authmedidata instead of cas of course
+so what are the analogous calls i need to make to authmedidata
+is there docs or examples or a client that is using authmedidata to look at
+
+thanks
+end of email
+
+does jazzhands use auth? i wouldnt be surprised
+
+imedidata itself uses authmedidata - so lets look at that 
+ask michael or yale where that is
+
+actually we got the db lets load it up
+
+in imedidata app/con/application_controller
+class ApplicationController < ActionController::Base
+  include AuthenticatedSystem
+
+before_filter CASClient::Frameworks::Rails::Filter
+
+so whats authenticated system
+and wheres CASCLIENT?
+
+learn about mixins
+
+require is a lib
+include is a mixin!
+need to have require if comes from another file
+wow mixins are funky
+
+ack:
+vendor/plugins/restful_authentication/generators/authenticated/templates/authenticated_system.rb
+1:module AuthenticatedSystem
+
+is restful 
+~/projects/magibson-imedidata (feature/mauth) $ submod-status
+ b72d24ca9c4e472e4154a3721672729f579e9ff3 config/locales (heads/master)
+ 04c06c09090fc48a35891de9a99842f8ef19176b vendor/plugins/acts_as_auditable (v2010.1.0-12-g04c06c0)
+ 9e54a77a187dea175d1a2c43ab5188e03cc4ff93 vendor/plugins/medidata_buttons (v2010.1.0-37-g9e54a77)
+ 75d741453f54c3a9c45368e8edf69732e969363c vendor/plugins/rubycas-client (remotes/origin/session_stores)
+ bc8218b8eee7fe5c4dbf03bcabb839d3a77c7f75 vendor/plugins/shamus (0.0.1~7)
+ 10873453b54de991916850fd29aed04e8a868ea4 vendor/plugins/watirworld (1087345)
+
+https://github.com/mdsol/imedidata/tree/master/vendor/plugins
+can see plugins as submodiules and not submod
+
+from rubycas-client submodule
+vendor/plugins/rubycas-client/lib/casclient/frameworks/rails/filter.rb
+5:  module Frameworks
+vendor/plugins/rubycas-client/lib/casclient/frameworks/rails/filter.rb
+4:module CASClient
+
+ah notice both old and new have this same line:
+ before_filter CASClient::Frameworks::Rails::Filter
+
+imedidata puts that right in the application controller
+balance puts that line in imedidata_client submodule plugin
+
+and imedidata has the include AuthenticatedSystem plugin - do we need that??
+AuthenticatedSystem has methods like
+   def logged_in?
+    def current_<%= file_name %>
+    def authorized?(action = action_name, resource = nil)
+    def login_required
+    def access_denied
+...
+imedidata app_cont
+\has a set_current_user method - reuse? copy?
+  before_filter :set_current_user, :except => :login
+checks if user is logged in - sends them to login if not
+uses AuthenticatedSystem plugin
+
+put before filter cas in iir application controller
+something tells me we need to require cas somewhere??? surely its not finding it automaticallly
+
+wait the imedidata login page is now coming up with localhost 4567
+was that happening before?
+ah but loclhost 3000 is not going there
+
+getting active record error - because theres no db
+but we have no db!
+
+get http://stackoverflow.com/questions/821251/how-to-configure-ruby-on-rails-with-no-database
+
+
+Uncomment this line in the environment.rb
+
+config.frameworks -= [ :active_record, :active_resource, :action_mailer] - rails 2 - no good
+
+that line doesnt exist but this does
+  config.action_controller.session_store = :active_record_store
+
+for rails 3
+http://stackoverflow.com/questions/3954307/rails-3-how-do-i-avoid-database-altogether
+
+actuall just talked to ben we do need a db for auth - iir has to cache user login stuff from auth apparently
+bummer
+supposedly auth when installed as plugin puts a migration in db/migrate
+nope - no migration
+
+2/2 thurs
+ok where am i
+several things to work on
+1 need to put in db yaml file for auth db - maybe do that 1st and see what 3000 does now
+2 need to put auth in the main page
+dont we need a maing page - well know we just need to redirect to auth/medidata for now i think
+3 need to fix 
+4 install chad imedi db
+
+db yaml file i guess we should look at imed & balance db file
+imed:
+local:
+    adapter: mysql
+    database: imedidata_development
+    username: root
+    password: 
+    host: localhost
+test:
+    adapter: mysql
+    database: imedidata_test
+    username: root
+    password: 
+    host: localhost
+...
+BALANCE:
+local_mysql: &local_mysql
+  adapter: mysql
+  username: root
+  password:
+  host: localhost
+  encoding: utf8  
+  
+test:
+  <<: *local_mysql
+  database: balance_test<%= ENV['TEST_ENV_NUMBER'] %>
+
+development:
+  <<: *local_mysql
+  database: balance_development
+
+sanitation:
+  <<: *local_mysql
+  database: balance_sanitation
+
+
+authmedidata
+development:
+  adapter: mysql2
+  encoding: utf8
+  reconnect: false
+  database: authmedidata_development
+  pool: 5
+  username: root
+  password:
+  socket: /tmp/mysql.sock
+
+
+i think i want a db called iir_dev....
+copy balance - its dryest
+
+cp config/database.yml.sample config/database.yml
+bundle install
+./bin/balance_init
+
+imedi
+mv ~/Downloads/database.yml config/database.yml
+
+put in database.yml.sample
+
+imedidata has a local that points to dev - balance does not have a local
+for now no local i guess
+
+still getting
+ActiveRecord::ConnectionNotEstablished
+but i havent actually created db
+
+fri 2/3
+where we at
+i need to put in auth per chads suggestions
+chad chat about auth in 111
+theres a few config files to copy for auth
+and most imporatnly theres plugin ruby cas client
+and use in same way as balance
+so can just go with study of balance and how it does it
+cas & auth are very similar - auth is just rails 3 - cas is sinatra
+which at the time didnt work with the error webby thing
+
+and want a login and logout method
+not in application but in a session controller
+see how balance does it
+
+i think need to do rake db:create?
+ake db:create
+rake aborted!
+uninitialized constant Mysql
+
+Tasks: TOP => db:create
+(See full trace by running task with --trace)
+oish
+
+i think i need to install mysql gem!
+in imedidata didnt need to install mysql gem??
+funny gem-list for imedidata does not include mysql 
+but who knows imedidata may not be properly setup just not tested yet hasnt hit db yet
+
+do we need to do this?
+is the gem update system necasary before?
+gem update --system
+gem update --system 1.5.3
+env ARCHFLAGS="-arch x86_64" gem install mysql -- --with-mysql-config=/usr/local/mysql/bin/mysql_config
+
+balance does list mysql as a gem
+mysql (2.8.1)
+
+ok installed with
+env ARCHFLAGS="-arch x86_64" gem install mysql -- --with-mysql-config=/usr/local/mysql/bin/mysql_config
+
+notice this isnt in gemfile nor gemfile lock
+
+
+rake db:create
+rake aborted!
+uninitialized constant Mysql
+
+Tasks: TOP => db:create
+(See full trace by running task with --trace)
+
+dam - still happening - thought mysql gem would take care of this
+
+
+gem-list -d mysql
+
+did gem uninstall mysql
+and then put mysql in gemfile
+gem 'mysql', '2.8.1'
+and did clean bundle install
+and lo and behold rake db:create worked
+
+ok thats done i think next is cas client submodule plugin and get migration from that
+
+so now is gives this message
+uninitialized constant ApplicationController::CASClient
+so thats good
+though it should be finding that right
+
+need to incldue CASClient
+ah! this is from the plugin!!
+lets look at balance
+
+~/b (master) $ git submodule status
+ c729b7c10bbaea038f4d061b04bbd9def7a07c41 vendor/apps/castronaut (branched-v2010.1.0-298-gc729b7c)
+ edf44b715386b677e2264fabcfe3c62f85622639 vendor/apps/imedidata (release2011.1.4.2-675-gedf44b7)
+ 6fee9373e52a6e7591820a9133537169834009eb vendor/plugins/acts_as_auditable (v2010.1.0-15-g6fee937)
+ 0473d6c0867fe5e327ec8084943e7b04c47563c2 vendor/plugins/imedidata_client (balance-release-2011.2.0-34-g0473d6c)
+ 5bb763e5a8059d35e81ad25579558fda37062e05 vendor/plugins/medidata_buttons (v2010.1.0-23-g5bb763e)
+ 75d741453f54c3a9c45368e8edf69732e969363c vendor/plugins/rubycas-client (remotes/origin/session_stores)
+ a77bd87143e8587e90d60fc1fb0ebcbddff3d3fc vendor/plugins/shamus (0.0.1-3-ga77bd87)
+ cf5e4407d1e6127db415fd2f7886a79e6921ec22 vendor/plugins/watirworld (cf5e440)
+
+
+balance - but chad said dont use master - use branch
+ vendor/plugins/rubycas-client (remotes/origin/session_stores)
+
+from madalina
+in imedidata we curently use the latest commit on session_stores branch of https://github.com/edan/rubycas-client
+
+ok lets submodule the rubycas-client
+
+git submodule add git@github.com:mdsol/imedidata.git vendor/apps/imedidata
+
+git submodule add git@github.com:edan/rubycas-client.git vendor/plugins/rubycas-client
+i think have to commit this first and then switch to session_stores branch
+gitx - commit & push
+ok now
+cd vendor/plugins/rubycas-client
+git checkout -b session_stores origin/session_stores
+
+localhost:3000
+Cannot use the CASClient filter because it has not yet been configured.
+excellent - p[rogress - need to now configure cas client somewhere
+
+i think i found it
+balance/config/initializers/load_config.rb
+
+mon 2/6
+need to get cas configged!
+
+heres balance load config.rb:
+
+AMAZON_ENV = YAML::load(ERB.new(IO.read(File.join(RAILS_ROOT, 'config', 'amazon_s3.yml'))).result)[RAILS_ENV]
+
+CLOUD_ENV = YAML::load(ERB.new(IO.read(File.join(RAILS_ROOT, 'config', 'cloud.yml'))).result)[RAILS_ENV]
+
+WEBHELP_INFO = YAML.load_file("#{RAILS_ROOT}/config/webhelp.yml")[RAILS_ENV]
+unless %w(test).include? RAILS_ENV
+  WEBHELP_MAPPING = begin
+    YAML.load(Net::HTTP.new(WEBHELP_INFO["webhelp_bucket"]).request(Net::HTTP::Get.new("/WebHelpMapping/webhelp_mapping.yml")).body)
+  rescue SocketError
+    {}
+  end
+end
+
+CASClient::Frameworks::Rails::Filter.configure(
+  :cas_base_url => CLOUD_ENV['cas_base_url'],
+  :enable_single_sign_out => true,
+  :service_session_lookup_storage => :db)
+  
+S3_FIELD_MIXIN_EXCLUDED_ENVS = ["development","test"]
+ActiveRecord::Base.send(:include, S3FieldMixin)
+
+relevant bits
+
+CLOUD_ENV = YAML::load(ERB.new(IO.read(File.join(RAILS_ROOT, 'config', 'cloud.yml'))).result)[RAILS_ENV]
+CASClient::Frameworks::Rails::Filter.configure(
+  :cas_base_url => CLOUD_ENV['cas_base_url'],
+  :enable_single_sign_out => true,
+  :service_session_lookup_storage => :db)
+
+need cloud.yml! in config - copy that
+chad mentioned theres another thing we'll need thats new but dont know what that is yet
+
+config/cloud.yml:
+test:
+    cas_domain: localhost
+    imed_domain: localhost
+    imedsql_domain: localhost
+    conduct_domain: localhost
+    imed_base_url: http://<%= `uname -n`.chomp %>:<%= (4100 + ( ENV['TEST_ENV_NUMBER'].to_i || 0 )).to_s %>
+    cas_base_url: http://<%= `uname -n`.chomp %>:<%= (4200 + ( ENV['TEST_ENV_NUMBER'].to_i || 0 )).to_s %>
+    conduct_base_url: http://<%= `uname -n`.chomp %>:<%= (4300 + ( ENV['TEST_ENV_NUMBER'].to_i || 0 )).to_s %>
+
+development: &default_settings
+    cas_domain: localhost
+    imed_domain: localhost
+    imedsql_domain: localhost
+    conduct_domain: localhost
+    cas_base_url: http://<%= `uname -n`.chomp %>:4567
+    imed_base_url: http://<%= `uname -n`.chomp %>:3001
+    conduct_base_url: http://<%= `uname -n`.chomp %>:3000
+
+sanitation:
+    <<: *default_settings
+
+that all seems generic
+
+/Users/magibson/projects/iir/config/initializers/load_config.rb:1:in `<top (required)>': uninitialized constant RAILS_ROOT (NameError)
+10:12:52 iir.1           | 	from /Users/magibson/.rvm/gems/ruby-1.9.2-p290@iir/gems/railties-3.1.3/lib/rails/engine.rb:556:in `block (2 levels) in <class:Engine>'
+10:12:52 iir.1           
+
+FROM BALANCE:
+boot.rb
+6:RAILS_ROOT = "#{File.dirname(__FILE__)}/.." unless defined?(RAILS_ROOT)
+
+wow theres a whole bunch of stuff in balance boot.rb that looks like we would need 
+- loading up initializers and scuh
+
+/Users/magibson/projects/iir/config/initializers/load_config.rb:1:in `<top (required)>': uninitialized constant RAILS_ENV (NameError)
+10:17:47 iir.1           | 
+
+schedule.rb
+3:job_type :run_in_rails_root, 'export RAILS_ENV=:environment && cd :path && :task > :path/log/cron.log 2>&1
+
+lib/tasks/shell.rake
+58:      ENV["RAILS_ENV"] = env.to_s
+# Execute the block in the specified environments
+def in_env(*envs)
+  envs.each do |env|
+    pid = fork do
+      ENV["RAILS_ENV"] = env.to_s
+      yield
+    end
+    Process.wait(pid)
+  end
+end
+
+so who calls in_env?
+lib/tasks/app.rake
+37:    in_env(*BALANCE_ENVS) { rake(*args) }
+
+namespace :app do
+  BALANCE_ENVS   = (ENV["RAILS_ENV"] && [RAILS_ENV]) || %w(development test)
+....
+  def balance_rake(*args)
+    in_env(*BALANCE_ENVS) { rake(*args) }
+  end
+
+ ack balance_rake
+lib/tasks/app.rake
+15:      balance_rake "db:migrate"
+36:  def balance_rake(*args)
+
+lib/test_tasks/cruise.rb
+16:      balance_rake "db:migrate"
+17:      balance_rake "db:seed"
+
+hmmm i think this is just for migrate
+how does run get its BALANCE_ENV???
+
+http://stackoverflow.com/questions/2715035/rails-env-vs-rails-env
+Rails.env!
+
+Before Rails 2.x the preferred way to get the current environment was using the RAILS_ENV constant. Likewise, you can use RAILS_DEFAULT_LOGGER to get the current logger or RAILS_ROOT to get the path to the root folder.
+
+Starting from Rails 2.x, Rails introduced the Rails module with some special methods:
+
+Rails.root
+Rails.env
+Rails.logger
+This isn't just a cosmetic change. The Rails module offers capabilities not available using the standard constants such as StringInquirer support. There are also some slight differences. Rails.root doesn't return a simple String buth a Path instance.
+
+Anyway, the preferred way is using the Rails module. Constants are deprecated in Rails 3 and will be removed in a future release, perhaps Rails 3.1.
+
+that fixed it
+CLOUD_ENV = YAML::load(ERB.new(IO.read(File.join(RAILS_ROOT, 'config', 'cloud.yml'))).result)[Rails.env]
+
+/Users/magibson/projects/iir/vendor/plugins/rubycas-client/lib/casclient/frameworks/rails/filter.rb:146:in `configure': uninitialized constant RAILS_DEFAULT_LOGGER (NameError)
+10:54:12 iir.1           | 	from /Users/magibson/projects/iir/config/initializers/load_config.rb:3:in `<top (required)>'
+
+            @@config[:logger] = RAILS_DEFAULT_LOGGER unless @@config[:logger]
+-->
+            @@config[:logger] = Rails.logger unless @@config[:logger]
+
+
+from chad/checkmate
+CLOUD_ENV = YAML.load_file("#{Rails.root}/config/cas.yml")[Rails.env]
+CASClient::Frameworks::Rails::Filter.configure(:cas_base_url => CLOUD_ENV['cas_base_url'], :enable_single_sign_out => true, :service_session_lookup_storage => :db, :logger => Rails.logger)
+
+calling cloud.yml cas.yml does seem to make more sense
+
+ok that worked - logger and env both fixed
+
+now a new error
+well it up & runs now!
+but hitting 3000 does this
+
+Started GET "/" for 127.0.0.1 at 2012-02-06 11:19:22 -0500
+11:19:22 iir.1           |   Processing by ApplicationController#login as HTML
+11:19:22 iir.1           | Guessed service url: "http://localhost:3000/"
+11:19:22 iir.1           | Completed 500 Internal Server Error in 1ms
+11:19:22 iir.1           | 
+11:19:22 iir.1           | URI::InvalidURIError (bad URI(is not URI?): http://<%= `uname -n`.chomp %>:4567/login):
+11:19:22 iir.1           |   
+11:19:22 iir.1           | 
+11:19:22 iir.1           | Rendered /Users/magibson/.rvm/gems/ruby-1.9.2-p290@iir/gems/actionpack-3.1.3/lib/action_dispatch/middleware/templates/rescues/_trace.erb (1.7ms)
+
+notice its going from 3000 to 4567
+so it seems cas is kicking in
+lets try with cas line out
+
+and what the fuck is actionpack?
+http://rubydoc.info/gems/actionpack/3.2.1/frames
+Action Pack is a framework for handling and responding to web requests. It provides mechanisms for routing (mapping request URLs to actions), defining controllers that implement actions, and generating responses by rendering views, which are templates of various formats. In short, Action Pack provides the view and controller layers in the MVC paradigm.
+
+ok so if i take out 
+#  before_filter CASClient::Frameworks::Rails::Filter
+in application controller 
+then get a different error (missing view)
+
+so this says the problem is with cas
+so where the hell is this error coming from
+
+its from auth not from cas client
+app/models/proxy_granting_ticket.rb
+59:    rescue URI::InvalidURIError
+
+app/models/service_ticket.rb
+33:        raise URI::InvalidURIError.new("Not HTTP or HTTPS") unless %w{https http}.include?(uri.scheme)
+34:      rescue URI::InvalidURIError
+83:    rescue URI::InvalidURIError
+
+  #TODO: this might not be needed
+  validates_each :service do | model, attr, service|
+    message = ""
+    if service.blank? then message = :blank
+    else
+      begin
+        uri = URI.parse(service)
+        # sometimes this does not throw an error but returns a URI::Generic Object,
+        # so test that it has http or https scheme
+        raise URI::InvalidURIError.new("Not HTTP or HTTPS") unless %w{https http}.include?(uri.scheme)
+      rescue URI::InvalidURIError
+        message = :invalid
+      end
+    end
+    model.errors.add(attr, message) unless message.blank?
+  end
+
+actually thats not it - look how its immediately rescued - funny code
+
+wait where the hell is this coming from???
+
+http://<%= `uname -n`.chomp %>:4567/login
+
+7:    cas_base_url: http://<%= `uname -n`.chomp %>:<%= (4200 + ( ENV['TEST_ENV_NUMBER'].to_i || 0 )).to_s %>
+
+cas.yml:
+    cas_base_url: http://<%= `uname -n`.chomp %>:4567
+
+thats the problem - the <% is not getting processed as ruby code!
+lets look at check mate
+and what is uname?
+chomp takes out newline at end
+uname seems to return os name ???
+lets look at checkmate
+
+development:
+  cas_domain: localhost
+  cas_base_url: http://localhost:4567
+
+innovate:
+  cas_domain: login-innovate.imedidata.com
+  cas_base_url: https://login-innovate.imedidata.com
+
+im just gonna shove that in for now see if it works
+
+taking out from cas.yml(formerly cloud.yml) balance stuff:
+test:
+    cas_domain: localhost
+    imed_domain: localhost
+    imedsql_domain: localhost
+    conduct_domain: localhost
+    imed_base_url: http://<%= `uname -n`.chomp %>:<%= (4100 + ( ENV['TEST_ENV_NUMBER'].to_i || 0 )).to_s %>
+    cas_base_url: http://<%= `uname -n`.chomp %>:<%= (4200 + ( ENV['TEST_ENV_NUMBER'].to_i || 0 )).to_s %>
+    conduct_base_url: http://<%= `uname -n`.chomp %>:<%= (4300 + ( ENV['TEST_ENV_NUMBER'].to_i || 0 )).to_s %>
+development: &default_settings
+    cas_domain: localhost
+    imed_domain: localhost
+    imedsql_domain: localhost
+    conduct_domain: localhost
+    cas_base_url: http://<%= `uname -n`.chomp %>:4567
+    imed_base_url: http://<%= `uname -n`.chomp %>:3001
+    conduct_base_url: http://<%= `uname -n`.chomp %>:3000
+
+sanitation:
+    <<: *default_settings
+
+also adding for test grigory
+
+heres imedidatas cloud.yml - the test is a little diff
+development: &default_settings
+  cas_domain: localhost
+  imed_domain: localhost
+  imedsql_domain: localhost
+  conduct_domain: localhost
+  cas_base_url: http://localhost:4567
+  imed_base_url: http://localhost:3001
+  
+test:
+  <<: *default_settings
+  cas_base_url: ""
+  imed_base_url: http://localhost:3001
+
+i think its time for a pr as its in a somewhat stable place
+though clearly more work needs doing
+need to put in chad db with a user
+
+
+ok lets get migraion in there
+
+ ~/i/vendor/plugins/rubycas-client/generators/cas_client/cas_client_generator.rb
+and templates/create_cas_sessions.rb
+class CreateCasSessions < ActiveRecord::Migration
+  def self.up
+    create_table :cas_sessions do |t|
+      t.text     :service_ticket 
+      t.text  :session_id
+    end
+  end
+ 
+  def self.down
+    drop_table :cas_sessions
+  end
+end
+
+i think copy create_cas_sessions to iir/db/migrate
+yup hafta make a file name with date down centiseconds in it which seems a little over the top
+but i guess its a standard
+theres prob a rake task that makes this filename for you
+nonetheless its in and it worked
+
+whats next - the imedidata db - chads - get it in there
+new branch i guess
+
+chads imedidata db - 
+user login is superadmin 
+pwd is Password1
+in email from feb 1
+
+ok this has to go into imedidata db which i already one actually
+wait im confused i have one - but balance does one too
+or does balance just augment it
+i forget how i get into db
+
+it drops & creates tables so it will wipe out whats already there which is fine - wipe it for all i care
+
+does db:migrate migrate both dev & test - doubt it!
+i think balance has a rake task for this
+
+so for db we are follwoing imedidata way not balance
+however the db that is copied in is NOT the imedidata database.yml.sample
+as in db name is balance:
+development:
+    adapter: mysql
+    database: imedidata_balance_development
+
+oh wait lets make another branch
+feature/more_iir_setup
+
+dam - not sure how to deal with wierd submodule modifcation issue
+
+im confused 
+database.yml is not in git
+yet we dont have to make it for every branch????
+what does balance do?
+add it to git ignore
+
+with imedi db name change need to run rake db:create and rake db:migrate in vendor/imed again
+
+ok so how do i load chads db???
+lets look at imedidata startup
+
+chaeck balances cas/auth db.yml
+the config for castronaut seems very different
+
+mysql -u root imedidata_development < imedidata-backup.sql
+
+cd iir root
+ cp ~/Downloads/checkmate_imedidata_development.sql config/imedidata-iir-dev-db.sql
+mysql -u root imedidata_iir_development < config/imedidata-iir-dev-db.sql
+
+alias mysql-iir="mysql -u root imedidata_iir_development"
+
+cool login worked 
+need view for application/login i guess??
+
+ok that works - what next? view? 
+go into imedidata and make app id? how to go into imedi?
+
+whats the url for imed when running in balance
+
+chicken and egg
+need iir to go to imed
+need to go to imed to create a valid app id for iir 
+
+http://qp1150wndnm.ad.mdsol.com:3001/?ticket=ST-1328564349rE12AE7F3A44BFBF41E
+i think localhost:3001 would do it - of course silly
+
+yes!
+http://localhost:3001/?ticket=ST-1328564430r33E5EDA6A13E9C765C
+
+then go into app admin - add app
+then it needs a public key??? is this cas? mauth? old request token?
+where does the private key go?
+
+in jazzhands
+config/keys/apps
+grab a key 
+an ssl key
+and put that in the pulbic key
+-----BEGIN RSA PUBLIC KEY-----
+MIGJAoGBALTPpMYJlV32yf173k7UcIwxHsk57HM6kn9pts88BXvZ3OOYHVz/qPan
+fwLQ4KTOSQiOEgh7+Hj/qKiAhFbJJMh6ECXDkoK30CAdoSccAeaI5nGp6pDXitIk
+nD548KX647yQUfO5OMUuSU8lBVGSbdrzdkGNVu5F9g9vzX7LkOc9AgMBAAE=
+-----END RSA PUBLIC KEY-----
+
+IIR created. Api Id: d38e7edc-5113-11e1-95fe-70cd60fffe66 Api Token: a29a796599f72bc2f632b4a1a6eaae3a3631ddf0 iMedidata public key: -----BEGIN RSA PUBLIC KEY----- MIGJAoGBANrvxzDxt92vWs73y6a524FxrNOS0+X+E3t2U/BYbfKeg7Tj0IYK4SZ2 +CeTRdt91DOL7sHTk98mHI/r6v2TmlJg9mTOdknjzx6Hj9/WVa56+meaZaNE9+yp 79PjPX9Gy8UglvDBgPy5R6Zu5lzZPMQFxh5LSDZvDtCd+sXMGAsNAgMBAAE= -----END RSA PUBLIC KEY-----
+
+tues 2/7/2012
+
+this is the app uuid 
+Api Id: d38e7edc-5113-11e1-95fe-70cd60fffe66
+will need this for mauth config of iir!
+need to dump this db
+alias dump-master="mysqldump -u root -A > master-balance.sql"
+mysqldump -u root -A > ~/i/config/imedidata-iir-dev-db.sql
+
+via admin adding app type and app for iir
+and study group
+and adding user  - accept invitation
+to study group and study...
+
+superadmin email is
+harrycaul@mdsol.com
+
+-A is all databases
+for iir we just want dump for iir stuff
+
+http://dev.mysql.com/doc/refman/5.1/en/mysqldump.html
+
+mysqldump -u root --databases iir_development iir_test > ~/i/config/imedidata-iir-dev-db.sql
+
+wow its really fast!
+
+
+woops wrong dbs silly - those are the auth iir trivial db 
+
+
+test is a db that gets wiped out everytime i think?
+mysqldump -u root --databases imedidata_iir_development > ~/i/config/imedidata-iir-dev-db.sql
+
+ok what now
+maybe a quick look at auth subcontract bug
+put up view page 
+
+
+oh my auth dies fine when only thing in proc file
+lets change order
+bombs with iir running
+
+its iir & auth - order doesnt matter - imedidata doesnt effect
+
+theres no port specified for auth??? trying -p 3002
+
+hmmm - well table for now - 
+but is it funny that calling rails server twice in 1 procfile - shouldnt be i think?
+is there another way to bring up auth?
+or dig into subcontract and see why it wont kill auth's children
+
+i think i should put up a default blank view page 
+look at gmc and balance
+gmc:
+root  /(.:format)  {:action=>"index", :controller=>"sponsor/studies"}
+routes root / to sponsor/studies/index
+
+just  sent out emails - really confused about code sharing between iir & gmc
+should i make default
+investigator/studies/index
+which is iir specific and would not be reused by gmc?
+can do for now and change later
+just putting up a blank page dont overthing it
+
+so in gmc its in sponsor/studies_controller 
+which has class Sponsor::StudiesController < ApplicationController
+  include Parley::SponsorAuthentication
+not sure what that include is about???
+
+lib/parley/sponsor_authentication.rb
+2:module Parley::SponsorAuthentication  
+# Place code specific for Sponsor role
+module Parley::SponsorAuthentication  
+  # Add before filter for checking sponsor permissions
+  def self.included(base)
+    base.before_filter :check_sponsor_permissions
+  end
+    
+  # TODO change redirect_to to error_page 500 errors
+  # otherwise if role will not equal role it will led to infinite loop 
+  def check_sponsor_permissions
+    if session[:role].blank?
+      flash.now[:error] = I18n.t('user.errors.user_has_no_access_with_role', :user_id => cas_session_user_id, :role => Role::SPONSOR_ROLE)
+      render_404 and return
+    end  
+    
+    redirect_to site_root_path unless session[:role] =~ /^#{Role::SPONSOR_ROLE}$/i
+  end
+end
+
+this is not cas - this checking role - sponsor and site and all
+will need to put this in eventually
+unclear how gmc does authentication
+maybe what ugandhar researched was right
+only see it here inside imedidata_client - oh that must be where it happens
+vendor/plugins/imedidata_client/lib/imedidata_client.rb
+4:      base.before_filter CASClient::Frameworks::Rails::Filter
+
+cool got suncontract working needed --signal INT where others didnt
+
+dont have haml put in yet
+had to do html for app/views/investigator/studies/index.html
+
+ok put a dummy page in 
+so whats next 
+mauth to imedidata
+
+need to point to imedidata branch that has mauth working
+submod-stat
+-f5bdd2809b3610065a642650bd460dbb22915921 vendor/apps/authmedidata
+-05a233adcf95aa98e56836e5964cb43313468350 vendor/apps/imedidata
+-75d741453f54c3a9c45368e8edf69732e969363c vendor/plugins/rubycas-client
+gb
+* feature/support_mauth
+
+silly goose youre already pointing to it
+though prob needs updating!
+
+ok how do you update to latest submod?
+alias add-locale-update="cd ~/i/config/locales; git fetch; git checkout origin/HEAD; cd ../..; git add config/locales"
+
+git fetch
+git checkout origin/feature/support_mauth
+
+-Subproject commit 05a233adcf95aa98e56836e5964cb43313468350
++Subproject commit e0662bd1264da8feea09b79ecf0f2d4387078362-dirty
+
+ah this is consistent with what im seeing on git hub
+https://github.com/mdsol/imedidata/commit/e0662bd1264da8feea09b79ecf0f2d4387078362
+oddly couldnt find 05a??
+
+so 1st get latest from branch - support_mauth imed
+write a test? or wait for ben to put in cuc stuff
+so then what needs to happen?
+iir has to sign a request with mauth - weve got mauth signer - make sure on latest
+view show study
+controller query model
+model sign request and send request off to imedidata
+make request just like curlmaker does
+
+1st make a new study-mauth branch
+
+
+with new branch update have to do bundle install
+rvm use ruby-1.8.7-p249@imedidata
+
+ | /Users/magibson/.rvm/rubies/ruby-1.8.7-p249/lib/ruby/1.8/yaml.rb:143:in `initialize': No such file or directory - /Users/magibson/projects/iir/vendor/apps/imedidata/config/cloud.yml (Errno::ENOENT)
+getting this error w update
+but i thought we did cloud.yml in plugin casruby thing ???
+
+so this is new
+and will change install
+and every timewe update imed submodule this has to be recopied - bummer
+would be nice as a rake task i suppose
+
+put in docs things that have to happen with new imedidata submodule
+submodule update
+cp database.yml
+cp cloud.yml
+cd imed
+rake db:migrate
+
+what used to be contents of cloud.yml in imed??? 3000 or 3001?
+yea used to be 3001!! how strange to make 3000 now
+
+hmmm - from auth
+imedidata_development database is not configured
+oh theres prob something in cas config?
+
+~/i (feature/more-setup) $ ack imedidata_development
+vendor/apps/imedidata/config/database_environments.yml
+10:    database: imedidata_development
+is database_environments even used????
+
+sambple db is wrong!!! fix this
+darn lost app_id stuff
+also reboot mac
+and setup laptop!
+
+
+wed 2/8
+ben added a bunch of stuff
+!!! at begining of haml is doc type
+http://haml-lang.com/docs/yardoc/file.HAML_REFERENCE.html#doctype_
+
+always run bundle install - never sudo bun in
+
+bundle check - list missing dependencies
+
+bundle help
+
+:group => :test  - env
+
+--without=test - leave out test gems
+
+bundle lock - locks down versions - gemfile.lock
+
+bundle install will only install locked version
+dont modify lock file
+
+bundle install --relock - updates gems from lock
+
+wow .bundle by default?????
+bundle pack -> vendor/cache dir puts in repo
+
+railsPlugins.org
+
+ok very interesting about bundler 
+ben is configged differently to bundle install to .bundle directory
+NOT to gemset which is default now (his way was previously default)
+
+
+ok so 1st the db got all screwed up
+need to fix that
+i think its the db change thats the problem
+i think need to change db name in db dump file
+
+
+ Host: localhost    Database: imedidata_iir_development
+
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `imedidata_iir_development` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci */;
+
+USE `imedidata_iir_development`;
+
+yup thats it
+lets change those
+made changes to sql dump
+mysql -u root imedidata_development < config/imedidata-iir-dev-db.sql
+
+cool - fixed
+
+ok whats next
+
+should put .gitignore in ve/app/imed!
+
+need to make new branch
+
+.gitignore
+
+# Changes not staged for commit:
+#	modified:   public/images/medidata_buttons/b_cancel.gif
+#	modified:   public/images/medidata_buttons/bg_neutral_mini_a.png
+#	modified:   public/images/medidata_buttons/bg_neutral_mini_span.png
+#	modified:   public/stylesheets/medidata_buttons.css
+
+how the hell did these get modified????
+i certainly didnt do anything here?
+
+actually theyre not modified they have been somehow added
+i think they need to be gitignored
+
+balance v/a/im .gitignore
+public/stylesheets/medidata_buttons.css
+public/stylesheets/imedidata.css
+.bundle
+public/logout/
+public/login/
+
+interesting how .bundle is in there - thats for ben clearly
+
+funny that public/images/* isnt in there - perhaps new
+
+ok kjust ignored the changes
+i think they may come from vendor/plugins/medidata_buttons?
+who knows
+
+whats my 1st step?
+so a request comes in to controller says show me this study
+controller goes to model
+model goes to imedidata
+model does the mauth siging stuff
+
+from ben email
+http://api.rubyonrails.org/classes/ActiveResource/Base.html
+
+active resource for putting restful in a model!
+
+class Person < ActiveResource::Base
+  self.site = "http://api.people.com:3000"
+end
+
+seems to use xml by default
+another example shows json though
+
+i think there may be a serious problem
+and that is getting it to work with mauth
+bears more investigation - esp into into its auth stuff
+may need monky patch or subclass or write our own
+
+here is what the curl looks like
+curl -v -H 'Authorization: MWS 993516ea-3dfb-11e1-a84d-70cd60fffe66:lyfN0lxXqFsXjhhclEj158jFG8j+4jtW/DoGfT3j+blax4fLMRahzqVIBQTKjTjl2gUsRozPQGQKr+/fPOF72lXln4xZUXv5zYO/vxWpeQN4iVEgSEvDJqGVLgW8S1LtU1TXWlK18AzQfEdiUnEkE3eHd6P65DzFdC+ngH/RLHR99jzVwXx/A1Hhokd46nGimFAGaYKvD0sPY2rRfVZJz1YmfbWW28Hz+1WWSM/5JzYVhorIta1GsvfRjuWTGugksQlU00UdVyg3gkKf+h96VM/HEAN2qMZQaectNd30h+frABrQBPblhLd063omwZHZ7DcUhpptfZOZJsjJ+8W0hQ==' -H 'x-mws-time: 1326992698' http://localhost:3000/api/v2/study_groups.json
+
+curl 
+-v 
+-H 'Authorization: MWS 993516ea-3dfb-11e1-a84d-70cd60fffe66:lyfN0lxXqFsXjhhclEj158jFG8j+4jtW/DoGfT3j+blax4fLMRahzqVIBQTKjTjl2gUsRozPQGQKr+/fPOF72lXln4xZUXv5zYO/vxWpeQN4iVEgSEvDJqGVLgW8S1LtU1TXWlK18AzQfEdiUnEkE3eHd6P65DzFdC+ngH/RLHR99jzVwXx/A1Hhokd46nGimFAGaYKvD0sPY2rRfVZJz1YmfbWW28Hz+1WWSM/5JzYVhorIta1GsvfRjuWTGugksQlU00UdVyg3gkKf+h96VM/HEAN2qMZQaectNd30h+frABrQBPblhLd063omwZHZ7DcUhpptfZOZJsjJ+8W0hQ==' 
+-H 'x-mws-time: 1326992698' 
+http://localhost:3000/api/v2/study_groups.json
+
+
+
+curl man page
+-H, --header <header>
+
+(HTTP) Extra header to use when getting a web page. You may specify any number of extra headers. Note that if you should add a custom header that has the same name as one of the internal ones curl would use, your externally set header will be used instead of the internal one. This allows you to make even trickier stuff than curl would normally do. You should not replace internally set headers without knowing perfectly well what you're doing. Remove an internal header by giving a replacement without content on the right side of the colon, as in: -H "Host:". If you send the custom header with no-value then its header must be terminated with a semicolon, such as -H "X-Custom-Header;" to send "X-Custom-Header:".
+
+curl will make sure that each header you add/replace is sent with the proper end-of-line marker, you should thus not add that as a part of the header content: do not add newlines or carriage returns, they will only mess things up for you.
+
+See also the -A, --user-agent and -e, --referer options.
+
+This option can be used multiple times to add/replace/remove multiple headers.
+
+-v verbose of course
+
+so basically we need to just be able to add 2 headers - Authorization and x-mws-time
+
+dont think this will work for mauth - this is ssl specific
+class Person < ActiveResource::Base
+  self.site = "https://secure.api.people.com/"
+  self.ssl_options = {:cert         => OpenSSL::X509::Certificate.new(File.open(pem_file))
+                      :key          => OpenSSL::PKey::RSA.new(File.open(pem_file)),
+                      :ca_path      => "/path/to/OpenSSL/formatted/CA_Certs",
+                      :verify_mode  => OpenSSL::SSL::VERIFY_PEER}
+end
+
+theres a headers method!
+headers()
+Source: hide | on GitHub
+
+# File activeresource/lib/active_resource/base.rb, line 563
+def headers
+  @headers ||= {}
+end
+extremeley undocumented of course!
+      def headers
+        @headers ||= {}
+      end
+oddly @headers is nowhere else in file??
+but theres no headers= ??? just a getter?
+||= default to empty hash
+
+require 'uri'
+require 'active_support/core_ext/uri'
+
+theres a bunch of places in code where headers is called 
+but nowhere where its set ???
+
+http://corelib.rubyonrails.org/classes/URI.html
+
+wrong - headers is part of request NOT uri - uri is part of request
+
+http://opensoul.org/blog/archives/2010/02/16/active-resource-in-practice/
+
+PivotalTracker::Resource.headers['X-TrackerToken'] = "mytoken"
+ah!
+its a hash
+so we just say 
+obj.headers['x-mws-time'] = "239487"
+obj.headers['Authorization'] = 'osidfoisj'
+that should do it
+
+http://apidock.com/rails/ActiveResource/Base
+
+ def headers
+        @headers ||= {}
+      end
+so one is suppose to be able to look at the above code and realize aha set this through 
+a hash - now that i know i know but geez how bout a doc on this
+
+http://semprebon.blogspot.com/2009/06/seting-custom-headers-in-activeresource.html
+thats about adding header to connection default header - i dont think thats what we are doing
+
+http://ryandaigle.com/articles/2007/5/7/what-s-new-in-edge-rails-activeresource-finder-update
+class Post < ActiveResource::Base
+  headers['X-MyHeader'] = 'ryan'
+end
+
+ok once again poor documentation! but its all doable! no workaround needed thank goodness
+
+so lets code up the model
+
+does active resource come with rails?
+probably
+prob need to do require - well prob not actually
+dont have to for active record - though it may be somewhere else - we'll see
+
+so whats my api?
+should i write a test?
+
+http://localhost:3000/api/v2/study_groups.json
+
+whats the url for studies?
+imedidata:
+api_v2_study GET /api/v2/studies/:id(.:format) {:controller=>"api/v2/studies", :action=>"show"}
+
+api_v2_studies GET /api/v2/studies(.:format) {:controller=>"api/v2/studies", :action=>"index"}
+
+whats the diff between show & index?
+
+oid is 12345 for my study
+ NoMethodError (You have a nil object when you didn't expect it!
+12:04:54 imedidata.1     | The error occurred while evaluating nil.unpack):
+12:04:54 imedidata.1     |   /Users/magibson/.rvm/rubies/ruby-1.8.7-p249/lib/ruby/1.8/base64.rb:59:in `decode64'
+12:04:54 imedidata.1     |   lib/api_authentication_v2.rb:41:in `request_token_auth'
+12:04:54 imedidata.1     |   lib/api_authentication_v2.rb:13:in `api_authenticate_v2'
+12:04:54 imedidata.1     |   /Users/magibson/.rvm/gems/ruby-1.8.7-p249@imedidata/gems/newrelic_rpm-3.3.1/lib/new_relic/agent/instrumentation/controller_instrumentation.rb:257:in `perform_action'
+12:04:54 imedidata.1     |
+
+of course! im trying to query without request token
+have to setup jazzhands
+or actually try out curl with mauth
+to try out curl need to set up mauth key
+in sandbox for public key with app id
+and well actually just the curl would need the private key
+in fact we could use the old pair
+oh but its a new app_id
+we need to install new appid with public key into mauth sandbox
+i think thats where we are at actually
+
+mikes secret writeup - not on knowledge base
+Adding App's public key and uuid to MAuth for testing
+1) Go to http://medistrano.imedidata.net/projects/52/stages/136, and SSH into sandbox server
+2) cd /mnt/app/current
+3) RAILS_ENV=production bundle exec rails console
+Steps 4-5 are to be executed in rails console
+4) SecurityToken.find_by_app_uuid!("70f3841a-4868-11e1-9826-a4b197fffe70").destroy!
+   // This removes any existing SecurityToken with your app
+   // If S3 Storage error is display, means no such SecurityToken exists, this is an ignorable error
+5) SecurityToken.create!(:app_name => "enter_app_name", :app_uuid => "enter_app_uuid", :public_key_str => "enter public key, as single line  with \n")
+6) Before you exit make sure a valid SecurityToken entry has been created for your app.
+
+Generating curl commands for testing
+8) Retrieve curlgen.rb, in rack-mauth git repo, under test/curlgen.rb
+9) curlgen script takes in a yaml file that stores specific api request parameters
+10) Create a new yaml file, ensure it has the following format:
+      :private_key_str: | 
+               <multi line private key for the app that is making the call>
+      :app_uuid: <uuid of app making the api call> 
+      :host: <host, include http://>
+      :url: <api url path>
+      :verb: <http method used, GET, POST, etc>
+      :post_data: <if using POST, enter post data here>
+9) Need to generate a new curl command every 5 minutes or so, otherwise the MAuth tokens will expire
+10) Ensure your using the latest mauth-signer
+
+
+had to change pwd to 2Lg - expired
+
+ SecurityToken.create!(:app_name => "enter_app_name", :app_uuid => "enter_app_uuid", :public_key_str => "enter public key, as single line  with \n")
+
+ SecurityToken.create!(:app_name => "IIR test", :app_uuid => "d38e7edc-5113-11e1-95fe-70cd60fffe66", :public_key_str => "enter public key, as single line  with \n")
+
+Api Id: d38e7edc-5113-11e1-95fe-70cd60fffe66
+will need this for mauth config of iir!
+
+i dont know where i got this public key dont see it in .ssh
+i do see priv key
+"-----BEGIN RSA PUBLIC KEY-----\nMIIBCgKCAQEA34ajaK5gm/UM4PxHyrIF+gcBr6cacLqWdSzfGOz6KdBLCZXzHYWX\n/9sEL7XgWuXhhXsJr8bgNibUToghgK+cE9QVUnipDSogc2Ds2FJE5rlJBFtfPLrw\n11OT20teCTeFpaXl2pE/C+ItlW9Ip2QYNF5v9eHHxMdBzJC7yckiCfLaY58/wT+K\naxiFZsaw15LMGHeiqMeGt1kRGqfREIm+drOiMjD5P49uOMn2Ye5RbdF1JkhVv1wo\ngqABWpAV1d8akpBh3bytoyH4Wgwi4lLeAVSc0glnh6+ED3wq0+7p1X/OufTErEJN\nDyRRg9hiTLnXMKWpX24yX5TI5cucDp6DPQIDAQAB\n-----END RSA PUBLIC KEY-----\n"
+
+thats matts public key i think or geofreys
+my pub key is
+AAAAB3NzaC1yc2EAAAABIwAAAQEAzFFKXyGP2tmS9GAw0yjuDcjYn35KvNsmMc6L8JqLhXIhEF7txP/s9Z4/gq5ESPD1JdcRCUMkoXF9p/b/L25V/+08szyYdWUz4Wwh/wdu41xcT1lUSOmz5ApPO9Z5BTTZprW/BZaI1YYlCugwjjaNrN0vwXghI5Ak6zF3GuSgqnLQYBC3HgAGMsWYy9XT07uLpgDbOOSsz9iDN3e/QVSyPAIrZr7F/x7Ej/ftbiMsn0Mz87fvPEbhoScH422v9nBUH90IW++nKuIYuc5giaLLTO2iyJAIHd5jQFtVgNp52286MV31dcBvzPH1YEnmVRj6M4JJoQUi9g6/bO3CQauYyw==
+
+
+it seems like i mangled keys in rack-mauth-notes
+but somehow it worked
+looks like i used matts public key not mine - very confusing - then again i was very 
+confused at the time
+
+oh wait i made a whole new pair 
+cos i didnt want it to get mixed up with old or something
+
+so i think somewhwere in the process i made a new key pair though i dont seem to have 
+documented that
+and whats confusing is the priv keys have sam MIIE prefix
+i think i will just reuse my working pair for now i think it will be fine
+-----BEGIN RSA PRIVATE KEY-----
+MIIEoQIBAAKCAQEAzFFKXyGP2tmS9GAw0yjuDcjYn35KvNsmMc6L8JqLhXIhEF7t
+xP/s9Z4/gq5ESPD1JdcRCUMkoXF9p/b/L25V/+08szyYdWUz4Wwh/wdu41xcT1lU
+SOmz5ApPO9Z5BTTZprW/BZaI1YYlCugwjjaNrN0vwXghI5Ak6zF3GuSgqnLQYBC3
+HgAGMsWYy9XT07uLpgDbOOSsz9iDN3e/QVSyPAIrZr7F/x7Ej/ftbiMsn0Mz87fv
+PEbhoScH422v9nBUH90IW++nKuIYuc5giaLLTO2iyJAIHd5jQFtVgNp52286MV31
+dcBvzPH1YEnmVRj6M4JJoQUi9g6/bO3CQauYywIBIwKCAQEAhkQMTSSu/Yeptoha
+mWQKJlDI3damJFV/f9DfnhxqUGDxKAPeE74fX5Pgl7RYwjfxjeUZ0uL60H3HmkM5
++pj2r36kO0UTutwax1Wv8Lu95d2bvx1x5sV2NsTyPUPL3tmWV5wBL47O8rc86ekJ
+9w3oEoK4+3rT8sxwCEUTwTcnwHYna+0KZ4XIhaHHYbLbZO/M7tm0TCxta+yoslZ5
+iB8lg1PtqOj9r8qwaXYzrUP2BvcltSjhmKIhNNAfSvem2+InXTyOWu14QvbUNQae
+qwj577t5+5BDH6OuQLHYfC74fEd+d5UsXMwZUKZJS3r/uynxPUwJDowH+EYDHGhF
+3sLDKwKBgQD+laNfF114az967EBIcjW4y8C39pHdK7al1J73r1LXiImwYsZZA0PI
+tpqmD2SsUMsoHn1c+D7S6KFYvGcnTTFR7oo8z8/1yPvI45DBRqyp76fjwMQmWf0g
+wDntHcvB69OIomUVQuA0YpQxe47wOY/pRPS3dtUju4YZMlVR9P7oWwKBgQDNdBrk
+BO07PvQa/P/ONzpNFb0ySNeNTc/+EK47JwocDQPk1mlaPkJes1Bc58Zi9fTSc6NR
+Ol9AXQYxnq8QT4KwB52Z4F1ISekjLIF2KG4JMz63fdoXcld8Ha6ZY0zOgGaM70Jl
+CdYrJ0p1v8gjCdnvvcvzr+B4qncnD13vtuh8UQKBgB0YanFEf7X9oNrZK+sFvP8t
+OpiudxH2XgRS0FbSNVp2ARt5ALm3OvJeAwup/OB+QxqHJEUjr2iPnWk6GmrkQCae
+6zomYOjjxQEEEIseBRq8TbOhAHlpXsHqFT+rokIMUrCHloYWRYJUaLUysUAGlBqo
+y4KufsJBUSdzd3cUr2sDAoGAEZw80bdHiLxAzxz/+7uXSG+T370Zykh/is460d7G
+Wi0AVXF2vpefSfIc1MNoxqdeIKrTe/2wZJpCXAZJhQ4hJQf3kNi3idpzEaS6o7pS
+kxMFYC9b1h++Wxh8rg/TYihDTeifSn0vnUyCuaK5YhbJiZPs6QByU3xTWx6TBesb
+PdsCgYB+y7H5MQSw4fFzsoxdDALRpBjbddirKwXxOLiwhV3z1rk0pLoPnrsQddOL
+32wtUFuYNS+wSu/480r9u0JLsriKKcf241z2XCdHJ2slpHDD9imL5wDxmtKm4Th9
+xO9tGPVwzbM5YEKnbtalWcGBv3AjOZshBl3Zut8lIBSftMvTVA==
+-----END RSA PRIVATE KEY-----
+
+ah - heres the call - i did it in ruby:
+ruby-1.8.7-p249 :002 > @private_key = OpenSSL::PKey::RSA.generate( 2048 )
+
+ @private_key_str = @private_key.to_s
+
+ @public_key_str = @private_key.public_key.to_s
+
+in rack mauth ~/r
+irb
+~/r (master) $ irb
+Using /Users/magibson/.rvm/gems/ruby-1.8.7-p249 with gemset rackmauth
+ruby-1.8.7-p249 :001 > require 'openssl'
+ => true 
+Using /Users/magibson/.rvm/gems/ruby-1.8.7-p249 with gemset rackmauth
+ruby-1.8.7-p249 :002 > @private_key = OpenSSL::PKey::RSA.generate( 2048 )
+
+
+lets just use the key pair made from that - why not
+with old app id
+SecurityToken.create!(:app_name => "mark-jazzhand-imed-local-client", :app_uuid => "993516ea-3dfb-11e1-a84d-70cd60fffe66", :public_key_str => "-----BEGIN RSA PUBLIC KEY-----\nMIIBCgKCAQEA34ajaK5gm/UM4PxHyrIF+gcBr6cacLqWdSzfGOz6KdBLCZXzHYWX\n/9sEL7XgWuXhhXsJr8bgNibUToghgK+cE9QVUnipDSogc2Ds2FJE5rlJBFtfPLrw\n11OT20teCTeFpaXl2pE/C+ItlW9Ip2QYNF5v9eHHxMdBzJC7yckiCfLaY58/wT+K\naxiFZsaw15LMGHeiqMeGt1kRGqfREIm+drOiMjD5P49uOMn2Ye5RbdF1JkhVv1wo\ngqABWpAV1d8akpBh3bytoyH4Wgwi4lLeAVSc0glnh6+ED3wq0+7p1X/OufTErEJN\nDyRRg9hiTLnXMKWpX24yX5TI5cucDp6DPQIDAQAB\n-----END RSA PUBLIC KEY-----\n")
+
+same key but new app id:
+
+SecurityToken.create!(:app_name => "IIR-dev", :app_uuid => "d38e7edc-5113-11e1-95fe-70cd60fffe66", :public_key_str => "-----BEGIN RSA PUBLIC KEY-----\nMIIBCgKCAQEA34ajaK5gm/UM4PxHyrIF+gcBr6cacLqWdSzfGOz6KdBLCZXzHYWX\n/9sEL7XgWuXhhXsJr8bgNibUToghgK+cE9QVUnipDSogc2Ds2FJE5rlJBFtfPLrw\n11OT20teCTeFpaXl2pE/C+ItlW9Ip2QYNF5v9eHHxMdBzJC7yckiCfLaY58/wT+K\naxiFZsaw15LMGHeiqMeGt1kRGqfREIm+drOiMjD5P49uOMn2Ye5RbdF1JkhVv1wo\ngqABWpAV1d8akpBh3bytoyH4Wgwi4lLeAVSc0glnh6+ED3wq0+7p1X/OufTErEJN\nDyRRg9hiTLnXMKWpX24yX5TI5cucDp6DPQIDAQAB\n-----END RSA PUBLIC KEY-----\n")
+
+=> #<SecurityToken:0xb65b31f8 @errors=#<OrderedHash {}>, @public_key_str="-----BEGIN RSA PUBLIC KEY-----\nMIIBCgKCAQEA34ajaK5gm/UM4PxHyrIF+gcBr6cacLqWdSzfGOz6KdBLCZXzHYWX\n/9sEL7XgWuXhhXsJr8bgNibUToghgK+cE9QVUnipDSogc2Ds2FJE5rlJBFtfPLrw\n11OT20teCTeFpaXl2pE/C+ItlW9Ip2QYNF5v9eHHxMdBzJC7yckiCfLaY58/wT+K\naxiFZsaw15LMGHeiqMeGt1kRGqfREIm+drOiMjD5P49uOMn2Ye5RbdF1JkhVv1wo\ngqABWpAV1d8akpBh3bytoyH4Wgwi4lLeAVSc0glnh6+ED3wq0+7p1X/OufTErEJN\nDyRRg9hiTLnXMKWpX24yX5TI5cucDp6DPQIDAQAB\n-----END RSA PUBLIC KEY-----\n", @created_at=Thu Feb 09 18:41:38 UTC 2012, @app_uuid="d38e7edc-5113-11e1-95fe-70cd60fffe66", @validation_context=nil, @app_name="IIR-dev", @new_record=true>
+
+SecurityToken.find_by_app_uuid!("d38e7edc-5113-11e1-95fe-70cd60fffe66")
+yup its there
+
+now lets test with curl before we do it with rails-iir
+
+lets get new curlgen script from rack mauth
+
+the version of rack-mauth to use is http-client
+
+need to make curl config file
+put curlgen into iir root for now - maybe it belongs in iir test?
+Create a new yaml file, ensure it has the following format:
+      :private_key_str: | 
+               <multi line private key for the app that is making the call>
+      :app_uuid: <uuid of app making the api call> 
+      :host: <host, include http://>
+      :url: <api url path>
+      :verb: <http method used, GET, POST, etc>
+      :post_data: <if using POST, enter post data here>
+   Example file:
+     :private_key_str: | 
+                    -----BEGIN RSA PRIVATE KEY-----
+                    MIIEpAIBAAKCAQEAsZasSJmci3icNVbpz6Si5OmZBSAVVEJx02gm9OQvCr1XhIqA
+                    .........................................................................................................                 
+                    8bvTK2ddzX3k8br6SfKBLPfD90Giy5xvCDheF/+D8Ce0AVaYeXRgyw==
+                    -----END RSA PRIVATE KEY-----
+    :app_uuid: 70f3841a-4868-11e1-9826-a4b197fffe70 
+    :host: http://localhost:3000 
+    :url: /api/v2/studies/b56680fa-0c97-11e1-9af1-1231391d1426/users.json
+    :verb: GET
+    :post_data: 
+
+     :private_key_str: | 
+          -----BEGIN RSA PRIVATE KEY-----
+     	  MIIEowIBAAKCAQEA34ajaK5gm/UM4PxHyrIF+gcBr6cacLqWdSzfGOz6KdBLCZXz
+     	  HYWX/9sEL7XgWuXhhXsJr8bgNibUToghgK+cE9QVUnipDSogc2Ds2FJE5rlJBFtf
+     	  PLrw11OT20teCTeFpaXl2pE/C+ItlW9Ip2QYNF5v9eHHxMdBzJC7yckiCfLaY58/
+     	  wT+KaxiFZsaw15LMGHeiqMeGt1kRGqfREIm+drOiMjD5P49uOMn2Ye5RbdF1JkhV
+     	  v1wogqABWpAV1d8akpBh3bytoyH4Wgwi4lLeAVSc0glnh6+ED3wq0+7p1X/OufTE
+     	  rEJNDyRRg9hiTLnXMKWpX24yX5TI5cucDp6DPQIDAQABAoIBAB+C5JCCXL4/upQR
+     	  HLHXjP4ldLhlj1WrCED2lXD3H4E7iwiL6h0UU0xPfPSY6EsIM1XU9ZWhLMSVjsKP
+     	  cGGq4A7vjB33QqXHdZGubVVFq872+fMySmfOVtuUPbjhlB0qhZ3HmHLKnR+4wAJc
+     	  ENsAQmVHlvML5FS6Xm1PThnxT+ok3ezJHq7wEdHeWxgKffUrbv6JHK1p4wHn9s3B
+     	  DU/Ljnfi04Q6q7yr5COzarpBiego7NqHqcMmQnZAfzUdYW9sNu9skjYpm0u5JFJv
+     	  5NAD9pLaA2lOCeJo9tkxQyzX+7GNvC0X7fHrrREgHJQsoMOjN5RacOc/xHdy7aWK
+     	  /K0HbmUCgYEA9DXh2obI8I0s2pYRXO5pMNPkpm3ouhjIJGh0cBUO8gkyqwRy3JOl
+     	  NG/mewJRPt3gynBe+T8B0ZEEzKItP3LdMoKQyMiUa/4mKq6Q33ZxabgilrnfG7wR
+     	  QlCWUOmrEf1r6KIKqPtIQVpxR5ms85P2j6OJHWSFm5MojHQ1iawSjfMCgYEA6lEf
+     	  XDGadnT7rxJHRObvW8KzbRmv/N2o0UW5tVv+EyC+IpGghSa62WXQmbk3RDl3VJRe
+     	  q+tkBUzL56xfOFeZ5/YwCvHcizOkqJRk7F0I+mabD1cbVAMtnTUgo4Um32vdGT+Q
+     	  Br9sZkp1pQUKkmAYgVXqVOdpKjrp8o83hh+Zhg8CgYEAlFgOw/HQKd93+afjEDJ6
+     	  j4CHilmFX1YibYtN/6+rDndr4dqn8zl0xy+aL+quc6PQIuizqHAPqL+QzMVO+xXJ
+     	  LB+H14+QKTGO+apksnl+VxvVVv29e1l4mnHdfXUTx6/LVtrn4tIRiDFqUnYVSzj8
+     	  MzDB36rqRiDUJs2IoAJ4muUCgYAt80KnHcMgv8griPYY+QCvifsNxh/RAtb8UyQc
+     	  ALJOpfkjZlOISRQTVfgWbU/9PRe9qmr2Y+71ax4BjLgPoH46EvlQ7CVH1xTPSmqQ
+     	  P55nHIAD/h0J2KW1UpnX92CsJ8bwEJr598gWNzvi5J4yHk4v7t1JUSg6c9s1Cgjl
+     	  cIT22QKBgHayTw+K3CIf8f7j8Bso6JuKhJV4Hz7D5U0HFiKqSl5Hxl+V4LoaYtOR
+     	  pdqtQCNnVLrDcXaLNOknjDEvi1qtA5acbyiRS9dyE/Plv4p96rsyQY6PviU6gbKI
+     	  cmWAExNsM5QZHHIToW855bFXm+rCZvCn3oYUA1tyvDQqZbZUX8pQ
+     	  -----END RSA PRIVATE KEY-----
+    :app_uuid: d38e7edc-5113-11e1-95fe-70cd60fffe66
+    :host: http://localhost:3001
+    :url: /api/v2/studies/index/d2216ad8-5199-11e1-95fe-70cd60fffe66
+    :verb: GET
+    :post_data: 
+
+uuid of my study - got with mysql query of studies
+d2216ad8-5199-11e1-95fe-70cd60fffe66
+
+foreman start
+cd ~/i
+curlgen.rb curlgen-data.yml
+
+./curlgen.rb curlgen-data.yml
+Invalid gemspec in [/Users/magibson/.rvm/gems/ruby-1.8.7-p249@imedidata/specifications/chronic-0.6.6.gemspec]: invalid date format in specification: "2011-11-23 00:00:00.000000000Z"
+Invalid gemspec in [/Users/magibson/.rvm/gems/ruby-1.8.7-p249@imedidata/specifications/foreman-0.36.1.gemspec]: invalid date format in specification: "2012-01-18 00:00:00.000000000Z"
+Invalid gemspec in [/Users/magibson/.rvm/gems/ruby-1.8.7-p249@imedidata/specifications/jquery-rails-1.0.19.gemspec]: invalid date format in specification: "2011-11-26 00:00:00.000000000Z"
+Invalid gemspec in [/Users/magibson/.rvm/gems/ruby-1.8.7-p249@imedidata/specifications/term-ansicolor-1.0.7.gemspec]: invalid date format in specification: "2011-10-13 00:00:00.000000000Z"
+Invalid gemspec in [/Users/magibson/.rvm/gems/ruby-1.8.7-p249@imedidata/specifications/tilt-1.3.3.gemspec]: invalid date format in specification: "2011-08-25 00:00:00.000000000Z"
+git@github.com:mdsol/mauth_signer.git (at >=v1.0.3) is not checked out. Please run `bundle install`
+
+woops wrong rvm
+iir
+
+http://guides.rubyonrails.org/debugging_rails_applications.html
+If you are using Ruby 1.9, you can install a compatible version of ruby-debug by running 
+sudo gem install ruby-debug19
+
+this is whats needed for debugger! just check gemfile!
+require 'ruby-debug'
+# To use debugger
+gem 'ruby-debug19', :require => 'ruby-debug'
+
+oh geez the file format was wrong in the doc
+
+:app_uuid: d38e7edc-5113-11e1-95fe-70cd60fffe66
+:base_url: http://localhost:3001
+:path: /api/v2/studies/index/d2216ad8-5199-11e1-95fe-70cd60fffe66
+:verb: GET
+:post_data: 
+
+
+curl -v -H 'x-mws-authentication: MWS d38e7edc-5113-11e1-95fe-70cd60fffe66:VFy00Mg2qxhGZqjRicDtCXk8QP12gTDM7lX0RFxtEngrQKJYsYCHr7oTqU//SfR0TcPUYLFj2cKEIRjSs1BoFrIOdBbD1C96UCqMiT6VgJvf8AqcPtbMgCnbHX2DbJRDpPo2IwlUrhl79JK79TIrT3Y/R7B9O/p2rLWHSPvxV/kq2ir3xiTiMkKGfjGvAGjtqqmlPtjc4MPUjYCTqE26G7tstMad8PLbwqdjPjprN60YXa/b8Q6Ea/4qLwnxcmQeSxWyA1D6NyqlMRfeuaI3sbGOA09hz7a7Wi+bfoq06AfsFTtx/Q/fA4xWubV1HaALsQme7UxqQ2ogu2nkRRAEJg==' -H 'x-mws-time: 1328818955' http://localhost:3001/api/v2/studies/index/d2216ad8-5199-11e1-95fe-70cd60fffe66
+
+ HTTP/1.1 401 Unauthorized
+dam!
+
+no output on foreman
+
+need to put debugger in imedidata
+
+rack mauth is doing local authentication
+and verifier is nil
+       # Rack-mauth does its own authentication
+   135        def authenticate_request(digest, params)
+   136          verifier = verifier_for_app(params[:app_uuid])
+=> 137          !verifier.nil? && verifier.verify_request(digest, params)
+   138        end
+   139 
+
+rack-mauth: Cannot find public key for app with uuid d38e7edc-5113-11e1-95fe-70cd60fffe66 locally or in MAuth
+
+/Users/magibson/.rvm/gems/ruby-1.8.7-p249@imedidata/bundler/gems/rack-mauth-d8ced6e7a9ea/lib/rack/mauth.rb
+
+imedidata pubvlic key not yet in mauth for doing caching
+
+ Michael:  -----BEGIN RSA PUBLIC KEY-----\nMIIBCgKCAQEAtJQ15Qxju7lrXyXL8eRHQNa4KvG1Lief+reSwhVTAUTWqk1LRcZG\nh+fpu5IYG2LnL+nRiwBOirqTgsTt4EblTp7k8uzdawPg4Zfk7Y20OZ/F+LrQ/0JF\n2fGtdZvqyH4IY6GHtPvBEBZ5ERM5pJMMgk7WGp6ocNhpwwaE/ATAOTrnNAFtX2Mw\nQ5e0IihZYywM0iDuddBVI5pqtgE6WvJQ2KFk//9VZqYax2kxDOT/QSIJDQhtuP9R\nuc4Km+T8X27GVL6Vm1QX65wlOiVGGL67/FLuluDkBqIeUaNPYstFxBP8MEoHqhYf\n7D5vHV0JItLmnGTPn0p7fqx9rNtcvR2ERQIDAQAB\n-----END RSA PUBLIC KEY-----\n
+63566d60-4c62-11e1-b86c-0800200c9a66
+
+
+SecurityToken.create!(:app_name => "iMedidata-dev", :app_uuid => "63566d60-4c62-11e1-b86c-0800200c9a66", :public_key_str => "-----BEGIN RSA PUBLIC KEY-----\nMIIBCgKCAQEAtJQ15Qxju7lrXyXL8eRHQNa4KvG1Lief+reSwhVTAUTWqk1LRcZG\nh+fpu5IYG2LnL+nRiwBOirqTgsTt4EblTp7k8uzdawPg4Zfk7Y20OZ/F+LrQ/0JF\n2fGtdZvqyH4IY6GHtPvBEBZ5ERM5pJMMgk7WGp6ocNhpwwaE/ATAOTrnNAFtX2Mw\nQ5e0IihZYywM0iDuddBVI5pqtgE6WvJQ2KFk//9VZqYax2kxDOT/QSIJDQhtuP9R\nuc4Km+T8X27GVL6Vm1QX65wlOiVGGL67/FLuluDkBqIeUaNPYstFxBP8MEoHqhYf\n7D5vHV0JItLmnGTPn0p7fqx9rNtcvR2ERQIDAQAB\n-----END RSA PUBLIC KEY-----\n")
+
+SecurityToken.find_by_app_uuid!("63566d60-4c62-11e1-b86c-0800200c9a66")=> #<SecurityToken:0xb6553b54 @public_key_str="-----BEGIN RSA PUBLIC KEY-----\nMIIBCgKCAQEAtJQ15Qxju7lrXyXL8eRHQNa4KvG1Lief+reSwhVTAUTWqk1LRcZG\nh+fpu5IYG2LnL+nRiwBOirqTgsTt4EblTp7k8uzdawPg4Zfk7Y20OZ/F+LrQ/0JF\n2fGtdZvqyH4IY6GHtPvBEBZ5ERM5pJMMgk7WGp6ocNhpwwaE/ATAOTrnNAFtX2Mw\nQ5e0IihZYywM0iDuddBVI5pqtgE6WvJQ2KFk//9VZqYax2kxDOT/QSIJDQhtuP9R\nuc4Km+T8X27GVL6Vm1QX65wlOiVGGL67/FLuluDkBqIeUaNPYstFxBP8MEoHqhYf\n7D5vHV0JItLmnGTPn0p7fqx9rNtcvR2ERQIDAQAB\n-----END RSA PUBLIC KEY-----\n", @created_at="2012-02-09T21:20:20Z", @app_uuid="63566d60-4c62-11e1-b86c-0800200c9a66", @app_name="iMedidata-dev">
+
+cool its in!
+
+
+curl-study-grp.yml
+:app_uuid: d38e7edc-5113-11e1-95fe-70cd60fffe66
+:base_url: http://localhost:3001
+:path: /api/v2/study_groups.json
+:verb: GET
+:post_data: 
+
+ruby curlgen.rb curl-study-grp.yml
+
+curl -v -H 'x-mws-authentication: MWS d38e7edc-5113-11e1-95fe-70cd60fffe66:ZAI24zNXRaXQePcunueboAXdMMZ/z/JVqXhY/unwJJt0LLRQ/WIwTDP8+joJQO1R88670QrHv+pqWlte+2XkfYiN+5R3F1l48uZFHKJ902WmxsFvElUvfbEI7mSzzwYOdj6MytXbsjFkfNdLikH139xjUsIiWD7L04aFqelCeXtCuyhvG2rqzVqU/KtwyrpDcaBmopb2ix7ipOTxfqA3s54W7mjNBWa2Fg74isKPJYwVmpR2aeZHAtAoYA0LyEXPw/muYF/LITY+s08Eczcw5geKZ5iSV2w99r3jGtyw8BNQQq7YM5QqifQAGzD/6jUOiwjMWULh0yv3XbUWoenT9Q==' -H 'x-mws-time: 1328823512' http://localhost:3001/api/v2/study_groups.json
+
+{"study_groups":[{"href":"http://localhost:3001/api/v2/study_groups/35aa8dec-5199-11e1-95fe-70cd60fffe66","uuid":"35aa8dec-5199-11e1-95fe-70cd60fffe66","name":"aaa for iir"}]}
+
+woohoo it worked!
+
+this path is no good
+ /api/v2/studies/index/d2216ad8-5199-11e1-95fe-70cd60fffe66
+
+so how do i get a study - i think thats what im trying to do
+lets look at balance?
+maybe just do show
+
+ruby curlgen.rb show-study-curl-data.yml
+nope
+No route matches "/api/v2/studies/show/d2216ad8-5199-11e1-95fe-70cd60fffe66"
+
+ User#show would help us make the header scenario pass
+with the user name
+if you wanted to attack that first
+ me:  /api/v2/users/:id/studies
+ Benjamin:  my thought is on login that we would query the User name
+and store it in a session variable
+ me:  oh sure i could go for taht 1st
+ Benjamin:  to use in the header
+yeah that would be good
+a little more digestable
+ Sent at 4:50 PM on Thursday
+ me:  right i guess it makes more sense to get the user before we get the studies for the user
+ Benjamin:  that to 
+ Sent at 4:52 PM on Thursday
+ me:  right so on login there must be some returned data that im currently not grabbing
+ill see what balance does for this
+ Sent at 4:54 PM on Thursday
+ Benjamin:  we use the client plugin
+for IIR I hope it's something simple like User.full_name
+session[:full_name] ||= User.find_by_uuid(cas_uuid).full_name
+assuming our user model is connected to iMedidata
+via active resource
+ Sent at 4:56 PM on Thursday
+ me:  right cool - and i just need to extract a cas_uuid from cas
+ Benjamin:  cas_attrs = session[:cas_extra_attributes]
+cas_attrs[:user_id]
+
+ and I would store the full name in a session variable so we only hit User#show once
+
+switch over to getting user
+
+still go to study controller
+but make call to User model
+user grab cas uuid and make call ot imedidata for user
+
+fri 2/10
+
+ok where we at
+studies controller is going to call User acvtive resouce model
+which is going to call imedidata with user id from cas and mauth headers
+
+need to get uuid from cas attributes for user
+
+from mysql
+mysql-iir
+select * from users
+user uuid for harry caul
+307602f2-469f-11e1-ad6f-00261824db2f
+
+pp cas_attrs
+{"user_id"=>1, "user_uuid"=>"307602f2-469f-11e1-ad6f-00261824db2f"}
+
+yes!
+ pp session
+{"session_id"=>"3c99ff7fb05f9fc2df29fba47d241087",
+ "cas_sent_to_gateway"=>false,
+ "cas_validation_retry_count"=>0,
+ "previous_redirect_to_cas"=>2012-02-08 12:28:38 -0500,
+ "cas_user"=>"superadmin",
+ "cas_extra_attributes"=>
+  {"user_id"=>1, "user_uuid"=>"307602f2-469f-11e1-ad6f-00261824db2f"},
+ "casfilteruser"=>"superadmin",
+ "cas_last_valid_ticket"=>
+  #<CASClient::ServiceTicket:0x000001021a5ee8
+   @renew=nil,
+   @response=
+    <cas:authenticationSuccess>
+  <cas:user xmlns:cas='http://www.yale.edu/tp/cas'>superadmin</cas:user>
+  <user_id xmlns:cas='http://www.yale.edu/tp/cas'>1</user_id>
+  <user_uuid xmlns:cas='http://www.yale.edu/tp/cas'>307602f2-469f-11e1-ad6f-00261824db2f</user_uuid>
+</cas:authenticationSuccess>,
+   @service="http://localhost:3000/",
+   @ticket="ST-1328722123rD82428D2C8BD7E2506">,
+ "_csrf_token"=>"5XayOlr9HGiYUkn8LsAISxG7gdnQ/6ckfuztd7UOl/8="}
+
+ok whats the url for users? api v2 that is
+would be handy to have jazzhands to test - actually can always test with curl!
+
+api_v2_user GET    /api/v2/users/:id(.:format)  {:controller=>"api/v2/users", :action=>"show"}
+
+lets try curl 1st
+
+307602f2-469f-11e1-ad6f-00261824db2f
+:path: /api/v2/users/307602f2-469f-11e1-ad6f-00261824db2f
+
+ruby curlgen.rb user-curl.yaml
+
+curl -v -H 'x-mws-authentication: MWS d38e7edc-5113-11e1-95fe-70cd60fffe66:lzpzPPhgHZeNWtSq/8ebmJdDaPUu0bVErbYttpOpZPDGSopeX0TZD4WWssmD3h+hDUow5lZe4zF36YPnr6UJkHhSbY1f3A8D+YbN9KdXWTylUdj0RORFUja1kdAcsB5FN30PZ++LfPH8L5sSNZ8/MQK4yWoK8Lo27RKcy8yW3My0EF5scB87zHGABmtn7pCr7oh8crrTSP4cn97pFC+0vviKmdhhvGdfY80eEdmxbSBr1WhmveiMiFgol6MhdYvi01DAsnzVJs+W0yrbVTX+uXaxPFYW6co4wWlOdgcgM3yqECyJtySitbw3Tm/MfaUihGShGgCgzAqwL7v8H/HjeA==' -H 'x-mws-time: 1328887400' http://localhost:3001/api/v2/users/307602f2-469f-11e1-ad6f-00261824db2f
+
+< HTTP/1.1 200 OK
+< Connection: close
+< Date: Fri, 10 Feb 2012 15:24:08 GMT
+< request_token: okszHfNCdFg2OG7PFrK%2FDK3KKgk4wnKSxqwSuPd6QJNGCvC8mRbTpBivdyNS%0AdzNehcEw2bMs4C9dzlU7O9PnvkPmf%2FvHgtn5Fand0EsUhrFnP63JBAhceU2s%0AAuL4JXmf5LJyspcPuRI9fAkt2imUFe1Qiqbgubm%2FMSE9UdZbpQo%3D%0A
+< ETag: "a2ea4f2892a0c2592f1cd94a04c27e3a"
+< Content-Type: application/xml; charset=utf-8
+< X-Runtime: 323
+< Content-Length: 489
+< Set-Cookie: _session_id=dc288de392493fb7c23da6d2e77f5639; path=/; HttpOnly
+< Cache-Control: private, max-age=0, must-revalidate
+< 
+<user name="Harry Caul" city="" institution="" title="" country="" uuid="307602f2-469f-11e1-ad6f-00261824db2f" postal_code="" creator_uuid="a9cc880c-492d-11e1-842b-00261824db2f" activation_code="4cb10bf91b6aee3508b191fc662135bf04193718" pager="" address_line_1="" mobile="" last_name="Caul" address_line_2="" fax="" time_zone="Midway Island" locale="eng" address_line_3="" telephone="337-449-8988" login="superadmin" department="" email="harrycaul@mdsol.com" first_name="Harry" state=""/>
+
+woohoo!
+
+now big test of active resource
+
+undefined method `find_by_uuid' for User:Class
+
+well thats not shocking
+maybe just find?
+like this
+http://api.rubyonrails.org/classes/ActiveResource/Base.html#method-c-headers
+ryan = Person.find(1)
+
+Failed.  Response code = 404.  Response message = Not Found.
+
+Existing local CAS session detected for "superadmin". Previous ticket "ST-1328722123rD82428D2C8BD7E2506" will be re-used.
+10:28:49 iir.1           | Completed 500 Internal Server Error in 387ms
+10:28:49 iir.1           | 
+10:28:49 iir.1           | ActiveResource::ResourceNotFound (Failed.  Response code = 404.  Response message = Not Found.):
+10:28:49 iir.1           |   app/controllers/investigator/studies_controller.rb:11:in `get_user_info'
+
+
+http://api.rubyonrails.org/files/activeresource/README_rdoc.html
+
+ok i think we need to see wahts happening in imed/rackmauth/mauth to cause 500 error
+that isnt happening with curl - curl works 
+so active resource is prob not making the request i think it is
+
+# for GET http://api.people.com:3000/people/1.xml
+#
+ryan = Person.find(1)
+need to see what url it actually makes ??? how to get at that in active resource
+
+oh wait - jesus - we havent put in the bloody mauth headers yet - of course this is a 500 or whatever
+PivotalTracker::Resource.headers['X-TrackerToken'] = "mytoken"
+ah!
+its a hash
+so we just say 
+obj.headers['x-mws-time'] = "239487"
+obj.headers['Authorization'] = 'osidfoisj'
+or
+http://ryandaigle.com/articles/2007/5/7/what-s-new-in-edge-rails-activeresource-finder-update
+class Post < ActiveResource::Base
+  headers['X-MyHeader'] = 'ryan'
+end
+
+  def find(user_uuid)
+    headers['Authorization'] = 1
+    headers['x-mws-time'] = 1234
+    self.find(user_uuid)
+
+l;ets go to curlgen
+
+    headers = MAuth::Signer.new(:private_key => self.private_key_str).
+                            signed_request_headers(:app_uuid => self.app_uuid,
+                             :request_url => path, :post_data => post_data, :verb => verb)
+ args = headers.map{|k,v| "-H '#{k}: #{v}'"} * ' '
+
+so headers has key value pairs for headers
+
+i think priv key has to be as one string with \n
+"-----BEGIN RSA PRIVATE KEY-----\nMIIEowIBAAKCAQEA34ajaK5gm/UM4PxHyrIF+gcBr6cacLqWdSzfGOz6KdBLCZXz\nHYWX/9sEL7XgWuXhhXsJr8bgNibUToghgK+cE9QVUnipDSogc2Ds2FJE5rlJBFtf\nPLrw11OT20teCTeFpaXl2pE/C+ItlW9Ip2QYNF5v9eHHxMdBzJC7yckiCfLaY58/\nwT+KaxiFZsaw15LMGHeiqMeGt1kRGqfREIm+drOiMjD5P49uOMn2Ye5RbdF1JkhV\nv1wogqABWpAV1d8akpBh3bytoyH4Wgwi4lLeAVSc0glnh6+ED3wq0+7p1X/OufTE\nrEJNDyRRg9hiTLnXMKWpX24yX5TI5cucDp6DPQIDAQABAoIBAB+C5JCCXL4/upQR\nHLHXjP4ldLhlj1WrCED2lXD3H4E7iwiL6h0UU0xPfPSY6EsIM1XU9ZWhLMSVjsKP\ncGGq4A7vjB33QqXHdZGubVVFq872+fMySmfOVtuUPbjhlB0qhZ3HmHLKnR+4wAJc\nENsAQmVHlvML5FS6Xm1PThnxT+ok3ezJHq7wEdHeWxgKffUrbv6JHK1p4wHn9s3B\nDU/Ljnfi04Q6q7yr5COzarpBiego7NqHqcMmQnZAfzUdYW9sNu9skjYpm0u5JFJv\n5NAD9pLaA2lOCeJo9tkxQyzX+7GNvC0X7fHrrREgHJQsoMOjN5RacOc/xHdy7aWK\n/K0HbmUCgYEA9DXh2obI8I0s2pYRXO5pMNPkpm3ouhjIJGh0cBUO8gkyqwRy3JOl\nNG/mewJRPt3gynBe+T8B0ZEEzKItP3LdMoKQyMiUa/4mKq6Q33ZxabgilrnfG7wR\nQlCWUOmrEf1r6KIKqPtIQVpxR5ms85P2j6OJHWSFm5MojHQ1iawSjfMCgYEA6lEf\nXDGadnT7rxJHRObvW8KzbRmv/N2o0UW5tVv+EyC+IpGghSa62WXQmbk3RDl3VJRe\nq+tkBUzL56xfOFeZ5/YwCvHcizOkqJRk7F0I+mabD1cbVAMtnTUgo4Um32vdGT+Q\nBr9sZkp1pQUKkmAYgVXqVOdpKjrp8o83hh+Zhg8CgYEAlFgOw/HQKd93+afjEDJ6\nj4CHilmFX1YibYtN/6+rDndr4dqn8zl0xy+aL+quc6PQIuizqHAPqL+QzMVO+xXJ\nLB+H14+QKTGO+apksnl+VxvVVv29e1l4mnHdfXUTx6/LVtrn4tIRiDFqUnYVSzj8\nMzDB36rqRiDUJs2IoAJ4muUCgYAt80KnHcMgv8griPYY+QCvifsNxh/RAtb8UyQc\nALJOpfkjZlOISRQTVfgWbU/9PRe9qmr2Y+71ax4BjLgPoH46EvlQ7CVH1xTPSmqQ\nP55nHIAD/h0J2KW1UpnX92CsJ8bwEJr598gWNzvi5J4yHk4v7t1JUSg6c9s1Cgjl\ncIT22QKBgHayTw+K3CIf8f7j8Bso6JuKhJV4Hz7D5U0HFiKqSl5Hxl+V4LoaYtOR\npdqtQCNnVLrDcXaLNOknjDEvi1qtA5acbyiRS9dyE/Plv4p96rsyQY6PviU6gbKI\ncmWAExNsM5QZHHIToW855bFXm+rCZvCn3oYUA1tyvDQqZbZUX8pQ\n-----END RSA PRIVATE KEY-----\n"
+
+
+bundle exec rails server --debugger -p 3000
+
+pp path
+"/api/v2/users/users/307602f2-469f-11e1-ad6f-00261824db2f.json"
+its putting a .json on it should still work but should check this in curl
+
+pp headers
+{}
+that cant be good
+surprised getting 404 and not 500?
+
+i think my local headers is overriding headers method - not setting headers
+
+hmmm
+i think rack matuh may be rejecting it?
+need to put debugger into imediata/rackmatuh i guess
+getting a 401
+
+Completed 500 Internal Server Error in 8149ms
+
+ActiveResource::UnauthorizedAccess (Failed.  Response code = 401.  Response message = Unauthorized.):
+  app/models/user.rb:26:in `find_user'
+ 
+/api/v2/users/users/307602f2-469f-11e1-ad6f-00261824db2f.json
+
+also put .json explicitly on request?
+
+mauth is definitely rejecting - local
+
+yup curl works with .json
+lets put .json in request
+
+:path: /api/v2/users/307602f2-469f-11e1-ad6f-00261824db2f.json
+this is the path that goes into signer!
+not /api/v2/users/!
+
+forecasting integration branch on balance
+
+balance/yi wanted to use active resource - however can only use for rails 3.1 and balance is a loser with rails 2
+
+do we need \n at beginning? or priv key?
+
+need to step into mauth
+/Users/magibson/.rvm/gems/ruby-1.8.7-p249@imedidata/bundler/gems/rack-mauth-d8ced6e7a9ea/lib/rack/mauth.rb
+
+/Users/magibson/.rvm/gems/ruby-1.8.7-p249@imedidata/bundler/gems/mauth_signer-bc6bc2dc1684/lib/mauth_signer.rb
+
+     # Verify request or response signature
+   107      def verify_signature(signature, params, request_or_response)
+   108        begin
+=> 109          verify_signature_time(params[:time]) && secure_compare(decrypt_with_public_key(Base64.decode64(signature)), format_string_to_sign(request_or_response, params))
+   110
+
+this is failing!!
+so the request is prob getting mangled or not doing exactly what we expect
+oh we should put post as "" just in case
+
+pp verify_signature_time(params[:time])
+true
+(rdb:7) pp secure_compare(decrypt_with_public_key(Base64.decode64(signature)), format_string_to_sign(request_or_response, params))
+false
+(rdb:7) decrypt_with_public_key(Base64.decode64(signature))
+"19538997de750e866a0644751f66552ba0e680acfe9fce968b66372f6fa9f63488f7647fe507bbe053b63df43bac431ca723ebd20c83b5e53776e91bda0084dd"
+(rdb:7) format_string_to_sign(request_or_response, params)
+"4068d8b389bb6b35aca316ac09bc0c31b63df7e518d3ddd3eb324a7007f452a7b01380c63978c6988e591f339381b5722ef8756672ac801e973211b706a88b21"
+
+so the params its signing with are different than the params sigining with over in user.rb
+so we need to look at them - need to dig into these methods
+
+pp params
+{:digest=>
+  "s9OkiRTLOcoKMCCpY6HZROcp5BBUpmOPA+LEYcw0w/bg0DG238Sx5lCs+S/vilxcdCAbYM6yn6C6a4qrEZsj9vOktUxZ5ynnaPGbTJ8idyr5qlqR1N1d0e9HXP/U4/eiEgLCWMVFvScsiLEFnyp5dKbKeOPnJX73r+x+9QL3Jm4XI5zZn4usI2/aBxLb9GZfhJgTFGnXaN3d05jDPrrdTeqyL0vdIykfBHnAdw2gH44CTZJIGBiwkFMlp/R54i/j6GNb1oBLlbJ3hSUwi/mhbl9FNB1+aTiSI1/4EYA9iYtpkDBiC9ODAcUpHTJKzKAhsGVZ7fnC5a3K1RImIVw+2w==",
+ :app_uuid=>"d38e7edc-5113-11e1-95fe-70cd60fffe66",
+ :time=>"1328899744",
+ :verb=>"GET",
+ :body=>"",
+ :request_url=>"/api/v2/users/users/307602f2-469f-11e1-ad6f-00261824db2f.json"}
+(rdb:7) pp request_or_response
+:request
+
+body is empty string
+oh i wonder if its not there in other signinig????
+
+pp str_to_sign
+"GET\n/api/v2/users/users/307602f2-469f-11e1-ad6f-00261824db2f.json\n\nd38e7edc-5113-11e1-95fe-70cd60fffe66\n1328899744"
+
+pp Digest::SHA512.hexdigest(str_to_sign)
+"01309ee0539891ee767af8d7f68de3129d6e031077d34b0c04c8eb0e26bddec50bd0092d53482b7648aa3585620614ff7e13af24a1d93344e8c6e24e042eb0b5"
+
+ill bet its the empty body! ill  bet active record shoves in the empty body to the request!
+
+mauth_signer
+    # Returns a header to include in authenticated requests
+    def signed_request_headers(params)
+      params.merge!(:time => Time.now.to_i)
+      {
+        'x-mws-authentication' => "MWS #{params[:app_uuid]}:#{generate_request_signature(params)}",
+        'x-mws-time' => params[:time].to_s
+      }
+    end
+
+    # Generates a signature by encrypting string of request parameters
+    def generate_request_signature(params)
+      generate_signature(params, :request)
+    end
+    # Generate request or response signature
+    def generate_signature(params, request_or_response)
+      sig = encrypt_with_private_key format_string_to_sign(request_or_response, params)
+      Base64.encode64(sig).gsub("\n","")
+    end
+
+dam - putting :body => '' didnt work
+
+pp str_to_sign
+"GET\n/api/v2/users/users/307602f2-469f-11e1-ad6f-00261824db2f.json\n\nd38e7edc-5113-11e1-95fe-70cd60fffe66\n1328899744"
+
+need to see what this string looks like in mauth signer for iir -
+which is in a different gemset! 1.9.2
+put a breakpoint there
+
+wo look at that - users/users - thats the problem
+users shouldnt be in there???
+
+!!!!holy shit that was it - dont put users in path for active record because it adds it
+but you dont have to put it in for maunl mauth signing of course
+
+holy crap - it was the extra folder added - empty body and post didnt matter
+
+oh but the .json does have to be there
+
+ok should clean up code and make pull request - why not
+
+commit # of submod imed has changed
+from e06 to 75b
+did i change this?
+
+thats wrong - e06 is the latest
+do i need to do submodule update?
+nope
+funny - i guess ill just discard it
+cant undo in gitx - hmmmm
+
+commit 75bcce708ddbda1a2f3256fbb98bc3fd8d6f9192
+Author: Mark Gibson <magibson@mdsol.com>
+Date:   Wed Feb 8 15:00:18 2012 -0500
+
+    ignore .rvmrc
+
+commit e0662bd1264da8feea09b79ecf0f2d4387078362
+Author: Mike West <mwest@mdsol.com>
+Date:   Mon Feb 6 09:38:47 2012 -0500
+
+    Remove extra whitespace in preinitializer
+
+
+so its some sort of new commit - which has my ignore .rvmrc in it
+strange
+dont know where that commit lives
+or maybe its just local
+
+
+mon 2/13
+comments from ethan & ben on commit
+use agi monkey patch
+and use eureka
+
+oh i should put my notes in github! then i can share notes across laptop and desktop! yes must do today!
+also need to setup laptop
+
+well what the hell is eureka?
+http://eureka.ykyuen.info/2011/04/28/rails-file-upload-with-paperclip/
+Rails – File Upload with Paperclip
+
+ben:
+Basically make a simple config file and make this pass
+@PB11314-003
