@@ -1,0 +1,4 @@
+script/dbconsole
+
+columns
+show columns from packlists;

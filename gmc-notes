@@ -1,0 +1,174 @@
+medistrano.imedidata.net
+-> sandbox - or whereev
+sudo su - medidata
+cd /mnt/app/current  base of application
+tail -f logs/...
+
+
+***gmc fetching of studies from imedidata
+
+studies_controller
+ def index
+debugger
+    # if takeout if here then will always sync and not show potentially stale cache
+    syncronize_studies # if (request.referer == "/" && !@just_logged_in) # this is the fetch - or not fetch from db
+    Study.synchronize_groups(current_user)
+# this is interesting - what is the paging about?
+    @medidata_studies = Study.medidata_list(current_user).includes(:study => :data_cache).order(sort_sql).paginate(
+      :page => params[:page], :per_page => params[:per_page]
+    )
+
+
+  # Syncronize sponsor users imedidata studies
+  def syncronize_studies
+    current_user.medidata_user.associate_studies_optimize if MSYNC
+
+~/g/vendor/plugins/imedidata_client/lib/imedidata_client/medidata_user
+  def associate_studies_optimize
+...
+    user_study_assignments = MedidataResource.get("users/#{id}/studies")
+.....
+      unless user_study_assignments.blank?
+        studies = MedidataStudy.create_and_cache_user_collection(user_study_assignments.map{|a| a["study"]}, self)
+
+~/g/vendor/plugins/imedidata_client/lib/imedidata_client/medidata_study
+#### DONT FULLY UNDERSTAND CACHING MECHANISM HERE
+## BUT SOMEHOW WHEN STUDY GETS QUERIED LATER ONLY QUERIES FOR STUFF SET HERE
+## RAILS ACTIVE RECORD MAGIC
+  def self.create_and_cache_user_collection(remote_studies, p_user)
+    study_all = []
+    if remote_studies
+      r_study_ids = []
+      r_studies = {}
+      remote_studies.each do |r_st|
+        v_id = r_st["id"].to_i
+        r_study_ids << v_id
+        r_studies[v_id] = r_st.reject { |k,v| !MedidataStudy.column_names.include?(k) || k == "id" }
+      end
+      study_all = MedidataStudy.where(:id => r_study_ids).all
+      studies = study_all.index_by(&:id)
+      study_assoc = MedidataAssociation.where("medidata_user_id = #{p_user.id} and medidata_study_id is not null").all.map(&:medidata_study_id)
+      
+      r_study_ids.each do |num|
+        v_st = studies[num]
+        if v_st
+          v_st.update_attributes(r_studies[num])
+          v_st.medidata_users << p_user unless study_assoc.include?(num)
+        else
+          study = MedidataStudy.new(r_studies[num])
+          study.id = num
+          study.save(false)
+          study.medidata_users << p_user
+          study_all << study
+        end
+      end
+      delete_assoc = study_assoc.reject {|a| r_study_ids.include?(a)} # to reduce number for sql search
+      MedidataAssociation.delete_all("medidata_user_id = #{p_user.id} and medidata_study_id in (#{delete_assoc.join(',')})") if delete_assoc.size > 0
+    else
+      MedidataAssociation.delete_all("medidata_user_id = #{p_user.id} and medidata_study_id is not null")
+    end
+    return study_all
+
+
+
+
+---- 
+called from controller after synch
+  def index
+debugger
+    # if takeout if here then will always sync and not show potentially stale cache
+    syncronize_studies # if (request.referer == "/" && !@just_logged_in)
+    Study.synchronize_groups(current_user)
+    @medidata_studies = Study.medidata_list(current_user).includes(:study => :data_cache).order(sort_sql).paginate(
+      :page => params[:page], :per_page => params[:per_page]
+    )
+
+
+  #get list of studies user has access
+  def self.medidata_list(user_id)
+    user_id = user_id.is_a?(User) ? user_id.id : user_id
+    return MedidataStudy.joins(:medidata_users).where(["medidata_users.id = ?", user_id])    
+  end
+
+how does this not do a real db retrieve??? is MedidataStudy only retrieving from cache somehow???
+
+
+1/19 - back to gmc bug
+trivial code change - need to take out caching
+hard part will be testing it - though could leave that to sqa
+need to find out how to deploy to sandbox from branch
+can you have multiple deployments on sandbox?
+1st make a branch
+1st check out gmc
+
+ok fortunately or unfortunately i left mry research in development branch
+even when doing research should make a new branch
+course with stash its easy to move stuff between branches
+
+sponsor studies_controller is the place
+
+ok how do we test this out
+
+dam didnt take any notes on deploying 2 gmcs - if i recall that was complicated
+well first of all lets bring up 1 gmc - as me i guess
+oh wait it/my local will go to innovate and innovate cant go bak to my local
+so how did we simulate this - i forget
+maybe i should just deploy it to sandbox and do it all there
+
+https://sites.google.com/a/mdsol.com/knowledgebase/home/products/grants-manager-contracting/how-to-install-gm-contracting
+
+Run
+ bundle exec rails server - aliased to run-gmc
+scripts/delayed_jobs run
+
+add alias for this
+run-delay-job-gmc
+
+oh now i remember
+have to take the end of the innovate url - the params - and attach that to the local url
+rather awkward but doable
+and last time wasnt pasting query string which was causing the cache hit
+only need 1 user - this isnt a negotiation
+
+
+run-gmc
+dont forget to launch delayed job
+/Users/magibson/.rvm/rubies/ruby-1.8.7-p352/lib/ruby/site_ruby/1.8/rubygems/dependency.rb:247:in `to_specs': Could not find bundler (>= 0) amongst [rake-0.9.2, rake-0.9.2] (Gem::LoadError)
+	from /Users/magibson/.rvm/rubies/ruby-1.8.7-p352/lib/ruby/site_ruby/1.8/rubygems/dependency.rb:256:in `to_spec'
+	from /Users/magibson/.rvm/rubies/ruby-1.8.7-p352/lib/ruby/site_ruby/1.8/rubygems.rb:1208:in `gem'
+	from /Users/magibson/.rvm/rubies/ruby-1.8.7-p352/bin/bundle:18
+
+gem install bundler
+rvm current
+
+woops cant cd to it - have to say gmc to get proper gemset
+rvm current
+ruby-1.8.7-p352@gmc
+or just say gmc
+
+make sure other local servers - imedidata - are stopped
+
+ok how do i do the adding of studay again???
+
+
+1) create study
+2) sites -> create site
+3) Users -> assign sites - click magibson - select user
+
+4) click on study group in imedidata - gmc - goes to innovate
+5) grab part of the url string the params from innovate url and paste it to end of localhost:3000 url
+
+deploy
+
+medistrano
+gmc sandbox
+applicataion - env config
+branch - put in branch name
+and then hit deploy
+
+branch to deploy when girogory is ready is feature/disable-study-cache
+
+key point when you are on imedidata innovate
+and there are study groups to click on in gmc
+study groups are associated with an environment - so wayside that was created in sandbox
+shows up in imed innovate and when you click it goes to sandbox
