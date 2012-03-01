@@ -1,0 +1,167 @@
+forked it
+did ack for xml
+
+lib/dupe/active_resource_extensions :
+lib/dupe/active_resource_extensions.rb
+37:          resource_hash = Hash.from_xml(body)
+45:          mocked_response = {:error => e.message.to_s}.to_xml(:root => 'errors')
+50:            mock.post(path, {}, mocked_response, 422, "Content-Type" => 'application/xml')
+68:          resource_hash = Hash.from_xml(body)
+78:          mocked_response = {:error => e.message.to_s}.to_xml(:root => 'errors')
+83:            mock.put(path, {}, mocked_response, 422, "Content-Type" => 'application/xml')
+
+lib/dupe/dupe.rb
+174:            %r{^#{model_name.to_s.titleize.constantize.prefix rescue '/'}#{model_name.to_s.pluralize}\\.xml$}, 
+179:            %r{^#{model_name.to_s.titleize.constantize.prefix rescue '/'}#{model_name.to_s.pluralize}/(\\d+)\\.xml$}, 
+184:            %r{^#{model_name.to_s.titleize.constantize.prefix rescue '/'}#{model_name.to_s.pluralize}\\.xml$}, 
+189:            %r{^#{model_name.to_s.titleize.constantize.prefix rescue '/'}#{model_name.to_s.pluralize}/(\\d+)\\.xml$}, 
+194:            %r{^#{model_name.to_s.titleize.constantize.prefix rescue '/'}#{model_name.to_s.pluralize}/(\\d+)\\.xml$}, 
+
+lib/dupe/hash_pruner.rb
+34:  def to_xml_safe(options={})
+35:    HashPruner.prune(self).to_xml(options)  
+
+lib/dupe/mock.rb
+52:            resp = resp.to_xml_safe(:root => resp.__model__.name.to_s)
+56:              resp = [].to_xml :root => 'results'
+58:              resp = resp.map {|r| HashPruner.prune(r)}.to_xml(:root => resp.first.__model__.name.to_s.pluralize)
+72:      # returns a tuple representing the xml of the processed entity, plus the url to the entity. 
+80:            new_path = "/#{resp.__model__.name.to_s.pluralize}/#{resp.id}.xml"
+81:            resp = resp.to_xml_safe(:root => resp.__model__.name.to_s)
+97:      # returns a tuple representing the xml of the processed entity, plus the url to the entity. 
+
+and then a whole lot spec with xml
+
+act_res_ext has get post put
+the get actually does not have xml
+this isnt surprising as get sends back shit it doesnt receive xml/json
+
+lets go after get 1st
+
+act_res_ext.get calls network.request
+    def get(path, headers = {}) #:nodoc:
+      begin
+        response = request(:get, path, build_request_headers(headers, :get, self.site.merge(path)))
+...
+and either returns response or formats - i wonder what versoin of active resource we are on
+      if ActiveResource::VERSION::MAJOR == 3 && ActiveResource::VERSION::MINOR >= 1
+        response
+      else
+        format.decode(response.body)
+      end
+
+network.request calls network.match
+    def request(verb, url, body=nil)
+      validate_request_type verb
+      match(verb, url).mocked_response(url, body)
+    end
+
+network.match goes through mocks of the verb and matches on url: and returns a matching mock
+    private
+    def match(verb, url)
+      @mocks[verb].each do |mock|
+        return mock if mock.match?(url)
+      end
+      raise(
+        RequestNotFoundError,
+        "No mocked service response found for '#{url}'"
+      )
+    end
+
+
+so now we need to look at mock creation - in particular mock returning xml
+we are on act resource 3.1.3 so just returns respons this is request which is match which is the mock
+
+lets look at this mock shall we
+network sets them has them
+@mocks is a hash with verb as key pointing to a list of mocks
+   def initialize
+      @mocks = {}
+      @log = Dupe::Network::Log.new
+      VERBS.each { |verb| @mocks[verb] = [] }
+
+
+network.define service mock is where the mocks get added:
+    def define_service_mock(verb, url_pattern, response_proc=nil)
+      validate_request_type verb
+      case verb
+      when :get
+        GetMock.new(url_pattern, response_proc).tap do |mock|
+          @mocks[verb] << mock
+        end
+
+~/projects/dupe (master) $ ack define_service_mock
+lib/dupe/custom_mocks.rb
+103:  Dupe.network.define_service_mock :get, url_pattern, block
+107:  Dupe.network.define_service_mock :post, url_pattern, block
+111:  Dupe.network.define_service_mock :put, url_pattern, block
+115:  Dupe.network.define_service_mock :delete, url_pattern, block
+
+lib/dupe/dupe.rb
+172:          network.define_service_mock(
+177:          network.define_service_mock(
+182:          network.define_service_mock(
+187:          network.define_service_mock(
+192:          network.define_service_mock(
+
+lib/dupe/dupe.rb
+not sure what this is about
+    def define(*args, &block) # yield: define
+      model_name, model_object = create_model_if_definition_parameters_are_valid(args, block)
+      model_object.tap do |m|
+        models[model_name] = m
+        database.create_table model_name
+        mocks = %{
+          network.define_service_mock(
+            :get, 
+            %r{^#{model_name.to_s.titleize.constantize.prefix rescue '/'}#{model_name.to_s.pluralize}\\.xml$}, 
+            proc { Dupe.find(:#{model_name.to_s.pluralize}) }
+          )
+          network.define_service_mock(
+            :get, 
+            %r{^#{model_name.to_s.titleize.constantize.prefix rescue '/'}#{model_name.to_s.pluralize}/(\\d+)\\.xml$}, 
+            proc {|id| Dupe.find(:#{model_name}) {|resource| resource.id == id.to_i}}
+          )
+          network.define_service_mock(
+... post put delete
+        }
+        eval(mocks)
+      end
+    end
+
+whats eval??
+notice the .xml!!
+why 2 gets?
+
+eval evaluates strings as ruby
+
+/pattern/
+/pattern/im    # option can be specified
+%r!/usr/local! # general delimited regular expression
+%r is for reg exp delimiters
+
+%{78% of statistics are "made up" on the spot}
+=> "78% of statistics are \"made up\" on the spot"
+%{} string delim
+
+lets point to our local dupe
+
+point to local source
+:path =>'/mypath...' 
+gem "nokogiri", :path => "~/Code/nokogiri"
+
+/Users/magibson/projects/dupe/lib/dupe/custom_mocks.rb
+ def Get(url_pattern, &block)
+=> 103    Dupe.network.define_service_mock :get, url_pattern, block
+   104  end
+
+really what we care about is the custom stuff
+because all our mocking is really custon with our custom paths i think
+
+custom_mocks is really simple
+def Get(url_pattern, &block)
+debugger
+  Dupe.network.define_service_mock :get, url_pattern, block
+end
+
+thats not hardired to xml ???
