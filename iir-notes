@@ -4663,3 +4663,1044 @@ we need to stub out MauthSigner.set_mauth_headers
       ./app/models/user.rb:39:in `find_studies'
  
 need to dupe studies
+
+select id,name,parent_id,uuid from studies;
++----+-------------------+-----------+--------------------------------------+
+| id | name              | parent_id | uuid                                 |
++----+-------------------+-----------+--------------------------------------+
+|  1 | Study Group Alpha |      NULL | b812a1d8-46a0-11e1-a3e6-00261824db2f |
+|  2 | Study Alpha       |         1 | 6555bd04-4795-11e1-81a0-00261824db2f |
+|  3 | Study Beta        |         1 | ab1a11d6-4935-11e1-827e-00261824db2f |
+|  4 | Study Gamma       |         1 | fbe7cf4a-4935-11e1-827e-00261824db2f |
+|  5 | aaa for iir       |      NULL | 35aa8dec-5199-11e1-95fe-70cd60fffe66 |
+|  6 | aa study          |         5 | d2216ad8-5199-11e1-95fe-70cd60fffe66 |
+
+how does studies relate to users
+must be a many to many of course
+
+show tables;
+app_assignments                            |
+| app_assignments_roles                      |
+| app_types                                  |
+| apps                                       |
+| apps_idps                                  |
+| apps_owned_studies                         |
+| apps_studies                               |
+| apps_study_groups                          |
+| apps_teams                                 |
+| audit_formats                              |
+| audit_targets                              |
+| audits                                     |
+| blocking_courses_study_group_invitations   |
+| blocking_courses_study_invitations         |
+| blocking_courses_team_invitations          |
+| cas_sessions                               |
+| categories                                 |
+| course_assignment_attempt_answers          |
+| course_assignment_attempts                 |
+| course_assignment_statuses                 |
+| course_assignments                         |
+| course_assignments_course_mappings         |
+| course_assignments_study_group_invitations |
+| course_assignments_study_invitations       |
+| course_assignments_team_invitations        |
+| course_files                               |
+| course_mappings                            |
+| course_overrides                           |
+| courses                                    |
+| courses_sites                              |
+| courses_studies                            |
+| courses_teams                              |
+| depots                                     |
+| emails                                     |
+| esignatures                                |
+| evaluations                                |
+| exports                                    |
+| file_attachments                           |
+| forgot_password_tokens                     |
+| invitation_app_details                     |
+| invitation_app_details_roles               |
+| invitation_details                         |
+| invitation_details_study_group_invitations |
+| invitation_details_study_invitations       |
+| invitation_details_team_invitations        |
+| invitation_study_site_details              |
+| login_attempts                             |
+| messages                                   |
+| notifications                              |
+| old_passwords                              |
+| phases                                     |
+| questions                                  |
+| request_tokens                             |
+| roles                                      |
+| roles_study_site_assignments               |
+| schema_migrations                          |
+| security_questions                         |
+| sessions                                   |
+| site_invitations                           |
+| site_types                                 |
+| sites                                      |
+| studies                                    |
+| study_depot_assignments                    |
+| study_group_invitations                    |
+| study_group_types                          |
+| study_invitations                          |
+| study_site_assignments                     |
+| study_sites                                |
+| team_invitations                           |
+| team_types                                 |
+| teams                                      |
+| therapeutic_areas                          |
+| user_security_questions                    |
+| users                                      |
+| users_courses      
+
+select id,study_id,subject_id,inviter_id,invitee_id from study_invitations;
++----+----------+------------+------------+------------+
+| id | study_id | subject_id | inviter_id | invitee_id |
++----+----------+------------+------------+------------+
+|  1 |        1 | NULL       |          1 |          1 |
+|  2 |        2 | NULL       |          1 |          1 |
+|  3 |        3 | NULL       |          1 |          1 |
+|  4 |        4 | NULL       |          1 |          1 |
+|  5 |        5 | NULL       |          1 |          1 |
+|  6 |        6 | NULL       |          1 |          1 |
++----+----------+------------+------------+------------+
++----+----------+------------+------------+------------+---------------------+
+| id | study_id | subject_id | inviter_id | invitee_id | accepted_at         |
++----+----------+------------+------------+------------+---------------------+
+|  1 |        1 | NULL       |          1 |          1 | 2012-01-25 20:43:38 |
+|  2 |        2 | NULL       |          1 |          1 | 2012-01-25 20:44:38 |
+|  3 |        3 | NULL       |          1 |          1 | 2012-01-27 22:24:26 |
+|  4 |        4 | NULL       |          1 |          1 | 2012-01-27 22:26:41 |
+|  5 |        5 | NULL       |          1 |          1 | 2012-02-07 14:40:23 |
+|  6 |        6 | NULL       |          1 |          1 | 2012-02-07 14:41:30 |
+
+study 5 is what we care about
+
+  1 | superadmin | harrycaul@mdsol.com | 307602f2-469f-11e1-ad6f-00261824db2f |
+
+so i think study_invitations is the link between study and user
+
+studies_api_v2_user GET /api/v2/users/:id/studies(.:format) {:action=>"studies", :controller=>"api/v2/users"}
+screw invitations
+all we care about is the above
+and how we will model that in the model
+and that is a user will have many studies and vice versa many to many
+
+
+Dupe.define :book do |book|
+ --#   book.name
+ --#   book.author
+ --# end
+
+irb# Dupe.create :book
+  ==> <#Duped::Book author=nil id=1 name=nil>
+
+Given /^an author with many books$/ do
+  @author = Dupe.create :author
+  @author.books = Dupe.stub 10, :books, :like => {:author => @author}
+end
+
+well wait step back - actually we are only dealing with 1 user at a time!
+and will usually only have 1 study as investigator
+though a sponsor can have mutliple studies and an investigator in rare
+case can prob have more than one 1 study
+so user is like author in example and study is like book
+
+oh my - once we have a duped User it has metho find_studies still
+but that method calls self.find
+and self.find is no longer - it seems the User object is no longer active resource
+but i need it to be - hmmmmm
+ah! the issue is with self.find
+if i do User.find its fine!
+
+ No mocked service response found for '/api/v2/users/fake-uuid.xml' (Dupe::Network::RequestNotFoundError)
+but thats not quite right
+studies_api_v2_user GET /api/v2/users/:id/studies(.:format) {:action=>"studies", :controller=>"api/v2/users"}
+its suppose to be putting /studies at end???
+ User.find(uuid).get(:studies)
+and its not ???
+wait this is an active resource issue NOT a dupe issue - argh!
+
+# PUT an update by invoking the 'promote' REST method, i.e. PUT /people/1/promote.json?position=Manager.
+Person.find(1).put(:promote, :position => 'Manager')
+
+that seems clear 
+lets try doing put
+
+wait a second - first its calling find and THEN it calls get
+its failing on the find!
+this is wierd for sure
+i think dupe isnt handling this wierd case
+
+2 things - lets email author
+and lets try duping the simple find and see what happens
+
+   Given I am logged in as "testuser" with name "Test User" # features/step_definitions/session_steps.rb:5
+      Failed with 404: the request '/api/v2/users/1/studies.xml' returned nil. (Dupe::Network::Mock::ResourceNotFoundError)
+      ./app/models/user.rb:42:in `find_studies'
+ oh crap - its getting close
+but i know whats wrong here - 
+ User.find(uuid).get(:studies) - its doing User.find with uuid - finding the user
+and then using the id not the uuid of the user - and dupe is artificially making ids
+i wonder if can subvert dupe to put uuid in for id?
+yea i think so
+
+pp user_uuid
+"fake-uuid/studies"
+oh crap
+Get %r{/api/v2/users/(.*).xml$}
+that regexp is too aggressive - need no / i guess
+
+holy shit it passed
+though need to be sure it actually did what we think it did
+
+so active record puts id into url of object of find - so need to make
+sure that id is set to uuid - dupe on creation makes artifical ids - have to override that i think
+or alternatively could just try to go with the made up ids but that may be trouble
+
+
+wait - login passed - not study scenario
+not passing
+pp page.text
+"\n\n\n\nLogout\n\nTest User (testuser)\n"
+thats not good
+why am i getting a logout?
+actually thats probably all that is in user-area? thats perhaps the footer?
+2 issues - hooshy not getting it - either scrap hsooshy or get it in there
+selector of user-area - put in new class or something
+
+#2 is done - put in studies class - can improve that later
+
+ When I go to the "Study ListXXX" page
+this step seems to pass even if page doesnt exist fyi
+
+so 2 issues - go to page - and getting study into page
+also 3rd issue - i dont think studies should be in login
+
+ No mocked service response found for '/api/v2/users/fake-uuid/studies.xml' (Dupe::Network::RequestNotFoundError)
+we have to at least mock empty studies
+
+When /^I go to the "([^"]*)" page$/ do |page_name|
+  visit "/"
+
+we are passing i think we are ready to show to ugandhar and ben and rest
+first need to clean it up
+
+lets push it - and comment on it
+and rebase it - hopefully that will go ok
+
+cleaned & pushed
+need to rebase
+write up in hip chat
+
+thurs 2/23 dorrington
+lets make a branch of the branch in case rebase goes bad
+rebase
+oh actually maybe make a table out of the studies
+also should there be more scenarios?
+lets look at balance haml tables
+
+from view/studies/index.html.haml
+          %table#study_list
+            %tr
+              %th(width="1%")= t('studies.index.header.live')
+              %th= t('studies.index.header.name') 
+              %th(width="13%")= t('studies.index.header.study_group')
+              %th(width="5%")= t('studies.index.header.subjects') 
+              %th(width="5%")= t('studies.index.header.sites') 
+              %th(width="20%")= t('studies.index.header.report') 
+
+              - if @studies.length == 0
+                %tr(class = 'even')
+                  %td(colspan=10)
+                    .zero_case
+                      - if @user_studies.length == 0
+                        .text_bold= t('studies.index.zero_case1')
+                        .text= t('studies.index.zero_case2')
+                      - else
+                        .text= t('studies.index.no_matched_studies')
+
+            - @studies.each do |study| 
+              - class_name = cycle('even', 'odd')
+              - can_design_study = User.current.role_for_study(study).permission_set.can_design_study?
+              
+              %tr(class = "#{class_name}")[study]
+                %td.live= image_tag( "b_check.gif", :alt => "checkmark" ) if study.live?
+                %td.name
+                  - if can_design_study && !study.live?
+                    - study_link = edit_study_randomization_design_path(study,study.study_design.id)
+                  - else
+                    - study_link = study_sites_path(study)
+
+                  = link_to(study.name,study_link)
+                %td= h study.study_group_name
+                %td.subject_count{:onclick => "document.location='"+study_subjects_path(study)+"'"}
+                  = link_to(study.subjects.length.to_s,study_subjects_path(study), :onclick => "event.cancelBubble=true")
+                %td.site_count{:onclick => "document.location='"+study_sites_path(study)+"'"}
+                  = link_to(t('.sites_link'), study_sites_path(study), :onclick => "event.cancelBubble=true" )
+                %td.configuration_report
+                  = link_to(image_tag( "i_Reader_16.gif", :alt => "pdf icon" ), configuration_report_study_study_designs_path(study, :format => "pdf")) if can_design_study
+        = @pager
+
+<table border="1">
+<tr>
+<th>Header 1</th>
+<th>Header 2</th>
+</tr>
+<tr>
+<td>row 1, cell 1</td>
+<td>row 1, cell 2</td>
+</tr>
+<tr>
+<td>row 2, cell 1</td>
+<td>row 2, cell 2</td>
+</tr>
+</table>
+
+ok table is in
+now dup branch
+then rebase
+push
+pr
+
+
+http://book.git-scm.com/4_rebasing.html
+git checkout mywork
+$ git rebase origin
+
+git checkout develop
+git pull origin develop
+git checkout feature/study-index
+git rebase develop
+
+
+git rebase develop
+First, rewinding head to replay your work on top of it...
+Applying: though i had already changed this in last pr/branch
+Using index info to reconstruct a base tree...
+Falling back to patching base and 3-way merge...
+Auto-merging Gemfile.lock
+CONFLICT (content): Merge conflict in Gemfile.lock
+Auto-merging Gemfile
+CONFLICT (content): Merge conflict in Gemfile
+Failed to merge in the changes.
+Patch failed at 0001 though i had already changed this in last pr/branch
+
+When you have resolved this problem run "git rebase --continue".
+If you would prefer to skip this patch, instead run "git rebase --skip".
+To check out the original branch and stop rebasing run "git rebase --abort".
+
+In the process of the rebase, it may discover conflicts. In that case it will stop and allow you to fix the conflicts; after fixing conflicts, use "git-add" to update the index with those contents, and then, instead of running git-commit, just run
+
+$ git rebase --continue
+
+ git add Gemfile
+ ~/i ((no branch)) $ git add Gemfile.lock
+ ~/i ((no branch)) $ git rebase --continue
+Applying: though i had already changed this in last pr/branch
+No changes - did you forget to use 'git add'?
+If there is nothing left to stage, chances are that something else
+already introduced the same changes; you might want to skip this patch.
+
+When you have resolved this problem run "git rebase --continue".
+If you would prefer to skip this patch, instead run "git rebase --skip".
+To check out the original branch and stop rebasing run "git rebase --abort".
+
+vpn - nj - 1Lg!
+thats whats killing things
+
+well vpn solved all probs - mauth_signer, shamus... - except medidata_helper???
+but i think its an access issue
+this is a bummer it leaves me hosed
+maybe comment out helper stuff  run cukes
+maybe ugandhar can email me the gem?
+
+cool everything passes after rebase!
+
+dam i wonder if shouldve pushed after rebase
+dont understand why i get this dam message
+pb
+To git@github.com:mdsol/iir.git
+ ! [rejected]        HEAD -> feature/study-index (non-fast-forward)
+error: failed to push some refs to 'git@github.com:mdsol/iir.git'
+To prevent you from losing history, non-fast-forward updates were rejected
+Merge the remote changes (e.g. 'git pull') before pushing again.  See the
+'Note about fast-forwards' section of 'git push --help' for details.
+dev already up to date
+do i need to rebase with origin? no that makes no sense
+
+i think it doesnt like that the branch is already pushed out there
+
+  When an update changes a branch (or more in general, a ref) that used to point at commit A to point at another commit B, it is
+       called a fast-forward update if and only if B is a descendant of A.
+
+       In a fast-forward update from A to B, the set of commits that the original commit A built on top of is a subset of the commits the
+       new commit B builds on top of. Hence, it does not lose any history.
+
+       In contrast, a non-fast-forward update will lose history. For example, suppose you and somebody else started at the same commit X,
+       and you built a history leading to commit B while the other person built a history leading to commit A. The history looks like this:
+
+                 B
+                /
+            ---X---A
+
+       Further suppose that the other person already pushed changes leading to A back to the original repository you two obtained the
+       original commit X.
+
+2 alternative solutions:
+       You can perform "git pull", resolve potential conflicts, and "git push" the result. A "git pull" will create a merge commit C
+       between commits A and B.
+
+                 B---C
+                /   /
+            ---X---A
+
+       Updating A with the resulting merge commit will fast-forward and your push will be accepted.
+
+       Alternatively, you can rebase your change between X and B on top of A, with "git pull --rebase", and push the result back. The
+       rebase will create a new commit D that builds the change between X and B on top of A.
+
+                 B   D
+                /   /
+            ---X---A
+
+lets try git pull --rebase
+im gonna make a 3rd branch just in case
+
+3rd alternative:
+     There is another common situation where you may encounter non-fast-forward rejection when you try to push, and it is possible even
+       when you are pushing into a repository nobody else pushes into. After you push commit A yourself (in the first picture in this
+       section), replace it with "git commit --amend" to produce commit B, and you try to push it out, because forgot that you have pushed
+       A out already. In such a case, and only if you are certain that nobody in the meantime fetched your earlier commit A (and started
+       building on top of it), you can run "git push --force" to overwrite it. In other words, "git push --force" is a method reserved for
+       a case where you do mean to lose history.
+
+
+
+ git branch feature/study-index3 is post rebase
+study-index2 is pre rebase
+
+i think git push --force would actually be fine in this case
+though i am curious what git pull --rebase will do ??
+
+woops tudyindex3 made from develop my mistake
+lets make studyindex4
+
+ok did git pull --rebase
+and cucs pass
+~/i (feature/study-index) $ git pull --rebase
+remote: Counting objects: 295, done.
+remote: Compressing objects: 100% (138/138), done.
+remote: Total 214 (delta 100), reused 169 (delta 56)
+Receiving objects: 100% (214/214), 53.71 KiB, done.
+Resolving deltas: 100% (100/100), completed with 25 local objects.
+From github.com:mdsol/iir
+   5d1111b..40c4920  develop    -> origin/develop
+ * [new branch]      feature/shamus_setup -> origin/feature/shamus_setup
+ * [new branch]      footer     -> origin/footer
+ * [new branch]      iir_header_rebased_with_develop -> origin/iir_header_rebased_with_develop
+ * [new branch]      iir_header_setup -> origin/iir_header_setup
+ * [new branch]      medidata_help -> origin/medidata_help
+ * [new branch]      medidata_logo -> origin/medidata_logo
+You asked me to pull without telling me which branch you
+want to rebase against, and 'branch.feature/study-index.merge' in
+your configuration file does not tell me, either. Please
+specify which branch you want to use on the command line and
+try again (e.g. 'git pull <repository> <refspec>').
+See git-pull(1) for details.
+
+If you often rebase against the same branch, you may want to
+use something like the following in your configuration file:
+    [branch "feature/study-index"]
+    remote = <nickname>
+    merge = <remote-ref>
+    rebase = true
+
+    [remote "<nickname>"]
+    url = <url>
+    fetch = <refspec>
+
+See git-config(1) for details.
+
+i think it worked
+
+next time i should just try git push --force
+
+dam pb is still rejected - incredible
+pb
+To git@github.com:mdsol/iir.git
+ ! [rejected]        HEAD -> feature/study-index (non-fast-forward)
+error: failed to push some refs to 'git@github.com:mdsol/iir.git'
+To prevent you from losing history, non-fast-forward updates were rejected
+Merge the remote changes (e.g. 'git pull') before pushing again.  See the
+'Note about fast-forwards' section of 'git push --help' for details.
+
+thats wierd 
+lets just do git push --force
+
+git push --force
+Counting objects: 51, done.
+Delta compression using up to 8 threads.
+Compressing objects: 100% (27/27), done.
+Writing objects: 100% (33/33), 5.04 KiB, done.
+Total 33 (delta 10), reused 0 (delta 0)
+To git@github.com:mdsol/iir.git
+ + 7bf47cd...25d27ce feature/study-index -> feature/study-index (forced update)
+ ~/i (feature/study-index) $ pb
+Everything up-to-date
+
+that did it
+
+oh my i see an issue
+doing .xml in user.rb self.find_user
+but i think mauth active resource is using .json
+this will come out once we can test it out with real mauth
+
+ok on to the next task
+
+Navigate to list page from top navigation
+
+should feature go in page.feature?
+wait a second - i think navigation is a different cookie than the header
+lets look at balance
+
+yes 
+general/navigation.feature
+# These scenarios describe and test the links that are available based on the current page
+# and if the links are functioning as expected for:
+#   * The main navigation bar
+#   * The sub navigation (tab) bar
+
+Feature: Navigation (General-Navigation)
+  In order to access the site content
+  As a user
+  I want to be able to quickly and easily access the content I need
+
+  Background:
+    Given a study exists with name: "Test Study 1"
+    And a medidata user exists with login: "testuser"
+    And "testuser" has access to study "Test Study 1" as a "System Administrator"
+    And I am logged into Balance as "testuser"
+    And a study exists with name: "Role Test Study 1"
+    And a medidata user exists with login: "roletestuser"
+
+  @Release2011.4.0
+  @PB049-001
+  @Validation
+  Scenario: Clicking the Study List link should take the user to the Study List page.
+    When I follow "Study List"
+    Then I should be on the studies list page
+    And I should see "Study List"
+
+wo totally wierd
+cuc is passin if i just say cuc
+but if i give a file name then it doesnt find steps
+passes with feature dir
+but not on feature/general
+
+cucmber.yml file where is that
+i think grigory messed up cuc.yml
+
+yup
+#std_opts = "-r features/support/env.rb -r features/step_definitions --format #{ENV['CUCUMBER_FORMAT'] || 'pretty'} --strict --tags ~@wip"
+std_opts = "--format #{ENV['CUCUMBER_FORMAT'] || 'pretty'} --strict --tags ~@wip"
+%>
+for some reason grigory took out -r feature/step_definitions ??
+
+so the scenario falsley passes
+ When I follow "Study List" do i have a Study List?
+
+cos i had wip there
+
+i should really get balance fully installed
+so i can run features and see where their steps are defined
+
+im not sure visit should be at end of logged in - lets see what balance does
+
+  Background:
+    Given a study exists with name: "Test Study 1"
+    And a medidata_study_group exists with name: "Test Study Group"
+    And a medidata_study exists with name: "Test Study 2", parent: "Test Study Group"
+    And a study exists with medidata: "Test Study 2"
+    And a medidata user exists with login: "testuser"
+    And "testuser" has access to study "Test Study 1" as a "System Administrator"
+    And "testuser" has access to study "Test Study 2" as a "Primary Investigator"
+    And I am logged into Balance as "testuser"
+
+yup - balance does visit at end of login
+Given(/^I am(?: currently)? logged in(?:to Balance)? as "([^\"]*)"$/) do |login|
+  Capybara.current_session.reset!
+  @current_user = MedidataUser.find(:first, :conditions => {:login => login})
+  CASClient::Frameworks::Rails::Filter.fake(@current_user.login, { :user_id => @current_user.id })
+  visit "/studies"
+
+i think this comes from pickle - not obvious step for it in sd
+need to get balance up and running proper
+    And a medidata user exists with login: "testuser"
+so then can run feature and see what step its calling
+
+need balance db
+i think iwas in the middle of redis
+Redis is an open source, advanced key-value store. It is often referred to as a data structure server since keys can contain strings, hashes, lists, sets and sorted ...
+
+rm /Applications/Firefox.app/Contents/MacOS/libsqlite3.dylib
+doesnt exist but there is a libmozsqlite3.dylib which i wonder if i should be removing
+probably
+
+cool balance cucumber now running!
+
+And a medidata user exists with login: "testuser" # features/step_definitions/pickle_steps.rb:4
+
+yes its pickle - we need to dupe it
+
+# this file generated by script/generate pickle
+# create a model
+Given(/^#{capture_model} exists?(?: with #{capture_fields})?$/) do |name, fields|
+  create_model(name, fields)
+end
+And a medidata user exists with login: "testuser"
+
+
+ben approves - lets do pickle-dupe!
+1st need to really understand what pickle does
+
+  gem 'pickle'
+  gem 'pickle-dupe'
+
+ok selenium is in! env.rb and base.rb need to be merged cleaned up
+
+gems are in
+lets use them
+In order to use pickle with dupe, you need to add :dupe to your pickle’s configuration as follows:
+
+Pickle.configure do |config|
+  config.adapters = [:dupe]
+end
+where does that happen??
+in base.rb
+
+
+rails g pickle --help
+Usage:
+  rails generate pickle [options]
+
+Options:
+  [--paths]  # Generate features/support/paths.rb file.
+  [--email]  # Generate features/step_definitions/email_steps.rb file
+
+Runtime options:
+  -f, [--force]    # Overwrite files that already exist
+  -p, [--pretend]  # Run but do not make any changes
+  -q, [--quiet]    # Supress status output
+  -s, [--skip]     # Skip files that already exist
+
+Generates Pickle step files.
+
+rails generate pickle --paths --email
+rails generate pickle --paths --email
+features/support/paths.rb not found, is your cucumber up to date?
+
+chat w ben - not using paths
+
+rails generate pickle --email
+
+rails generate pickle --email
+       exist  features/step_definitions
+       exist  features/support
+      create  features/step_definitions/pickle_steps.rb
+      create  features/support/pickle.rb
+      create  features/step_definitions/email_steps.rb
+      create  features/support/email.rb
+
+base.rb
+
+require 'pickle/world'
+require 'pickle'
+require 'features/support/pickle_adapter'
+require 'features/support/pickle'
+
+thats balance rails 2 i think
+
+
+In: features/support/pickle.rb
+
+require 'pickle/world'
+
+Pickle.configure do |config|
+  config.adapters = [:machinist, :active_record, YourOwnAdapterClass]
+  config.map 'me', 'myself', 'my', 'I', :to => 'user: "me"'
+end
+Out of the box pickle looks for machinist, factory-girl, then uses the ORM(s) that you’re using to create models.
+
+If you find that your steps aren’t working with your factories, it’s probably the case that your factory setup is not being included in your cucumber environment (see comments above regarding machinist and factory-girl).
+
+
+Using the default profile...
+undefined local variable or method `capture_email' for main:Object (NameError)
+/Users/magibson/projects/iir/features/step_definitions/email_steps.rb:21:in `<top (required)>'
+
+not using email at this point anyways - take it out i guess
+
+Using the default profile...
+undefined local variable or method `capture_model' for main:Object (NameError)
+
+shit - its not taking
+
+Pickle-dupe requires the following gems
+
+pickle 0.2.1 github.com/ianwhite/pickle
+dupe 0.5.1 github.com/moonmaster9000/dupe/
+
+those are old versions - does it not work with more recent versions 
+i guess change bundle game file and see if it works
+iawgens is not contactable - pickle pickle-dupe dude
+
+still didnt work
+i think i should throw in the towel for now on pickle
+
+
+require 'active_support'
+require 'pickle/version'
+require 'pickle/adapter'
+require 'pickle/config'
+require 'pickle/parser'
+require 'pickle/session'
+require 'pickle/session/parser'
+
+
+my fiddling with gemfile i think messed things
+
+
+email rack_mauth.yml file
+
+
+mon 2/27 - tcom from brooklyn jet lag
+nned to commit these notes to git end of day
+
+ok so throwing in the towel with pickle at the moment - 
+maybe will have ugandhar help out with that
+
+so lets just dupe up the refactor with no pickle for now
+
+
+You asked me to pull without telling me which branch you
+want to rebase against, and 'branch.feature/study-index.merge' in
+your configuration file does not tell me, either. Please
+specify which branch you want to use on the command line and
+try again (e.g. 'git pull <repository> <refspec>').
+See git-pull(1) for details.
+
+wow! missed that - silly goose
+
+so rebase prob wouldve worked
+
+from pr ben discussion:
+
+This is looking a little ugly. Can we refactor this a little? Maybe make some methods in the step file like
+
+  def register_user
+    ..
+  end
+
+  def register_study
+  ...
+  end
+Registration of studies should be done in another step.
+
+  Given a study exists with name: "ABC-123"
+  And user "Fred Jones" is an Investigator for study "ABC-123"
+ magibson repo collab 3 days ago 
+Edit
+Delete
+agreed - oh i get it - so the key is the study step HAS to happen first - thats what i was missing
+i was trying to separate and putting the study step second and then the login step was failing
+because the visit / at the end of login step was hit stuy controller which expected some mock of study
+will refactor
+
+oh and the new gems seem to screw everything up - wierd!
+lets go back to old gems lock file
+
+    Given I am logged in as "testuser" with name "Test User" # features/step_definitions/session_steps.rb:3
+      wrong number of arguments (2 for 3) (ArgumentError)
+      ./features/step_definitions/session_steps.rb:22:in `/^I am logged in as "([^\"]*)" with name "([^\"]*)"$/'
+      features/study/list.feature:12:in `Given I am logged in as "testuser" with name "Test User"'
+
+how do i revert the gemfile lock?
+
+gitx discard is 1 way
+
+
+Using the default profile...
+You have already activated gherkin 2.9.0, but your Gemfile requires gherkin 2.7.6. Using bundle exec may solve this. (Gem::LoadError)
+
+what the fuck is going on?
+
+phew
+needed to do a clean gemset - clean out old crap
+and now it works
+wacky
+wierd apparently some call has changed in new gem
+no need to figure that out now
+i wonder how releated this was to putting in pickle? and the version stuff there
+and dupe-pickle
+and related to why dupe-pickle wouldnt work??
+
+
+Given /^the library has lots of books$/ do
+  Dupe.create :book, :name => "Rooby Rocks", :author => (Dupe.create :author, :name => 'Matz')
+  Dupe.create :book, :name => "Rails Rocks too!", :author => (Dupe.create :author, :name => 'DHH')
+end
+
+stay focused
+so user already created i think?
+just need to add study to existing user
+user has login & name already
+querying by name i think?
+
+
+imedidata app uuid is really iir app uuid that has been assigned created by imedidata 
+rename this!
+
+john louis
+needs public key for imed and iir
+and appuuids
+ 
+iir app uuid is
+d38e7edc-5113-11e1-95fe-70cd60fffe66
+imedidata app uuid seems to be
+63566d60-4c62-11e1-b86c-0800200c9a66
+
+ive got the private keys for these - where are the public keys
+can just make up new keys though there is a specific way to do that
+
+bring up on chat rewrite for mauth client ethan rewrite
+
+public key is not on this computer!
+just make new pairs
+
+oh yes it is
+
+https://sites.google.com/a/mdsol.com/knowledgebase/home/departments/engineering/on-demand-portfolio/services/core-services/mauth/generating-keypairs-for-mauth
+tells how to make keys
+
+Using OpenSSH to Generate Keypairs
+The ssh-keygen utility (part of the OpenSSH package) is used to generate keypairs.  The following command will generate an appropriate keypair for use with MAuth or iMedidata:
+
+ssh-keygen -t rsa -b 2048 -f myappkey
+
+This will result in the private key being stored in the file named 'myappkey' and the public key being stored in 'myappkey.pub'.
+
+ssh-keygen saves its public key in a different format, so the public key must be transformed to a PEM format using the following command:
+
+ssh-keygen -f myappkey.pub -e -m pem
+
+
+ssh-keygen -t rsa -b 2048 -f local_imedidata
+ssh-keygen -f local_imedidata.pub -e -m pem
+
+no no no
+the iir key isnt at all the same
+lets just make a new one
+should prob keep the public somewhere?
+
+michael dug up the imed keys
+
+gonna make new iir keys then
+need to make a new branch for this
+
+ssh-keygen -t rsa -b 2048 -f local_iir
+ssh-keygen -f local_iir.pub -e -m pem 
+or to file
+ssh-keygen -f local_iir.pub -e -m pem > local_iir.pub.pem
+
+ok need to start a new branch just for the new key
+
+im ediat does need to change - as baseurl needs to be innovate
+need to reremember how to change 
+
+dam yaml file needs indenting
+space indenting
+
+
+i think im gonna merge matuh.yml with cloud.yml
+actually scracth it - its all gonna change with mauth client - 
+maybe can do that today
+
+actually its imedidata not iir that hooks to sand/inn/mauth
+iir just goes to imedidata
+
+
+2 options
+i modify it in place ?? and commit it
+or modify imeidata branch checkout
+dont really have imedidata setup
+its such a small change
+lets do it in place
+i think we have to check out the branch first
+
+
+If you want to make a change within a submodule and you have a detached head, then you should create or checkout a branch, make your changes, publish the change within the submodule, and then update the superproject to reference the new commit:
+
+$ git checkout master
+or
+
+$ git checkout -b fix-up
+
+then
+
+$ echo "adding a line again" >> a.txt
+$ git commit -a -m "Updated the submodule from within the superproject."
+$ git push
+$ cd ..
+$ git diff
+diff --git a/a b/a
+index d266b98..261dfac 160000
+--- a/a
++++ b/a
+@@ -1 +1 @@
+-Subproject commit d266b9873ad50488163457f025db7cdd9683d88b
++Subproject commit 261dfac35cb99d380eb966e102c1197139f7fa24
+$ git add a
+$ git commit -m "Updated submodule a."
+$ git push
+You have to run git submodule update after git pull if you want to update submodules, too.
+
+hmmmm
+git checkout feature/support_mauth
+how do you checkout a remote branch??
+
+git checkout feature/support_mauth
+Branch feature/support_mauth set up to track remote branch feature/support_mauth from origin.
+Switched to a new branch 'feature/support_mauth'
+
+git pull origin feature/support_mauth
+remote: Counting objects: 7, done.
+remote: Compressing objects: 100% (1/1), done.
+remote: Total 4 (delta 3), reused 4 (delta 3)
+Unpacking objects: 100% (4/4), done.
+From github.com:mdsol/imedidata
+ * branch            feature/support_mauth -> FETCH_HEAD
+Updating e0662bd..3bda320
+Fast-forward
+
+ config/rack_mauth.yml |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+ ~/i/vendor/apps/imedidata (feature/support_mauth) $ git pull origin feature/support_mauth
+From github.com:mdsol/imedidata
+ * branch            feature/support_mauth -> FETCH_HEAD
+Already up-to-date.
+
+
+wo! already points to 
+    :mauth_baseurl: https://mauth-innovate.imedidata.com
+michael mustve done that
+
+so just need to point to latest version really
+
+3bda320cf0 is the new michale version
+
+~/projects/iir (feature/mauth-key) $ git submodule status
+ f5bdd2809b3610065a642650bd460dbb22915921 vendor/apps/authmedidata (release2011.2.0.2)
++3bda320cf05b0b6a00d9d673891c9719d3f2735b vendor/apps/imedidata (release2011.1.6-213-g3bda320)
+ 75d741453f54c3a9c45368e8edf69732e969363c vendor/plugins/rubycas-client (remotes/origin/session_stores)
+
+ok got it
+
+follow steps above
+ ~/projects/iir (feature/mauth-key) $ gd
+# On branch feature/mauth-key
+# Changes not staged for commit:
+#   (use "git add <file>..." to update what will be committed)
+#   (use "git checkout -- <file>..." to discard changes in working directory)
+#   (commit or discard the untracked or modified content in submodules)
+#
+#	modified:   vendor/apps/imedidata (new commits, untracked content)
+#
+no changes added to commit (use "git add" and/or "git commit -a")
+diff --git a/vendor/apps/imedidata b/vendor/apps/imedidata
+index e0662bd..3bda320 160000
+--- a/vendor/apps/imedidata
++++ b/vendor/apps/imedidata
+@@ -1 +1 @@
+-Subproject commit e0662bd1264da8feea09b79ecf0f2d4387078362
++Subproject commit 3bda320cf05b0b6a00d9d673891c9719d3f2735b-dirty
+
+git add vendor/apps/imedidata/
+git commit -m "
+
+
+2/29/12 wed tcom brooklyn
+ok i need to clean up the mess from yesterday
+i think theres a debugger now in 
+
+git pull --rebase origin feature/mauth-key
+
+ git pull --rebase origin feature/mauth-key
+remote: Counting objects: 24, done.
+remote: Compressing objects: 100% (7/7), done.
+remote: Total 16 (delta 8), reused 13 (delta 5)
+Unpacking objects: 100% (16/16), done.
+From github.com:mdsol/iir
+ * branch            feature/mauth-key -> FETCH_HEAD
+First, rewinding head to replay your work on top of it...
+Applying: gem file lock for bundle install from ugandhars new stuff
+
+it worked!
+pb - works!
+
+cuc is probably all broken
+yes it is
+
+fix cuc
+
+it runs against mauth innovate still!
+
+need to get cuc working again
+
+need to issue directions on getting submodule updated for ben & grigory
+
+  CASClient::Frameworks::Rails::Filter.fake(login, { :full_name => full_name, :user_id => @current_user.uuid.to_s, :user_uuid => @current_user.uuid.to_s })
+got it - mock in the cas client thing
+
+oh also cas client should NOT be a plugin but a gem	
+
+
+  And I am logged in as "testuser" with name "Test User"     # features/step_definitions/session_steps.rb:7
+      No mocked service response found for '/api/v2/users/fake-uuid.json' (Dupe::Network::RequestNotFoundError)
+      ./app/models/user.rb:27:in `find_user'
+      ./app/controllers/application_controller.rb:28:in `get_current_user'
+      ./features/step_definitions/session_steps.rb:14:in `/^I am logged in as "([^\"]*)" with name "([^\"]*)"$/'
+      features/study/list.feature:15:in `And I am logged in as "testuser" with name "Test User"'
+
+oh its the .json - dupe doesnt do .json
+
+dam broke live and scenario still not passing going from json to xml
+argh so tedious
+
+hmm - it works with old code - can connect to mauth and all from here
+
+need to move mauth signer back!! to lib
+
+i think we need to try this with curl??
+and see if .xml even works with imedidata - i would think it would but never tried it
+
+to curl hmmmmm dont think i have the curler on here
+and i think ethan has new stuff with that
+
+hmm got go ahead from ben on puttin json into dupe
+so maybe i should pough ahead with that?
+
+it seems imedidata isnt responding to xml
+
+NoMethodError (undefined method `collect!' for #<Hash:0x00000100baea18>):
+13:07:40 iir.1           |   app/models/user.rb:45:in `studies'
+13:07:40 iir.1           |   app/controllers/investigator/studies_controller.rb:6:in `index'
+
+this may be whats returned when you authenticate but dont return data - not sure
+and it might be imedidata doesnt return data xml for users
+
+
+
+ok lets fork dupe and take a look
