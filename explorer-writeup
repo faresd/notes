@@ -1,0 +1,61 @@
+1) setup tomcat - minor issue with java home (fails to launch w no error msg)
+
+2) got source - no docs
+
+3) build source: ant client.build -- errors! cant find class EventBus
+
+- go jar hunting - only comes with 2 guava jar files
+- modify env vars to point to jars
+- gwt 2.4 has a bunch of them
+gwt-servlet gwt-dev
+- have to modify ant file(several targets) to include these jars - strange? the original developers had these
+things in their default classpath - dont bother mentioning this!
+
+
+oauth jar
+jsr305 jar - annotations
+junit
+
+was using Join class from old collections instead of Joiner from new guava
+where most of the code uses guava - but its mixed code - ya had to have both
+ odd because theres a warning never to use both guava and collections
+ modified code to use new Joiner class - compiles
+
+the order of jars seemed to matter - bad sign - overlapping classes
+
+(wed)
+
+ant (build) explorer.gwtbuild
+to compile java into javascript
+Unable to find 'com/google/common/collect/Collect.gwt.xml
+wants gwt.xml - i put them in - but why werent they there?
+
+(tried making war myself - didnt understand the javascript compile)
+
+study gwt - learn about javascript compile - make a sample gwt app with webAppCreator
+did ant devmode - cool - chrome plugin
+(api explorer doesnt have devmode which is crucial - eventually add one myself)
+
+start wondering if versions of jars match - 
+
+getting js compile to work
+had to add to ant file (why not there? jar comes with download!)
+guava-r07-gwt.jar which had the Collect.gwt.xml
+
+realize my gwt-user jar is wrong one - woops
+
+gwt-user.jar has AutoBean gwt xml
+
+resources/images not found - theyre their - have to move them - again wierd
+
+Nullable issue appeared and disappeared - wierd - jsr jar was used and taken out
+Nullable couldnt be resolved to a type
+
+finally compiled to js - end of wednesday
+deploy war file to tomcat
+and things are not in right place
+have to move html file
+and change line in html that points to javascript
+
+it comes up but no services loading/displaying
+
