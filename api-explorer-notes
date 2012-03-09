@@ -1,0 +1,2448 @@
+3/3/12 fri - office
+just talked to ethan
+
+1) download source
+-- download other dependencies - google web toolkit?
+2) get it to run
+-- need tomcat
+3) point it to non mauth eureka on sandbox and test
+4) point to mauth eureka and watch it fail
+5) write matuh client in java
+6) hook j mauth client
+
+http://googlecode.blogspot.com/2011/03/introducing-google-apis-explorer.html
+
+http://code.google.com/p/google-api-java-client/wiki/APIs
+
+http://mavenrepo.google-api-java-client.googlecode.com/hg//com/google/apis/google-api-services-discovery/v1-1.3.0-beta/google-api-services-discovery-v1-1.3.0-beta.jar
+
+javadoc
+http://javadoc.google-api-java-client.googlecode.com/hg/apis/discovery/v1/index.html
+
+wait thats discovery whatever that is
+
+
+http://code.google.com/p/google-apis-explorer/
+
+http://code.google.com/p/google-apis-explorer/source/checkout
+
+# Non-members may check out a read-only working copy anonymously over HTTP.
+svn checkout http://google-apis-explorer.googlecode.com/svn/trunk/ google-apis-explorer-read-only
+
+wow theres no docs on it ???
+
+its war
+need to drop it in a web server
+tomcat
+
+we are on java 1.6 NOT 1.7!
+
+oh we're ok - tomcat 7 requires java 1.6 or greater - there is no java 1.7 silly 
+at least not that im aware of
+
+http://tomcat.apache.org/tomcat-7.0-doc/setup.html
+
+Before running the script, the JAVA_HOME environment variable should be set to the base path of the JDK
+
+which java
+/usr/bin/java
+/usr/bin/java -> /System/Library/Frameworks/JavaVM.framework/Versions/Current/Commands/java
+export JAVA_HOME='/usr/bin/java'
+
+Tomcat can be run as a daemon using the jsvc tool from the commons-daemon project. Source tarballs for jsvc are included with the Tomcat binaries, and need to be compiled. Building jsvc requires a C ANSI compiler (such as GCC), GNU Autoconf, and a JDK.
+
+Using the following commands should result in a compiled jsvc binary, located in the $CATALINA_HOME/bin folder. This assumes that GNU TAR is used, and that CATALINA_HOME is an environment variable pointing to the base path of the Tomcat installation.
+
+found this on web
+CATALINA_HOME=/Library/Tomcat/Home
+
+just gonna put in ~/tomcat - why not
+export CATALINA_HOME='/Users/magibson/tomcat'
+
+cd $CATALINA_HOME/bin
+    tar xvfz commons-daemon-native.tar.gz
+    cd commons-daemon-1.0.x-native-src/unix
+    ./configure
+    make
+    cp jsvc ../..
+    cd ../..
+	
+Tomcat can then be run as a daemon using the following commands.	
+	
+    cd $CATALINA_HOME
+    ./bin/jsvc -cp ./bin/bootstrap.jar:./bin/tomcat-juli.jar \
+        -outfile ./logs/catalina.out -errfile ./logs/catalina.err \
+        org.apache.catalina.startup.Bootstrap
+
+~/Downloads/apache-tomcat-7.0.26 $ find . -name *commons*
+./bin/commons-daemon-native.tar.gz
+./bin/commons-daemon.jar
+
+tar vxfz apache-tomcat-7.0.26.tar.gz 
+export CATALINA_HOME='/Users/magibson/tomcat/apache-tomcat-7.0.26'
+cd $CATALINA_HOME/bin
+    tar xvfz commons-daemon-native.tar.gz
+    cd commons-daemon-1.0.9-native-src/unix
+    ./configure
+    make
+    cp jsvc ../..
+    cd ../..
+
+./configure
+*** Current host ***
+checking build system type... i386-apple-darwin10.8.0
+checking host system type... i386-apple-darwin10.8.0
+checking cached host system type... ok
+*** C-Language compilation tools ***
+checking for gcc... gcc
+checking for C compiler default output file name... a.out
+checking whether the C compiler works... yes
+checking whether we are cross compiling... no
+checking for suffix of executables... 
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether gcc accepts -g... yes
+checking for gcc option to accept ANSI C... none needed
+checking for ranlib... ranlib
+checking for strip... strip
+*** Host support ***
+checking C flags dependant on host system type... ok
+*** Java compilation tools ***
+checking for JDK os include directory... Cannot find jni_md.h in /usr/bin/java/
+configure: error: You should retry --with-os-type=SUBDIR
+
+/System/Library/Frameworks/JavaVM.framework/Versions/Current $ find . -name jni_md.h
+./Headers/jni_md.h
+
+ ./configure --with-os-type macos
+configure: WARNING: you should use --build, --host, --target
+*** Current host ***
+checking build system type... Invalid configuration `macos': machine `macos' not recognized
+configure: error: /bin/sh ./support/config.sub macos failed
+
+./configure --with-os-type unix
+configure: WARNING: you should use --build, --host, --target
+*** Current host ***
+checking build system type... Invalid configuration `unix': machine `unix' not recognized
+configure: error: /bin/sh ./support/config.sub unix failed
+
+  --with-os-type=SUBDIR   Location of JDK os-type subdirectory.
+
+
+./configure script: 
+
+# Check whether --with-os-type or --without-os-type was given.
+if test "${with_os_type+set}" = set; then
+  withval="$with_os_type"
+
+    tempval=$withval
+    if test ! -d "$JAVA_HOME/$tempval"
+    then
+      { { echo "$as_me:$LINENO: error: Not a directory: ${JAVA_HOME}/${tempval}" >&5
+echo "$as_me: error: Not a directory: ${JAVA_HOME}/${tempval}" >&2;}
+   { (exit 1); exit 1; }; }
+    fi
+    JAVA_OS=$tempval
+
+ack "Invalid config"
+bin/commons-daemon-1.0.9-native-src/unix/support/config.sub
+349:		echo Invalid configuration \`$1\': machine \`$basic_machine\' not recognized 1>&2
+1277:		echo Invalid configuration \`$1\': machine \`$basic_machine\' not recognized 1>&2
+1489:		echo Invalid configuration \`$1\': system \`$os\' not recognized 1>&2
+
+	mac | mpw | mac-mpw)
+		basic_machine=m68k-apple
+		;;
+
+./configure --with-os-type mac
+configure: WARNING: you should use --build, --host, --target
+*** Current host ***
+checking build system type... m68k-apple-macos
+checking host system type... m68k-apple-macos
+checking cached host system type... ok
+*** C-Language compilation tools ***
+checking for mac-gcc... no
+checking for gcc... gcc
+checking for C compiler default output file name... a.out
+checking whether the C compiler works... yes
+checking whether we are cross compiling... no
+checking for suffix of executables... 
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether gcc accepts -g... yes
+checking for gcc option to accept ANSI C... none needed
+checking for mac-ranlib... no
+checking for ranlib... ranlib
+checking for mac-strip... no
+checking for strip... strip
+*** Host support ***
+checking C flags dependant on host system type... failed
+configure: error: Unsupported operating system "macos"
+
+progress and roadblock
+
+
+
+http://wolfpaulus.com/journal/mac/tomcat7
+
+Download a binary distribution of the core module: apache-tomcat-7.0.20.tar.gz from here. I picked the tar.gz in Binary Distributions / Core section.
+Opening/unarchiving the archive will create a folder structure something like this in you Downloads folder: (btw, this Unarchiver app is perfect for all kinds of compressed files and superior to the built-in Archive Utility.app)
+~/Downloads/apache-tomcat-7.0.20
+Move the unarchived distribution to /usr/local
+sudo mkdir /usr/local
+sudo mv ~/Downloads/apache-tomcat-7.0.20 /usr/local
+To make it easy to replace this release with future releases, we are going to create a symbolic link that we are going to use when referring to Tomcat:
+sudo ln -s /usr/local/apache-tomcat-7.0.20 /Library/Tomcat
+Change ownership of the /Libaray/Tomcat folder hierarchy:
+sudo chown -R <your_username> /Library/Tomcat
+Make all scripts executable:
+sudo chmod +x /Library/Tomcat/bin/*.sh
+
+Instead of using the start and stop scripts, like so:
+Last login: Sun Aug 14 15:20:38 on ttys000
+wpbookpro:~ wolf$ /Library/Tomcat/bin/startup.sh
+Using CATALINA_BASE: /Library/Tomcat
+Using CATALINA_HOME: /Library/Tomcat
+Using CATALINA_TMPDIR: /Library/Tomcat/temp
+Using JRE_HOME: /Library/Java/Home
+Using CLASSPATH: /Library/Tomcat/bin/bootstrap.jar:/Library/Tomcat/bin/tomcat-juli.jar
+wpbookpro:~ wolf$ /Library/Tomcat/bin/shutdown.sh
+Using CATALINA_BASE: /Library/Tomcat
+Using CATALINA_HOME: /Library/Tomcat
+Using CATALINA_TMPDIR: /Library/Tomcat/temp
+Using JRE_HOME: /Library/Java/Home
+Using CLASSPATH: /Library/Tomcat/bin/bootstrap.jar:/Library/Tomcat/bin/tomcat-juli.jar
+wpbookpro:~ wolf$
+
+~/tomcat/apache-tomcat-7.0.26/bin $ ./startup.sh
+Using CATALINA_BASE:   /Users/magibson/tomcat/apache-tomcat-7.0.26
+Using CATALINA_HOME:   /Users/magibson/tomcat/apache-tomcat-7.0.26
+Using CATALINA_TMPDIR: /Users/magibson/tomcat/apache-tomcat-7.0.26/temp
+Using JRE_HOME:        /usr/bin/java
+Using CLASSPATH:       /Users/magibson/tomcat/apache-tomcat-7.0.26/bin/bootstrap.jar:/Users/magibson/tomcat/apache-tomcat-7.0.26/bin/tomcat-juli.jar
+
+
+
+How to Install Apache Tomcat Web App Server in 10 Minutes
+How to Install Apache Tomcat on Mac OS X Snow Leopard
+http://webtechman.com/blog/2011/03/09/how-to-install-apache-tomcat-web-app-server-in-10-minutes/
+
+Prepare the Mac OS X to use the cURL command as Wget : Open a Terminal Window (Applications -> Utilities -> Terminal) and add wget as an alias for curl to the bash_profile file with the following command. Close the Terminal Window when complete.
+
+# Add the wget alias for curl to the end of the bash_profile file
+#----------------------------------------------------------------------------#
+echo 'alias wget="curl -O"' >> ~/.bash_profile
+
+
+# 6. ) Edit "tomcat/bin/startup.sh" to add JAVA_HOME
+#----------------------------------------------------------------------------#
+nano tomcat/bin/startup.sh
+# Add the following line after the one that starts with EXECUATBLE:
+# export JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Home
+# Save changes, press Ctrl+o ; return ; Ctrl+x
+# Note: Application developers can browse "/System/Library/Frameworks/JavaVM.framework/Versions"
+# and substitute the appropriate version of Java
+
+ps auxwww | g tom
+119:magibson 66739   0.0  0.0  2426928    340 s010  R+   12:10PM   0:00.00 grep -n tom122:magibson 66702   0.0  1.3  2879516 108272 s010  S    12:08PM   0:06.18 /System/Library/Frameworks/JavaVM.framework/Versions/1.6/Home/bin/java -Djava.util.logging.config.file=/Users/magibson/tomcat/apache-tomcat-7.0.26/conf/logging.properties -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager -Djava.endorsed.dirs=/Users/magibson/tomcat/apache-tomcat-7.0.26/endorsed -classpath /Users/magibson/tomcat/apache-tomcat-7.0.26/bin/bootstrap.jar:/Users/magibson/tomcat/apache-tomcat-7.0.26/bin/tomcat-juli.jar -Dcatalina.base=/Users/magibson/tomcat/apache-tomcat-7.0.26 -Dcatalina.home=/Users/magibson/tomcat/apache-tomcat-7.0.26 -Djava.io.tmpdir=/Users/magibson/tomcat/apache-tomcat-7.0.26/temp org.apache.catalina.startup.Bootstrap start
+
+
+without the export statement above it fails to laucnh with NO error msg!
+
+shutdown also fails - i think it needs a java home as well
+
+yup added it to shutdown as well
+
+ok tomcat is in!
+
+now lets deploy the war file!
+wait do we even have a warfile
+and also the build command didnt seem to work
+
+ant war
+Buildfile: /Users/magibson/projects/google-apis-explorer-read-only/build.xml
+
+BUILD FAILED
+Target "war" does not exist in the project "google-api-explorer". 
+
+Total time: 0 seconds
+ ~/projects/google-apis-explorer-read-only $ ant explorer.gwtbuild
+Buildfile: /Users/magibson/projects/google-apis-explorer-read-only/build.xml
+
+clean:
+
+explorer.verify:
+
+BUILD FAILED
+/Users/magibson/projects/google-apis-explorer-read-only/build.xml:52: Cannot find gwt-user.jar
+
+
+found gwt-user-1.6.4.jar here
+http://mvnrepository.com/artifact/com.google.gwt/gwt-user/1.6.4
+
+the build file asks for
+${gwtdir}/gwt-user.jar
+
+<!--
+     To build, you must locate dependencies. You can do this by either setting
+     an environment variable or by specifying it at build time.
+
+     There should be a directory where the following jars can be found:
+
+     GWT:
+     * Required jars: gwt-user.jar, gwt-dev.jar
+     * Environment variable: GWT_DIR
+     * Ant argument: -Dgwtdir
+
+     GWT client module:
+     * Required jars: google-api-gwt-client.jar
+     * Environment variable: GOOGLEAPI_DIR
+     * Ant argument: -Dgoogleapidir
+
+     JSR 305:
+     * Required jar: jsr305.jar
+     * Environment variable: JSR305_DIR
+     * Ant argument: -Djsr305dir
+
+     JUnit:
+     * Required jar: junit.jar
+     * Environment variable: JUNIT_DIR
+     * Ant argument: -Djunitdir
+-->
+
+ah i think have to do 
+ant client.build 1st ??
+but thats not finding shit
+/Users/magibson/projects/google-apis-explorer-read-only/src/com/google/api/explorer/client/AnalyticsManager.java:20: cannot find symbol
+    [javac] symbol  : class EventBus
+    [javac] location: package com.google.gwt.event.shared
+    [javac] import com.google.gwt.event.shared.EventBus;
+
+http://code.google.com/webtoolkit/download.html
+has google web toolkit which has all the jars
+
+BUILD FAILED
+/Users/magibson/projects/google-apis-explorer-read-only/build.xml:58: Cannot find google-api-gwt-client.jar
+
+Compiling 83 source files to /Users/magibson/projects/google-apis-explorer-read-only/build/classes
+    [javac] /Users/magibson/projects/google-apis-explorer-read-only/src/com/google/api/explorer/client/UrlEncoder.java:19: cannot find symbol
+    [javac] symbol  : class Join
+    [javac] location: package com.google.common.base
+    [javac] import com.google.common.base.Join;
+    [javac]                              ^
+    [javac] /Users/magibson/projects/google-apis-explorer-read-only/src/com/google/api/explorer/client/AuthManager.java:23: package com.google.api.gwt.oauth2.client does not exist
+    [javac] import com.google.api.gwt.oauth2.client.Auth;
+
+
+so Join is from google collections
+which has been renamed guava
+which i have
+however it has Joiner.class NOT Join.class
+oh crap!
+
+this is screwed up UrlEncoder is using Join from pase Collections
+but it all comes with guava
+
+changed Join to Joiner and that is now fixed WIERD!
+
+still 53 errors
+
+/Users/magibson/projects/google-apis-explorer-read-only/src/com/google/api/explorer/client/AuthManager.java:23: package com.google.api.gwt.oauth2.client does not exist
+    [javac] import com.google.api.gwt.oauth2.client.Auth;
+    [javac]                                        ^
+    [javac] /Users/magibson/projects/google-apis-explorer-read-only/src/com/google/api/explorer/client/AuthManager.java:24: package com.google.api.gwt.oauth2.client does not exist
+    [javac] import com.google.api.gwt.oauth2.client.AuthRequest;
+    [javac]                                        ^
+    [javac] /Users/magibson/projects/google-apis-explorer-read-only/src/com/google/api/explorer/client/FullView.java:38: package com.google.api.gwt.oauth2.client does not exist
+
+oauth seems next - 
+course this will get replaced with mauth
+http://code.google.com/p/gwt-oauth2/downloads/detail?name=gwt-oauth2-0.2-alpha.jar&can=2&q=
+
+nullable is in jsr305 - need to get that
+
+/Users/magibson/projects/google-apis-explorer-read-only/src/com/google/api/explorer/client/parameter/schema/SchemaForm.java:23: cannot find symbol
+    [javac] symbol  : class Display
+    [javac] location: class com.google.gwt.dom.client.Style
+    [javac] import com.google.gwt.dom.client.Style.Display;
+    [javac]                                       ^
+    [javac] /Users/magibson/projects/google-apis-explorer-read-only/src/com/google/api/explorer/client/parameter/schema/FieldsEditor.java:30: cannot find symbol
+    [javac] symbol  : class Unit
+    [javac] location: class com.google.gwt.dom.client.Style
+    [javac] import com.google.gwt.dom.client.Style.Unit;
+
+
+just found gwt-google-apis-1.0.0
+
+oh its just occurring to me
+i should have a file with all the jar tvf's in it 
+then need only search 1 file!
+of course
+or write a script
+
+Style/Display is in gwt-servlet??
+	<pathelement location="${gwtdir}/gwt-servlet.jar" />
+
+~/projects/google-apis-explorer-read-only/lib $ jar tvf gwt-servlet.jar | g Display
+205:  1326 Mon Aug 29 13:17:28 EDT 2011 com/google/gwt/activity/shared/ActivityManager$ProtectedDisplay.class
+616:   686 Mon Aug 29 13:17:28 EDT 2011 com/google/gwt/dom/client/Style$Display$1.class
+617:   687 Mon Aug 29 13:17:28 EDT 2011 com/google/gwt/dom/client/Style$Display$2.class
+618:   688 Mon Aug 29 13:17:28 EDT 2011 com/google/gwt/dom/client/Style$Display$3.class
+619:   694 Mon Aug 29 13:17:28 EDT 2011 com/google/gwt/dom/client/Style$Display$4.class
+620:  1901 Mon Aug 29 13:17:28 EDT 2011 com/google/gwt/dom/client/Style$Display.class
+
+???
+its there???
+
+echo $GWT_DIR
+/Users/magibson/projects/google-apis-explorer-read-only/lib
+
+Compiling 83 source files to /Users/magibson/projects/google-apis-explorer-read-only/build/classes
+    [javac] Using modern compiler
+    [javac] Compilation arguments:
+    [javac] '-d'
+    [javac] '/Users/magibson/projects/google-apis-explorer-read-only/build/classes'
+    [javac] '-classpath'
+    [javac] '/Users/magibson/projects/google-apis-explorer-read-only/build/classes:/Users/magibson/projects/google-apis-explorer-read-only/lib/guava-r07.jar:/Users/magibson/projects/google-apis-explorer-read-only/lib/guava-r07-gwt.jar:/Users/magibson/projects/google-apis-explorer-read-only/lib/gwt-user.jar:/Users/magibson/projects/google-apis-explorer-read-only/lib/gwt-servlet.jar:/Users/magibson/gg/lib/junit.jar:/Users/magibson/projects/google-apis-explorer-read-only/lib/gwt-oauth2-0.2-alpha.jar:/Users/magibson/gg/lib/jsr305.jar:/usr/share/ant/lib/ant-launcher.jar:/usr/share/ant/lib/ant-antlr.jar:/usr/share/ant/lib/ant-jmf.jar:/usr/share/ant/lib/ant-junit.jar:/usr/share/ant/lib/ant-junit4.jar:/usr/share/ant/lib/ant-swing.jar:/usr/share/ant/lib/ant-testutil.jar:/usr/share/ant/lib/ant.jar'
+    [javac] '-sourcepath'
+    [javac] '/Users/magibson/projects/google-apis-explorer-read-only/src'
+    [javac] '-g:source,lines,vars'
+
+javac -d /Users/magibson/projects/google-apis-explorer-read-only/build/classes -classpath /Users/magibson/projects/google-apis-explorer-read-only/build/classes:/Users/magibson/projects/google-apis-explorer-read-only/lib/guava-r07.jar:/Users/magibson/projects/google-apis-explorer-read-only/lib/guava-r07-gwt.jar:/Users/magibson/projects/google-apis-explorer-read-only/lib/gwt-user.jar:/Users/magibson/projects/google-apis-explorer-read-only/lib/gwt-servlet.jar:/Users/magibson/gg/lib/junit.jar:/Users/magibson/projects/google-apis-explorer-read-only/lib/gwt-oauth2-0.2-alpha.jar:/Users/magibson/gg/lib/jsr305.jar:/usr/share/ant/lib/ant-launcher.jar:/usr/share/ant/lib/ant-antlr.jar:/usr/share/ant/lib/ant-jmf.jar:/usr/share/ant/lib/ant-junit.jar:/usr/share/ant/lib/ant-junit4.jar:/usr/share/ant/lib/ant-swing.jar:/usr/share/ant/lib/ant-testutil.jar:/usr/share/ant/lib/ant.jar -sourcepath /Users/magibson/projects/google-apis-explorer-read-only/src src/com/google/api/explorer/client/*.java
+
+ls src/com/google/api/explorer/client/
+
+/Users/magibson/projects/google-apis-explorer-read-only/src/com/google/api/explorer/client/parameter/schema/SchemaForm.java:23: cannot find symbol
+symbol  : class Display
+location: class com.google.gwt.dom.client.Style
+import com.google.gwt.dom.client.Style.Display;
+ 
+
+javac -d /Users/magibson/projects/google-apis-explorer-read-only/build/classes 
+-classpath 
+/Users/magibson/projects/google-apis-explorer-read-only/build/classes
+:/Users/magibson/projects/google-apis-explorer-read-only/lib/guava-r07.jar
+:/Users/magibson/projects/google-apis-explorer-read-only/lib/guava-r07-gwt.jar
+:/Users/magibson/projects/google-apis-explorer-read-only/lib/gwt-user.jar
+:/Users/magibson/projects/google-apis-explorer-read-only/lib/gwt-servlet.jar
+:/Users/magibson/gg/lib/junit.jar
+:/Users/magibson/projects/google-apis-explorer-read-only/lib/gwt-oauth2-0.2-alpha.jar
+:/Users/magibson/gg/lib/jsr305.jar
+:/usr/share/ant/lib/ant-launcher.jar:/usr/share/ant/lib/ant-antlr.jar
+:/usr/share/ant/lib/ant-jmf.jar:/usr/share/ant/lib/ant-junit.jar
+:/usr/share/ant/lib/ant-junit4.jar:/usr/share/ant/lib/ant-swing.jar
+:/usr/share/ant/lib/ant-testutil.jar
+:/usr/share/ant/lib/ant.jar 
+-sourcepath /Users/magibson/projects/google-apis-explorer-read-only/src src/com/google/api/explorer/client/*.java
+
+
+gwt-servlet
+
+javac -d /Users/magibson/projects/google-apis-explorer-read-only/build/classes -classpath /Users/magibson/projects/google-apis-explorer-read-only/lib/gwt-servlet.jar  -sourcepath /Users/magibson/projects/google-apis-explorer-read-only/src src/com/google/api/explorer/client/parameter/schema/SchemaForm.java
+
+gwt-servlet+gwt-user
+
+javac -d /Users/magibson/projects/google-apis-explorer-read-only/build/classes -classpath /Users/magibson/projects/google-apis-explorer-read-only/lib/gwt-servlet.jar:/Users/magibson/projects/google-apis-explorer-read-only/lib/gwt-user.jar  -sourcepath /Users/magibson/projects/google-apis-explorer-read-only/src src/com/google/api/explorer/client/parameter/schema/SchemaForm.java
+
++ gwt-dev
+
+javac -d /Users/magibson/projects/google-apis-explorer-read-only/build/classes -classpath /Users/magibson/projects/google-apis-explorer-read-only/lib/gwt-servlet.jar:/Users/magibson/projects/google-apis-explorer-read-only/lib/gwt-user.jar:/Users/magibson/projects/google-apis-explorer-read-only/lib/gwt-dev.jar  -sourcepath /Users/magibson/projects/google-apis-explorer-read-only/src src/com/google/api/explorer/client/parameter/schema/SchemaForm.java
+
+
+jar tvf /Users/magibson/projects/google-apis-explorer-read-only/lib/gwt-dev.jar  | g Precon
+4074:  4710 Mon Aug 29 13:15:28 EDT 2011 com/google/gwt/dev/util/Preconditions.class
+4075: 16196 Mon Aug 29 12:36:14 EDT 2011 com/google/gwt/dev/util/Preconditions.java
+4529:  4101 Fri Dec 10 17:58:18 EST 2010 com/google/gwt/thirdparty/guava/common/base/Preconditions.class
+
+javac -d /Users/magibson/projects/google-apis-explorer-read-only/build/classes -classpath /Users/magibson/projects/google-apis-explorer-read-only/lib/gwt-servlet.jar:/Users/magibson/projects/google-apis-explorer-read-only/lib/gwt-user.jar:/Users/magibson/projects/google-apis-explorer-read-only/lib/gwt-dev.jar  -sourcepath /Users/magibson/projects/google-apis-explorer-read-only/src src/com/google/api/explorer/client/parameter/schema/SchemaForm.java
+
+/Users/magibson/projects/google-apis-explorer-read-only/src/com/google/api/explorer/client/AppState.java:22: package com.google.common.base does not exist
+import com.google.common.base.Preconditions;
+
+
+oh crap its true - com.google.common.base vs com.google.gwt.dev
+
+ack "com.google.common.base" | wc
+      64     128    7161
+
+yikes - seems like a package rename???
+
+build/classes/com/google/api/explorer/client/AppState.java
+22:import com.google.common.base.Preconditions;
+
+build/classes/com/google/api/explorer/client/base/ApiRequest.java
+25:import com.google.common.base.Preconditions;
+26:import com.google.common.base.Strings;
+
+build/classes/com/google/api/explorer/client/base/ApiServiceFactory.java
+20:import com.google.common.base.Preconditions;
+21:import com.google.common.base.Strings;
+
+build/classes/com/google/api/explorer/client/base/ApiServiceTest.java
+21:import com.google.common.base.Charsets;
+....
+
+man this code is out of date!!!
+http://www.jarfinder.com/index.php/java/info/com.google.common.base.Preconditions
+
+com.google.common.base.Preconditions
+known versions
+final class com.google.common.base.Preconditions [3310 bytes, jvm >= 1.5 ]
+google-collect-snapshot-20080530.jar
+final class com.google.common.base.Preconditions [3322 bytes, jvm >= 1.5 ]
+google-collect-snapshot-20071022.jar
+final class com.google.common.base.Preconditions [3322 bytes, jvm >= 1.5 ]
+google-collect-snapshot-20080321.jar
+final class com.google.common.base.Preconditions [4529 bytes, jvm >= 1.5 ]
+google-collections-0.8.jar
+
+jarfinder is a great web site
+
+ok grabbing  google-collection-0.8.jar from jarfinder - lets try that 
+oish - still havent really resolved while Style$Display wasnt jibing
+
++ google-collections
+
+javac -d /Users/magibson/projects/google-apis-explorer-read-only/build/classes -classpath /Users/magibson/projects/google-apis-explorer-read-only/lib/gwt-servlet.jar:/Users/magibson/projects/google-apis-explorer-read-only/lib/gwt-user.jar:/Users/magibson/projects/google-apis-explorer-read-only/lib/gwt-dev.jar:./lib/google-collections-0.8.jar  -sourcepath /Users/magibson/projects/google-apis-explorer-read-only/src src/com/google/api/explorer/client/parameter/schema/SchemaForm.java
+
+
+wow only 5 errors!
+Users/magibson/projects/google-apis-explorer-read-only/src/com/google/api/explorer/client/base/ApiService.java:20: cannot find symbol
+symbol  : class HashBasedTable
+location: package com.google.common.collect
+import com.google.common.collect.HashBasedTable;
+ 
+oh crap jar finder cant find it!
+
+its in guava
+fuck
+  5752 Wed Sep 22 12:16:36 EDT 2010 com/google/common/collect/HashBasedTable.class
+guava07
+
++guava07
+javac -d /Users/magibson/projects/google-apis-explorer-read-only/build/classes -classpath /Users/magibson/projects/google-apis-explorer-read-only/lib/gwt-servlet.jar:/Users/magibson/projects/google-apis-explorer-read-only/lib/gwt-user.jar:/Users/magibson/projects/google-apis-explorer-read-only/lib/gwt-dev.jar:./lib/google-collections-0.8.jar:./lib/guava-r07.jar  -sourcepath /Users/magibson/projects/google-apis-explorer-read-only/src src/com/google/api/explorer/client/parameter/schema/SchemaForm.java
+
+
+2 errors!
+
+Users/magibson/projects/google-apis-explorer-read-only/src/com/google/api/explorer/client/event/ServiceLoadedEvent.java:59: cannot find symbol
+symbol  : method <java.lang.String,java.lang.String>of()
+location: class com.google.common.collect.ImmutableMultimap
+    this(service, ImmutableMultimap.<String, String>of());
+ 
+oh its the method not the class - yikes
+
+Wed Sep 22 12:16:36 EDT 2010 com/google/common/collect/ImmutableMultimap.class
+
+the class is there but doesnt implement that method!!
+
+its also in google collections
+Wed Sep 03 15:45:14 EDT 2008 com/google/common/collect/ImmutableMultimap.class
+
+yup
+oish!!!
+
+static
+<K,V> ImmutableMultimap<K,V>
+of(K k1, V v1) 
+          Returns an immutable multimap containing a single entry.
+
+wow so somehow we need to resolve using stuff from both collections and guava
+their might be an early guava jar or a late collections jar that has it right
+jar finder has no guava
+
+
+http://grepcode.com/file/repo1.maven.org/maven2/com.google.guava/guava/r03/com/google/common/collect/ImmutableMultimap.java?av=f
+ 
+
+ public static <K, V> ImmutableMultimap<K, V> of() {
+55     return ImmutableListMultimap.of();
+56   }
+
+wait 07 has it too
+maybe google collections is overriding guava
+
+guava first
+javac -d ./build/classes -classpath ./lib/guava-r07.jar:./lib/google-collections-0.8.jar:./lib/gwt-servlet.jar:./lib/gwt-user.jar:./lib/gwt-dev.jar  -sourcepath ./src src/com/google/api/explorer/client/parameter/schema/SchemaForm.java
+
+
+wow that worked!
+
+sans google collect?
+javac -d ./build/classes -classpath ./lib/guava-r07.jar:./lib/gwt-servlet.jar:./lib/gwt-user.jar:./lib/gwt-dev.jar  -sourcepath ./src src/com/google/api/explorer/client/parameter/schema/SchemaForm.java
+
+doesnt need google collect it seems
+
+more files
+javac -d ./build/classes -classpath ./lib/guava-r07.jar:./lib/gwt-servlet.jar:./lib/gwt-user.jar:./lib/gwt-dev.jar  -sourcepath ./src  */*/*/*/*/*/*/*/*.java
+
++ junit
+javac -d ./build/classes -classpath ./lib/guava-r07.jar:./lib/gwt-servlet.jar:./lib/gwt-user.jar:./lib/gwt-dev.jar:./lib/junit.jar  -sourcepath ./src  */*/*/*/*/*/*/*/*.java
+
+test/com/google/api/explorer/client/base/dynamicjso/DynamicJsArrayGwtTest.java:28: duplicate class: com.google.api.explorer.client.base.dynamicjso.DynamicJsArrayGwtTest
+public class DynamicJsArrayGwtTest extends BaseGwtTest {
+
+uh oh
+
+src root
+
+javac -d ./build/classes -classpath ./lib/guava-r07.jar:./lib/gwt-servlet.jar:./lib/gwt-user.jar:./lib/gwt-dev.jar:./lib/junit.jar  -sourcepath ./src  src/*/*/*/*/*/*/*/*.java
+
+oh that works
+
+javac -d ./build/classes -classpath ./lib/guava-r07.jar:./lib/gwt-servlet.jar:./lib/gwt-user.jar:./lib/gwt-dev.jar:./lib/junit.jar  -sourcepath ./src `find src -name "*.java"`
+
+rc/com/google/api/explorer/client/AuthManager.java:23: package com.google.api.gwt.oauth2.client does not exist
+import com.google.api.gwt.oauth2.client.Auth;
+
++ oauth
+javac -d ./build/classes -classpath lib/guava-r07.jar:lib/gwt-servlet.jar:lib/gwt-user.jar:lib/gwt-dev.jar:lib/junit.jar:lib/gwt-oauth2-0.2-alpha.jar  -sourcepath ./src `find src -name "*.java"`
+
+src/com/google/api/explorer/client/base/ApiRequestTest.java:19: cannot find symbol
+symbol  : class TestUrlEncoder
+location: package com.google.api.explorer.client
+import com.google.api.explorer.client.TestUrlEncoder;
+
+test/com/google/api/explorer/client/TestUrlEncoder.java
+26:public class TestUrlEncoder implements UrlEncoder {
+
+its in test
+
+nt client.gwt-test.build
+Buildfile: /Users/magibson/projects/google-apis-explorer-read-only/build.xml
+
+BUILD FAILED
+/Users/magibson/projects/google-apis-explorer-read-only/build.xml:127: The value of attribute "location" associated with an element type "null" must not contain the '<' character.
+
+
+javac -d ./build/classes -classpath lib/guava-r07.jar:lib/gwt-servlet.jar:lib/gwt-user.jar:lib/gwt-dev.jar:lib/junit.jar:lib/gwt-oauth2-0.2-alpha.jar  -sourcepath ./src `find src -name "*.java"`
+
+src/com/google/api/explorer/client/base/ApiRequestTest.java:27: package org.easymock does not exist
+import org.easymock.EasyMock;
+
+javac -d ./build/classes -classpath lib/guava-r07.jar:lib/gwt-servlet.jar:lib/gwt-user.jar:lib/gwt-dev.jar:lib/junit.jar:lib/gwt-oauth2-0.2-alpha.jar:lib/easymock-2.4.jar  -sourcepath ./src `find src -name "*.java"`
+
+6 errors!
+
+src/com/google/api/explorer/client/embedded/EmbeddedParameterForm.java:49: cannot find symbol
+symbol  : class Nullable
+location: package javax.annotation
+import javax.annotation.Nullable;
+ 
+jsr305
+
+javac -d ./build/classes -classpath lib/guava-r07.jar:lib/gwt-servlet.jar:lib/gwt-user.jar:lib/gwt-dev.jar:lib/junit.jar:lib/gwt-oauth2-0.2-alpha.jar:lib/easymock-2.4.jar:lib/jsr305.jar  -sourcepath ./src `find src -name "*.java"`
+
+3 errors!
+
+src/com/google/api/explorer/client/base/ApiRequestTest.java:19: cannot find symbol
+symbol  : class TestUrlEncoder
+location: package com.google.api.explorer.client
+import com.google.api.explorer.client.TestUrlEncoder;
+
+ant client.gwt-test.build
+
+hmm im thinking we gut the ApiRequestTest for now - we just want to get this bugger working
+i gutted it what the hell
+
+1 error!
+src/com/google/api/explorer/client/UrlEncoder.java:75: non-static method join(java.lang.Object,java.lang.Object,java.lang.Object...) cannot be referenced from a static context
+      return Joiner.join(SPECIAL_DELIMITER, result);
+
+    /**
+     * For Buzz, we have to take special care not to encode the "@" sign
+     */
+    @Override
+    public String encodePathSegment(String decodedURLComponent) {
+      // Take special precautions to avoid encoding the special Buzz delimiter
+      String[] segments = decodedURLComponent.split(SPECIAL_DELIMITER);
+      List<String> result = Lists.newArrayListWithCapacity(segments.length);
+      for (String segment : segments) {
+        result.add(URL.encodePathSegment(segment));
+      }
+      return Joiner.join(SPECIAL_DELIMITER, result);
+    }
+
+
+my fix of Join to Joiner didnt work previously it turns out
+just tried flipping it back to Join
+src/com/google/api/explorer/client/UrlEncoder.java:19: cannot find symbol
+symbol  : class Join
+location: package com.google.common.base
+import com.google.common.base.Join; // MG
+                             ^
+src/com/google/api/explorer/client/UrlEncoder.java:76: cannot find symbol
+symbol: variable Join
+      return Join.join(SPECIAL_DELIMITER, result); // MG
+
++ google collection?
+javac -d ./build/classes -classpath lib/guava-r07.jar:lib/google-collections-0.8.jar:lib/gwt-servlet.jar:lib/gwt-user.jar:lib/gwt-dev.jar:lib/junit.jar:lib/gwt-oauth2-0.2-alpha.jar:lib/easymock-2.4.jar:lib/jsr305.jar  -sourcepath ./src `find src -name "*.java"`
+
+and that compiles - though its a little sketchy to use both guava & google collections
+alternatively could fix Join to use Joiner ??
+
+An object which joins pieces of text (specified as an array, Iterable, varargs or even a Map) with a separator. It either appends the results to an Appendable or returns them as a String. Example:
+
+   Joiner joiner = Joiner.on("; ").skipNulls();
+    . . .
+   return joiner.join("Harry", null, "Ron", "Hermione");
+
+ok replaced Join with Joiner in UrlEncoder
+take out google collection then
+- google collection?
+javac -d ./build/classes -classpath lib/guava-r07.jar:lib/gwt-servlet.jar:lib/gwt-user.jar:lib/gwt-dev.jar:lib/junit.jar:lib/gwt-oauth2-0.2-alpha.jar:lib/easymock-2.4.jar:lib/jsr305.jar  -sourcepath ./src `find src -name "*.java"`
+
+phew it compiles - and no collection jar needed now just pure guava
+lovely
+
+so now i think try to make a war file
+either by hand or ant -
+do we try to get the dam ant file working?
+
+oh i screwed up the ant file somewhere
+ant -v client.build | m
+Apache Ant(TM) version 1.8.2 compiled on June 3 2011
+Trying the default build file: build.xml
+Buildfile: /Users/magibson/projects/google-apis-explorer-read-only/build.xml
+Detected Java version: 1.6 in: /System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home
+Detected OS: Mac OS X
+parsing buildfile /Users/magibson/projects/google-apis-explorer-read-only/build.xml with URI = file:/Users/magibson/projects/google-apis-explorer-read-only/build.xml
+Project base dir set to: /Users/magibson/projects/google-apis-explorer-read-only
+
+BUILD FAILED
+/Users/magibson/projects/google-apis-explorer-read-only/build.xml:127: The value of attribute "location" associated with an element type "null" must not contain the '<' character.
+        at org.apache.tools.ant.helper.ProjectHelper2.parse(ProjectHelper2.java:320)
+
+doesnt say where
+
+no dev?
+javac -d ./build/classes -classpath lib/guava-r07.jar:lib/gwt-servlet.jar:lib/gwt-user.jar:lib/junit.jar:lib/gwt-oauth2-0.2-alpha.jar:lib/easymock-2.4.jar:lib/jsr305.jar  -sourcepath ./src `find src -name "*.java"`
+
+ant clean
+mkdir build; mkdir build/classes
+
+so dev doesnt seem to be needed - wow
+
+theres ant explorer.build(line 61) and client.build(line 113)
+
+ant explorer.build
+Buildfile: /Users/magibson/projects/google-apis-explorer-read-only/build.xml
+explorer.verify:
+BUILD FAILED
+/Users/magibson/projects/google-apis-explorer-read-only/build.xml:58: Cannot find google-api-gwt-client.jar
+
+so i think explorere wants client 1st
+
+no gwt-user?
+javac -d ./build/classes -classpath lib/guava-r07.jar:lib/gwt-servlet.jar:lib/junit.jar:lib/gwt-oauth2-0.2-alpha.jar:lib/easymock-2.4.jar:lib/jsr305.jar  -sourcepath ./src `find src -name "*.java"`
+nope
+
+javac -d ./build/classes -classpath lib/guava-r07.jar:lib/gwt-servlet.jar:lib/gwt-user.jar:lib/junit.jar:lib/gwt-oauth2-0.2-alpha.jar:lib/easymock-2.4.jar:lib/jsr305.jar  -sourcepath ./src `find src -name "*.java"`
+
+
+Compilation arguments:
+    [javac] '-d'
+    [javac] '/Users/magibson/projects/google-apis-explorer-read-only/build/classes'
+    [javac] '-classpath'
+    [javac] '/Users/magibson/projects/google-apis-explorer-read-only/build/classes:/Users/magibson/projects/google-apis-explorer-read-only/lib/guava-r07.jar:/Users/magibson/projects/google-apis-explorer-read-only/lib/gwt-user.jar:/Users/magibson/projects/google-apis-explorer-read-only/lib/gwt-servlet.jar:/Users/magibson/gg/lib/junit.jar:/Users/magibson/projects/google-apis-explorer-read-only/lib/gwt-oauth2-0.2-alpha.jar:/Users/magibson/gg/lib/jsr305.jar:/Users/magibson/gg/lib/easymock-2.4.jar:/usr/share/ant/lib/ant-launcher.jar:/usr/share/ant/lib/ant-antlr.jar:/usr/share/ant/lib/ant-jmf.jar:/usr/share/ant/lib/ant-junit.jar:/usr/share/ant/lib/ant-junit4.jar:/usr/share/ant/lib/ant-swing.jar:/usr/share/ant/lib/ant-testutil.jar:/usr/share/ant/lib/ant.jar'
+    [javac] '-sourcepath'
+    [javac] '/Users/magibson/projects/google-apis-explorer-read-only/src'
+    [javac] '-g:source,lines,vars'
+
+wow holy shit the order totally matter 
+i got lucky above putting things in right order but didnt know
+man these jars are fucked up
+
+gwt-servlet must be second
+
+ok so ant client.build is working due to right order of jars - phew
+that means there are overlapping classes - wack
+
+ant jar
+jar:
+    [mkdir] Created dir: /Users/magibson/projects/google-apis-explorer-read-only/build/dist/google-api-gwt-client-${release}
+      [jar] Building jar: /Users/magibson/projects/google-apis-explorer-read-only/build/dist/google-api-gwt-client-${release}/google-api-gwt-client-${release}.jar
+
+BUILD FAILED
+/Users/magibson/projects/google-apis-explorer-read-only/build.xml:141: Problem creating jar: /Users/magibson/projects/google-apis-explorer-read-only/gg (Too many levels of symbolic links)
+
+must come env vars - took out gg
+export GWT_DIR='/Users/magibson/projects/google-apis-explorer-read-only/lib'
+export JSR305_DIR='/Users/magibson/projects/google-apis-explorer-read-only/lib'
+export JUNIT_DIR='/Users/magibson/projects/google-apis-explorer-read-only/lib'
+
+oh woops left a stray gg in dir 
+
+jar:
+    [mkdir] Created dir: /Users/magibson/projects/google-apis-explorer-read-only/build/dist/google-api-gwt-client-mdsol
+      [jar] Building jar: /Users/magibson/projects/google-apis-explorer-read-only/build/dist/google-api-gwt-client-mdsol/google-api-gwt-client-mdsol.jar
+
+BUILD SUCCESSFUL
+
+cool got my jar client jar
+
+wed 3/8 - office
+so i think im trying to get the ant file fully working so can just easily make a war file
+from that
+thats what i need next a war file
+
+ant explorer.verify
+Buildfile: /Users/magibson/projects/google-apis-explorer-read-only/build.xml
+explorer.verify:
+BUILD FAILED
+/Users/magibson/projects/google-apis-explorer-read-only/build.xml:61: Cannot find google-api-gwt-client.jar
+
+
+ls build/dist/google-api-gwt-client-mdsol/google-api-gwt-client-mdsol.jar
+
+ <target name="client.gwt-test.build"
+BUILD FAILED
+/Users/magibson/projects/google-apis-explorer-read-only/build.xml:152: srcdir "/Users/magibson/projects/google-apis-explorer-read-only/gwt-test" does not exist!
+
+ant client.test.build
+
+so all the test ant stuff doesnt work
+
+lets cp jar to make explorer happy
+
+so there is no explicit war target - argh
+but there are war arguments to some of the targets
+  <target name="explorer.gwtbuild" depends="explorer.build" description="Compile GWT sources with GWT compiler">
+    <java failonerror="true" fork="true" classname="com.google.gwt.dev.Compiler">
+      <classpath>
+        <pathelement location="${build.classes.dir}" />
+        <pathelement location="${gwtdir}/gwt-user.jar" />
+        <pathelement location="${gwtdir}/gwt-dev.jar" />
+        <pathelement location="${googleapidir}/google-api-gwt-client.jar" />
+      </classpath>
+
+      <jvmarg value="-Xmx256M" />
+      <arg line="-war" />
+      <arg value="war" />
+      <arg value="com.google.api.explorer.Explorer" />
+    </java>
+  </target>
+
+lets get that working and see if we get a war file
+
+ant explorer.gwtbuild
+
+cp build/dist/google-api-gwt-client-mdsol/google-api-gwt-client-mdsol.jar lib/google-api-gwt-client.jar
+wants it in <available file="${googleapidir}/google-api-gwt-client.jar" property="foundgoogleapijar" />
+but there is no googleapidir
+
+     GWT client module:
+     * Required jars: google-api-gwt-client.jar
+     * Environment variable: GOOGLEAPI_DIR
+     * Ant argument: -Dgoogleapidir
+
+ant explorer.verify
+Buildfile: /Users/magibson/projects/google-apis-explorer-read-only/build.xml
+explorer.verify:
+BUILD SUCCESSFUL
+
+ant explorer.build
+
+   [javac] /Users/magibson/projects/google-apis-explorer-read-only/src/com/google/api/explorer/client/AnalyticsManager.java:20: cannot find symbol
+    [javac] symbol  : class EventBus
+    [javac] location: package com.google.gwt.event.shared
+    [javac] import com.google.gwt.event.shared.EventBus;
+
+  <target name="explorer.build" depends="clean, explorer.verify" description="Compile GWT sources with javac">
+    <mkdir dir="${build.classes.dir}" />
+    <copy includeemptydirs="false" todir="${build.classes.dir}">
+      <fileset dir="${src.dir}" />
+    </copy>
+
+    <echo message="${ant.project.name}: ${ant.file}" />
+    <javac debug="true" debuglevel="${debuglevel}" destdir="${build.classes.dir}">
+      <src path="${src.dir}" />
+      <classpath>
+        <pathelement location="${build.classes.dir}" />
+        <pathelement location="${gwtdir}/gwt-user.jar" />
+        <pathelement location="${googleapidir}/google-api-gwt-client.jar" />
+      </classpath>
+    </javac>
+  </target>
+
+event bus is in gwt-servlet
+
+theres client.build explorer.build and explorer.gwtbuild
+the last has war args for whatever thats worth
+
+explorer build relies on google-api-gwt-client.jar made by client.build
+
+	<!-- added by MG -->
+        <pathelement location="${guavadir}/guava-r07.jar" />
+	<pathelement location="${gwtdir}/gwt-servlet.jar" />
+	<pathelement location="${gwtdir}/gwt-oauth2-0.2-alpha.jar" />
+	<pathelement location="${jsr305dir}/jsr305.jar" />
+	<pathelement location="${junitdir}/junit.jar" />
+	<pathelement location="${junitdir}/easymock-2.4.jar" />
+
+so it compiles
+what the hell does the war arg do?
+no war file was created
+
+lets look up making war files
+
+wait explorer.build DOES NOT do a war file
+
+ant explorer.gwtbuild | m
+Buildfile: /Users/magibson/projects/google-apis-explorer-read-only/build.xml
+
+clean:
+   [delete] Deleting directory /Users/magibson/projects/google-apis-explorer-read-only/build
+
+explorer.verify:
+
+explorer.build:
+    [mkdir] Created dir: /Users/magibson/projects/google-apis-explorer-read-only/build/classes
+     [copy] Copying 105 files to /Users/magibson/projects/google-apis-explorer-read-only/build/classes
+     [echo] google-api-explorer: /Users/magibson/projects/google-apis-explorer-read-only/build.xml
+    [javac] /Users/magibson/projects/google-apis-explorer-read-only/build.xml:71: warning: 'includeantruntime' was not set, defaulting to build.sysclasspath=last; set to false for repeatable builds
+    [javac] Compiling 83 source files to /Users/magibson/projects/google-apis-explorer-read-only/build/classes
+
+explorer.gwtbuild:
+     [java] Loading inherited module 'com.google.common.collect.Collect'
+     [java]    [ERROR] Unable to find 'com/google/common/collect/Collect.gwt.xml' on your classpath; could be a typo, or maybe you forgot to include a classpath entry for source?
+     [java] [ERROR] Line 4: Unexpected exception while processing element 'inherits'
+     [java] com.google.gwt.core.ext.UnableToCompleteException: (see previous log entries)
+     [java]     at com.google.gwt.dev.cfg.ModuleDefLoader.nestedLoad(ModuleDefLoader.java:278)
+
+where is this com/google/common/collect/Collect.gwt.xml??
+
+http://code.google.com/p/google-collections/source/browse/trunk/gwt/com/google/common/Collect.gwt.xml?spec=svn113&r=111
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 1.7.1//EN" "http://google-web-toolkit.googlecode.com/svn/tags/1.7.1/distro-source/core/src/gwt-module.dtd">
+<module>
+  <source path="" />
+  <super-source path="super"/>
+Comment by hayward.chan, Oct 22, 2009:
+this file needs to be under trunk/gwt/com/google/common/collect for the super-source path to work.
+
+If we plan on releasing a common module that includes base and collect altogether (which makes sense to me), then the super path directory should start here instead of under collect.
+
+Similarly, it might be simpler to just put the java emulated code under the same super directory tree?
+  <inherits name="Jre"/>
+</module>
+
+
+explorer.gwtbuild:
+     [java] Loading inherited module 'com.google.common.collect.Collect'
+     [java]    Loading inherited module 'Jre'
+     [java]       [ERROR] Unable to find 'Jre.gwt.xml' on your classpath; could be a typo, or maybe you forgot to include a classpath entry for source?
+
+not sure if i should abandon ant file and just make my own war file
+or if theres important stuff in this wierd google compiler???
+
+Use the java archive command 'jar' to bundle up your application
+    jar -cvf pets.war *         
+In English, "compress everything in this directory into a file named pets.war"
+(c=create, v=verbose, f=file)
+
+wow i never knew a war file is really just a jar file
+
+i have a feeling the google compiler is needed but lets just see what happens
+
+jar -cvf explorer.war *
+
+i think
+adding: war/WEB-INF/appengine-web.xml(in = 551) (out= 247)(deflated 55%)
+adding: war/WEB-INF/web.xml(in = 407) (out= 250)(deflated 38%)
+matters
+
+not much there...
+<web-app>
+  <welcome-file-list>
+    <welcome-file>explorer.html</welcome-file>
+  </welcome-file-list>
+
+  <error-page>
+    <error-code>404</error-code>
+    <location>/apis/explorer/explorer.html</location>
+  </error-page>
+</web-app>
+
+
+sample.war file in webapps directory of tomcat.
+
+cd ~/tomcat/apache-tomcat-7.0.26/webapps
+cp ~/gg/explorer.war .
+
+it made explorer.war into explorer dir
+~/tomcat/apache-tomcat-7.0.26/webapps $ ls
+ROOT		examples	explorer.war	manager
+docs		explorer	host-manager
+BUT...
+http://localhost:8080/explorer/
+The requested resource (/explorer/) is not available.
+
+hello world web.xml
+
+<web-app>
+
+    <display-name>MyEclipse Hello World Examples</display-name>
+    <description>
+      Hello World type examples using Eclipse for: JSP, Java Beans, Servlets
+    </description>
+
+    <!-- Define servlets that are included in the example application -->
+
+    <servlet>
+        <servlet-name>MyHelloWorldServlet</servlet-name>
+        <servlet-class>myeclipse.MyHelloWorldServlet</servlet-class>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>MyHelloWorldServlet</servlet-name>
+        <url-pattern>/servlet/MyHelloWorldServlet</url-pattern>
+    </servlet-mapping>
+</web-app>
+
+we are not specifying any servlet ?????
+thats in WEB-INF
+theres also index.jsp in root
+
+
+lets look at actual app and see what its accessing
+
+http://code.google.com/apis/explorer/
+
+the html is the same...
+
+<!doctype html>
+<html>
+  <head>
+    <!-- Tell IE9 to use the IE8 rendering engine (GWT doesn't support IE9 yet),
+         or better yet, use Chrome Frame. -->
+    <meta http-equiv="X-UA-Compatible" content="IE=8,chrome=1">
+    <title>Google APIs Explorer</title>
+    <script type="text/javascript" src="com.google.api.explorer.Explorer.nocache.js"></script>
+
+    <!-- Analytics tracking. -->
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-19103306-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </head>
+  <body>
+  </body>
+</html>
+
+
+
+actually there is a hello world
+http://localhost:8080/examples/servlets/servlet/HelloWorldExample
+in web.xml:
+    <servlet>
+        <servlet-name>HelloWorldExample</servlet-name>
+        <servlet-class>HelloWorldExample</servlet-class>
+    </servlet>
+
+there are no jsp files
+
+
+http://localhost:8080/explorer/war/public/explorer.html
+
+this seems to not be found...
+   <script type="text/javascript" src="com.google.api.explorer.Explorer.nocache.js"></script>
+
+no javascript js in download
+
+i think this runs in gwt google web toolkit context
+i think i need to understand running in gwt??
+
+http://code.google.com/webtoolkit/overview.html
+Write
+The GWT SDK provides a set of core Java APIs and Widgets. These allow you to write AJAX applications in Java and then compile the source to highly optimized JavaScript that runs across all browsers, including mobile browsers for Android and the iPhone.
+
+Run
+When you're ready to deploy, GWT compiles your Java source code into optimized, stand-alone JavaScript files that automatically run on all major browsers, as well as mobile browsers for Android and the iPhone.
+
+http://code.google.com/webtoolkit/gettingstarted.html#create
+
+GWT ships with a command line utility called webAppCreator that automatically generates all the files you'll need in order to start a GWT project. It also generates Eclipse project files and launch config files for easy debugging in GWT's development mode.
+
+You can create a new demo application in a new MyWebApp directory by running webAppCreator:
+
+Mac or Linux - you may need to make the script executable:
+cd gwt-2.4.0
+chmod u+x webAppCreator
+./webAppCreator -out MyWebApp com.mycompany.mywebapp.MyWebApp
+
+The webAppCreator script will generate a number of files in MyWebApp/, including some basic "Hello, world" functionality in the class MyWebApp/src/com/mycompany/mywebapp/client/MyWebApp.java. The script also generates an Ant build script MyWebApp/build.xml.
+
+~/projects/gwt-2.4.0 $ ./webAppCreator -out MaWebApp com.mdsol.MaWebApp
+
+cd projects/gwt-2.4.0/MaWebApp/
+
+ant devmode
+
+http://code.google.com/webtoolkit/gettingstarted.html#create
+1) clicking "Launch Default Browser" - made chrome my default
+chrome asked to download plugin
+
+http://127.0.0.1:8888/MaWebApp.html?gwt.codesvr=127.0.0.1:9997
+
+hmmmm
+i think i need to somehow plop the explorer into gwt
+lets do it with sym link
+i think all my work has been wrong directed
+needed to work with gwt from get go!! argh! 3 days down the hole!
+
+my ant doesnt have a devmode
+
+  <target name="devmode" depends="javac" description="Run development mode">
+    <java failonerror="true" fork="true" classname="com.google.gwt.dev.DevMode">
+      <classpath>
+        <pathelement location="src"/>
+        <path refid="project.class.path"/>
+        <pathelement location="/Users/magibson/projects/gwt-2.4.0/validation-api-1.0.0.GA.jar" />
+        <pathelement location="/Users/magibson/projects/gwt-2.4.0/validation-api-1.0.0.GA-sources.jar" />
+      </classpath>
+      <jvmarg value="-Xmx256M"/>
+      <arg value="-startupUrl"/>
+      <arg value="MaWebApp.html"/>
+      <arg line="-war"/>
+      <arg value="war"/>
+      <!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
+      <arg line="${gwt.args}"/>
+      <arg value="com.mdsol.MaWebApp"/>
+    </java>
+  </target>
+
+well thats familiar aint it - oh my ive been lost
+
+2 options here make a new app and then shove exp into it
+or put in exp and shove hello world around it
+
+theres some files like ant that will need a genuine merge
+
+i think i wanna try option 1
+
+./webAppCreator -out explorer com.google.api.explorer.client.Explorer
+
+i think explorer is using an older version of gwt - 
+we either need to track that down or modify it to work with 2.4 ????
+both sound harrowing
+
+~/projects/gwt-2.4.0 $ ./webAppCreator -out explorer com.google.api.explorer.client.Explorer
+Generating from templates: [sample, eclipse, readme, ant]
+Not creating tests because -junit argument was not specified.
+
+Created directory explorer
+Created directory explorer/src
+Created directory explorer/src/com/google/api/explorer/client
+Created directory explorer/src/com/google/api/explorer/client/client
+Created directory explorer/src/com/google/api/explorer/client/server
+Created directory explorer/src/com/google/api/explorer/client/shared
+Created directory explorer/test
+Created directory explorer/test/com/google/api/explorer/client
+Created directory explorer/war
+Created directory explorer/war/WEB-INF
+Created file explorer/src/com/google/api/explorer/client/Explorer.gwt.xml
+Created file explorer/src/com/google/api/explorer/client/client/GreetingService.java
+Created file explorer/src/com/google/api/explorer/client/client/GreetingServiceAsync.java
+Created file explorer/src/com/google/api/explorer/client/client/Explorer.java
+Created file explorer/src/com/google/api/explorer/client/server/GreetingServiceImpl.java
+Created file explorer/src/com/google/api/explorer/client/shared/FieldVerifier.java
+Created file explorer/war/WEB-INF/web.xml
+Created file explorer/war/Explorer.css
+Created file explorer/war/Explorer.html
+Created file explorer/.classpath
+Created file explorer/.project
+Created file explorer/Explorer.launch
+Created file explorer/README.txt
+Created file explorer/build.xml
+
+
+yea i think i need to track down old gwt
+
+on jar finder there is gwt 1.4 & 1.5
+
+http://code.google.com/webtoolkit/doc/1.6/previousdocs.html
+has docs for 1.4 1.5 1.6
+
+looking at dates in svn for explorer its as recent as sept 2011 
+thats pretty recent
+
+Version 2.4.0
+Build 2.4.0 - September 7, 2011 - Release notes
+
+so in theory it should work with 2.4 - unless they were not updating their gwt
+
+and why doesnt it come with all the trappings of a new 2.4 app?
+
+Version 2.3.0
+Build 2.3.0 - May 2, 2011 - Release notes
+ could be 2.3
+
+theres no devmode in ant -
+thats the big diff but maybe they just renamed it?
+as its similar to other one
+
+yea the ant file is rather different
+would be interesting to look at older versions of gwt and see if they are more similar
+
+lets do 2.3
+
+http://code.google.com/webtoolkit/versions.html
+
+http://code.google.com/webtoolkit/doc/2.3/DevGuide.html
+
+./webAppCreator -out explorer com.google.api.explorer.client.Explorer
+maybe take out client??
+./webAppCreator -out explorer com.google.api.explorer.Explorer
+
+so the ant build.xml looks similar to 2.4
+its possible they modified the build to their own purposes
+i just dont get how you are supposed to get this working with gwt???
+
+so dev mode is not in exp but gwtc it seems is renamed to explorer.gwtbuild
+so either they renamed it or its from older version
+in either case it uses the same com.g.gwt.dev.Compiler
+
+so i think we need to get that one working
+and maybe try shoving devmode in there who knows why they took it out
+
+lets try to carry on with 2.4
+and figure out why its not running
+
+ant gwtc worked for my test app
+
+what does gwtc do? im not sure
+"GWT compile to JavaScript (production mode)"
+it shouldve created javascript somewheew?
+
+oh yes it put a whole shitload of js in war/mawebapp
+and thats the crux
+we have to get that ant command to work!
+
+ant explorer.gwtbuild
+explorer.gwtbuild:
+     [java] Loading inherited module 'com.google.common.collect.Collect'
+     [java]    Loading inherited module 'Jre'
+     [java]       [ERROR] Unable to find 'Jre.gwt.xml' on your classpath; could be a typo, or maybe you forgot to include a classpath entry for source?
+
+~/projects/google-apis-explorer-read-only $ ack Jre
+build/classes/com/google/common/collect/Collect.gwt.xml
+12:  <inherits name="Jre"/>
+
+src/com/google/common/collect/Collect.gwt.xml
+12:  <inherits name="Jre"/>
+
+why do we need Collect.gwt.xml?
+
+took out Collect.gwt.xml:
+explorer.gwtbuild:
+     [java] Loading inherited module 'com.google.common.collect.Collect'
+     [java]    [ERROR] Unable to find 'com/google/common/collect/Collect.gwt.xml' on your classpath; could be a typo, or maybe you forgot to include a classpath entry for source?
+     [java] [ERROR] Line 4: Unexpected exception while processing element 'inherits'
+ 
+src/com/google/api/explorer/Embedded.gwt.xml
+3:  <inherits name="com.google.common.collect.Collect" />
+
+src/com/google/api/explorer/Explorer.gwt.xml
+4:  <inherits name="com.google.common.collect.Collect" />
+
+
+~/projects/google-apis-explorer-read-only $ fnd gwt.xml
+./build/classes/com/google/api/explorer/Embedded.gwt.xml
+./build/classes/com/google/api/explorer/Explorer.gwt.xml
+./src/com/google/api/explorer/.svn/prop-base/Embedded.gwt.xml.svn-base
+./src/com/google/api/explorer/.svn/prop-base/Explorer.gwt.xml.svn-base
+./src/com/google/api/explorer/.svn/text-base/Embedded.gwt.xml.svn-base
+./src/com/google/api/explorer/.svn/text-base/Explorer.gwt.xml.svn-base
+./src/com/google/api/explorer/Embedded.gwt.xml
+./src/com/google/api/explorer/Explorer.gwt.xml
+./test/com/google/api/explorer/.svn/prop-base/GwtTests.gwt.xml.svn-base
+./test/com/google/api/explorer/.svn/text-base/GwtTests.gwt.xml.svn-base
+./test/com/google/api/explorer/GwtTests.gwt.xml
+
+
+<module>
+  <inherits name="com.google.gwt.user.User" />
+  <inherits name="com.google.common.collect.Collect" />
+  <inherits name="com.google.web.bindery.autobean.AutoBean" />
+  <inherits name="com.google.api.gwt.oauth2.OAuth2" />
+  <inherits name="com.google.gwt.json.JSON" />
+
+  <entry-point class="com.google.api.explorer.client.embedded.EmbeddedEntryPoint" />
+
+  <!-- Use Cross-site IFrame linker. -->
+  <add-linker name="xsiframe" />
+</module>
+
+im surprised the rest of the inherits work
+so could comment out collect but prob there for a reason 
+but in collect comment out jre for now and see if works - if not track down a jre
+
+found it!
+jar tvf guava-r07-gwt.jar | g Collect
+38: 10596 Wed Sep 15 15:53:16 EDT 2010 com/google/common/collect/Collections2.java
+49:  7737 Wed Sep 15 15:53:16 EDT 2010 com/google/common/collect/ForwardingCollection.java
+113:   347 Wed Sep 15 15:53:14 EDT 2010 com/google/common/collect/Collect.gwt.xml
+
+heres the contents of it
+<?xml version="1.0" encoding="utf-8"?>
+<module>
+   
+  <source path=""/>
+   
+  <super-source path="super"/>
+   
+  <inherits name="com.google.common.annotations.Annotations"/>
+   
+  <inherits name="com.google.common.base.Base"/>
+   
+  <inherits name="com.google.common.primitives.Primitives"/>
+    
+  <inherits name="java.util.Util"/>
+   
+</module>
+
+i think we need to include that jar
+
+that worked
+new problem:
+
+
+explorer.gwtbuild:
+     [java] Loading inherited module 'com.google.web.bindery.autobean.AutoBean'
+     [java]    [ERROR] Unable to find 'com/google/web/bindery/autobean/AutoBean.gwt.xml' on your classpath; could be a typo, or maybe you forgot to include a classpath entry for source?
+     [java] [ERROR] Line 5: Unexpected exception while processing element 'inherits'
+
+ok the new game is to get this to run so we have javascript
+so need to track down these funny errors
+
+from explorer gwt.xml
+<module>
+  <inherits name="com.google.gwt.user.User" />
+  <inherits name="com.google.common.collect.Collect" />
+  <inherits name="com.google.web.bindery.autobean.AutoBean" />
+  <inherits name="com.google.api.gwt.oauth2.OAuth2" />
+  <inherits name="com.google.gwt.json.JSON" />
+
+  <entry-point class="com.google.api.explorer.client.embedded.EmbeddedEntryPoint" />
+
+  <!-- Use Cross-site IFrame linker. -->
+  <add-linker name="xsiframe" />
+</module>
+
+so explorer.gwt.xml references inherits from things it doesnt provide - god dam!
+
+http://code.google.com/p/google-web-toolkit/source/browse/trunk/user/src/com/google/web/bindery/autobean/AutoBean.gwt.xml?r=10007
+
+only 3 gwt xml files in google jars expanded - did i expand all the jars in gwt?
+im just surprised these xml files arent embedded in the existing jars???
+though i do wonder if i need to find a jar with AutoBean in it??
+oh there is one
+ Mon Aug 29 13:18:10 EDT 2011 com/google/web/bindery/autobean/shared/AutoBean.class
+jar file ~/Downloads/gwt-2.4.0 $ jar tvf requestfactory-client.jar 
+but notice exact same path - with shared
+and no gwt.xml!! maddening
+
+found several versions of xml file - confusing!
+
+gwt-user should have it???
+
+http://grepcode.com/file/repo1.maven.org/maven2/com.google.gwt/gwt-user/2.3.0/com/google/web/bindery/autobean/AutoBean.gwt.xml
+2.4:
+http://grepcode.com/file/repo1.maven.org/maven2/com.google.gwt/gwt-user/2.4.0/com/google/web/bindery/autobean/AutoBean.gwt.xml/
+<?xml version="1.0" ?>
+<!--
+  Copyright 2010 Google Inc. Licensed under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with the
+  License. You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law
+  or agreed to in writing, software distributed under the License is
+  distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied. See the License for the specific language
+  governing permissions and limitations under the License.
+-->
+
+<!-- AutoBean framework -->
+<module>
+  <inherits name="com.google.gwt.user.User" />
+  <source path="gwt/client" />
+  <source path="shared" />
+  <super-source path="super" />
+  <generate-with class="com.google.web.bindery.autobean.gwt.rebind.AutoBeanFactoryGenerator">
+    <when-type-assignable class="com.google.web.bindery.autobean.shared.AutoBeanFactory" />
+  </generate-with>
+</module>
+
+i think my gwt-user is way out of date!
+no AutoBean
+and dates in it are 2008!
+one class is 2011 rest are 2009 & 2008 -strange!
+where did i get this jar?
+
+wow i dont know where the hell i got that jar but its way out of date
+the one in gwt 2.4 has the xml file we need 
+oish
+
+i suspect ive gotten other old crappy jars
+i think also if i installed gwt 2.4 then i just point my ant file at the jars in it
+rather than moving the jars in
+i think thats right
+
+/Users/magibson/projects/gwt-2.4.0
+is the place with new jars!
+
+export GWT_LIB='/Users/magibson/projects/gwt-2.4.0'
+export GWT_DIR=$GWT_LIB
+
+    <available file="${gwtdir}/gwt-user.jar" property="foundgwtuserjar" />
+    <fail unless="foundgwtuserjar" message="Cannot find gwt-user.jar" />
+
+    <available file="${gwtdir}/gwt-dev.jar" property="foundgwtdevjar" />
+    <fail unless="foundgwtdevjar" message="Cannot find gwt-dev.jar" />
+	<pathelement location="${gwtdir}/gwt-servlet.jar" />
+	<pathelement location="${gwtdir}/gwt-oauth2-0.2-alpha.jar" />
+gwt-servlet was copied from from gwt
+mv gwt-servlet.jar ~/fiddle/explorer/gwt-servlet-from-gwt-2.4.jar
+
+
+hmm actuall gwt-oatuh isnt in gwt2.4
+change to googleapidir which is just exp/lib
+	<pathelement location="${googleapidir}/gwt-oauth2-0.2-alpha.jar" />
+
+
+
+
+also guava not in gwt 2.4
+	<pathelement location="${gwtdir}/guava-r07-gwt.jar" />
+	<pathelement location="${guavadir}/guava-r07-gwt.jar" />
+
+ant jar - works - after reloading bash profile with new envs
+
+ant explorer.build
+works
+
+ant explorer.gwtbuild
+fingers crossed....
+wow it takes a long time 
+should do -v
+dont know if its hung??
+
+all sorts of errors
+     [java]                   Finding resources
+     [java]                      [ERROR] Resource com/google/api/explorer/public/minus-box.gif not found. Is the name specified as Class.getResource() would expect?
+     [java]                Preparing method collapseJson
+     [java]                   Finding resources
+     [java]                      [ERROR] Resource com/google/api/explorer/public/collapse-json.png not found. Is the name specified as Class.getResource() would expect?
+     [java]                Preparing method error
+     [java]                   Finding resources
+     [java]                      [ERROR] Resource com/google/api/explorer/public/error.gif not found. Is the name specified as Class.getResource() would expect?
+     [java]                Preparing method expand
+   
+
+probably pointing to old crappy jars!??
+or needs more jars?
+image files arent being found
+
+http://code.google.com/p/google-apis-explorer/source/browse/trunk/src/com/google/api/explorer/client/Resources.java?r=32
+
+i should download orginal svn to see what ive mangled
+it seems like those images should be there
+
+tatic final String PATH = "com/google/api/explorer/public/";
+@Source(PATH + "minus-box.gif")
+
+fnd minus-box
+./war/public/.svn/prop-base/minus-box.gif.svn-base
+./war/public/.svn/text-base/minus-box.gif.svn-base
+./war/public/minus-box.gif
+
+its there!
+though its in war/public not com/google/api/explorer/public ??? dam
+not sure what to do about that???
+
+ls src/com/google/api/explorer/
+Embedded.gwt.xml	Explorer.gwt.xml	client
+
+they aint in src!
+might need to alter PATH?? seems strange for sure
+dam i feel stuck for sure
+
+i could change the code 
+i could move all the images
+or i could try to discover how the hell this was intended to work
+or their might be a jar or source that has this proper?
+there is no public directory under explorer - strange
+http://code.google.com/p/google-apis-explorer/source/browse/trunk/src/com/google/api/explorer/?r=32#explorer%2Fclient
+
+i may need to come to a deeper understanding of gwt
+oh lets see what happens with hello world images?
+but would hell world have this Resource class?
+
+well lets look at other errors
+
+well lets look at resouces in gwt 2.4 samples
+./samples/DynaTableRf/war/WEB-INF/classes/com/google/gwt/sample/dynatablerf/client/widgets/SummaryWidget$TableResources.class
+./samples/DynaTableRf/war/WEB-INF/classes/com/google/gwt/sample/dynatablerf/client/widgets/TimeSlotListWidget$TableResources.class
+./samples/Mail/war/WEB-INF/classes/com/google/gwt/sample/mail/client/Mail$GlobalResources.class
+./samples/MobileWebApp/src/main/java/com/google/gwt/sample/mobilewebapp/client/tablet/TabletResources.java
+./samples/Showcase/src/com/google/gwt/sample/showcase/client/ShowcaseResources.java
+./samples/Showcase/war/WEB-INF/classes/com/google/gwt/sample/showcase/client/ShowcaseResources.class
+
+nada
+public interface ShowcaseResources extends ClientBundle {
+  ImageResource catI18N();
+
+  ImageResource catLists();
+
+  ImageResource catOther();
+
+public interface TabletResources extends ClientBundle {
+
+  /**
+   * Style overrides specific to the tablet version.
+   */
+  @NotStrict
+  CssResource tabletStyles();
+
+hmmmm oh well
+yea lets look at other errors
+
+   [java] Compile with -strict or with -logLevel set to TRACE or DEBUG to see all errors.
+     [java]             [WARN] Detected warnings related to 'com.google.gwt.editor.client.SimpleBeanEditorDriver'.   Are validation-api-<version>.jar and validation-api-<version>-sources.jar on the classpath?
+     [java]             Specify -logLevel DEBUG to see all errors.
+     [java]             [WARN] Unknown type 'com.google.gwt.editor.client.SimpleBeanEditorDriver' specified in deferred binding rule
+     [java]    Scanning for additional dependencies: file:/Users/magibson/projects/google-apis-explorer-read-only/build/classes/com/google/api/explorer/client/Resources.java
+...
+[ERROR] Errors in 'file:/Users/magibson/projects/google-apis-explorer-read-only/build/classes/com/google/api/explorer/client/Resources.java'
+     [java]       [ERROR] Line 29:  Failed to resolve 'com.google.api.explorer.client.Resources' via deferred binding
+
+
+     [java]    Scanning for additional dependencies: file:/Users/magibson/projects/google-apis-explorer-read-only/build/classes/com/google/api/explorer/client/FullView
+.java
+Computing all possible rebind results for 'com.google.api.explorer.client.FullView.FullViewUiBinder'
+     [java]          Rebinding com.google.api.explorer.client.FullView.FullViewUiBinder
+     [java]             Checking rule <generate-with class='com.google.web.bindery.autobean.gwt.rebind.AutoBeanFactoryGenerator'/>
+     [java]                [ERROR] Errors in 'file:/Users/magibson/projects/google-apis-explorer-read-only/build/classes/com/google/api/explorer/client/parameter/Param
+eterForm.java'
+     [java]                   [ERROR] Line 65: The import javax.annotation.Nullable cannot be resolved
+     [java]                   [ERROR] Line 243: Nullable cannot be resolved to a type
+     [java]                [ERROR] Errors in 'jar:file:/Users/magibson/projects/google-apis-explorer-read-only/lib/guava-r07-gwt.jar!/com/google/common/collect/Multima
+p.java'
+     [java]                   [ERROR] Line 25: The import javax.annotation.Nullable cannot be resolved     [java]                   [ERROR] Line 74: Nullable cannot be resolved to a type
+   
+
+i think it just needs jsr!
+	<pathelement location="${jsr305dir}/jsr305.jar" />
+dam still cant find nullable
+
+src/com/google/api/explorer/client/embedded/EmbeddedParameterForm.java
+49:import javax.annotation.Nullable;
+
+src/com/google/api/explorer/client/parameter/ParameterForm.java
+65:import javax.annotation.Nullable;
+
+jsr is not expanded into notes/google-jars-expanded.txt
+
+~/projects/google-apis-explorer-read-only/lib $ jar tvf jsr305.jar | g Nullable
+15:   512 Thu Jan 08 16:43:40 EST 2009 javax/annotation/Nullable.class
+
+jar tvf jsr305.jar >> ~/projects/notes/google-jars-expanded.txt
+
+so why the hell is it notfinding Nullable
+
+  [java] Executing '/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home/bin/java' with arguments:
+     [java] '-Xmx256M'
+     [java] '-classpath'
+     [java] '/Users/magibson/projects/google-apis-explorer-read-only/lib/jsr305.jar:/Users/magibson/projects/google-apis-explorer-read-only/build/classes:/Users/magibson/projects/google-apis-explorer-read-only/lib/guava-r07.jar:/Users/magibson/projects/google-apis-explorer-read-only/lib/guava-r07-gwt.jar:/Users/magibson/projects/gwt-2.4.0/gwt-servlet.jar:/Users/magibson/projects/google-apis-explorer-read-only/lib/gwt-oauth2-0.2-alpha.jar:/Users/magibson/projects/gwt-2.4.0/gwt-user.jar:/Users/magibson/projects/gwt-2.4.0/gwt-dev.jar:/Users/magibson/projects/google-apis-explorer-read-only/lib/google-api-gwt-client.jar'
+     [java] 'com.google.gwt.dev.Compiler'
+     [java] '-war'
+     [java] 'war'
+     [java] 'com.google.api.explorer.Explorer'
+
+/Users/magibson/projects/google-apis-explorer-read-only/lib/jsr305.jar
+
+ls /Users/magibson/projects/google-apis-explorer-read-only/lib/jsr305.jar
+/Users/magibson/projects/google-apis-explorer-read-only/lib/jsr305.jar
+~/projects/google-apis-explorer-read-only $ jar tvf /Users/magibson/projects/google-apis-explorer-read-only/lib/jsr305.jar | g Nullable
+15:   512 Thu Jan 08 16:43:40 EST 2009 javax/annotation/Nullable.class
+
+lets examine error
+
+ Scanning for additional dependencies: file:/Users/magibson/projects/google-apis-explorer-read-only/build/classes/com/google/api/explorer/client/FullView.java
+     [java]       Computing all possible rebind results for 'com.google.api.explorer.client.FullView.FullViewUiBinder'
+     [java]          Rebinding com.google.api.explorer.client.FullView.FullViewUiBinder
+     [java]             Checking rule <generate-with class='com.google.web.bindery.autobean.gwt.rebind.AutoBeanFactoryGenerator'/>
+     [java]                [ERROR] Errors in 'file:/Users/magibson/projects/google-apis-explorer-read-only/build/classes/com/google/api/explorer/client/parameter/ParameterForm.java'
+     [java]                   [ERROR] Line 65: The import javax.annotation.Nullable cannot be resolved
+     [java]                   [ERROR] Line 243: Nullable cannot be resolved to a type
+     [java]                [ERROR] Errors in 'jar:file:/Users/magibson/projects/google-apis-explorer-read-only/lib/guava-r07-gwt.jar!/com/google/common/collect/Multimap.java'
+     [java]                   [ERROR] Line 25: The import javax.annotation.Nullable cannot be resolved
+ 
+its not saying it cant find nullable exactly its saying
+ Nullable cannot be resolved to a type
+what does that mean???
+
+same problem here - phew
+http://stackoverflow.com/questions/3800033/guava-r07-gwt-and-javax-annotation-nullable
+Assuming your project is under com/example/myproject/ Create a file: com/example/myproject/annotation/javax/annotation/Nullable.java With the following content:
+
+package com.example.myproject.annotation.javax.annotation;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+import javax.annotation.Nonnull;
+import javax.annotation.meta.TypeQualifierNickname;
+import javax.annotation.meta.When;
+
+@Documented
+@TypeQualifierNickname
+@Nonnull(when = When.UNKNOWN)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Nullable {
+
+}
+Add the line to MyProject.gwt.xml:
+
+<super-source path="annotation"/>
+And you're good to go.
+
+
+or this:
+http://code.google.com/p/guava-libraries/issues/detail?id=776
+This code compiles:
+List<String> location = ImmutableList.copyOf(new String[] {"s", "s"});
+But in DevMode it doesn't work with Exception 
+00:31:37.320 [ERROR] [com.example.list] Line 32: The import javax.annotation.Nullable cannot be resolved
+
+This code doen't compile without adding <super-source path="path/to/JSR-305/source"> or <source path="path/to/JSR-305/source">:
+ImmutableList<String> location = ImmutableList.copyOf(new String[] {"s", "s"});
+
+I think the issue is about how GWT Compiler resolves and ignores unrecognized annotation types.
+
+or this:
+manually adding jsr305-2.0.0.jar to WEB-INF/lib solved the GWT compiler errors
+
+And the workaround was to create javax/annotation/Annotation.gwt.xml (with source path="") and inherit it.
+Interesting.  In my tests, that hasn't been good enough, at least with -strict.  Are you using -strict?
+
+This is a kind of known bug you need to have jsr305.jar in your WEB-INF/lib that is it.
+copied jsr into war/WEB-INF/lib/ - didnt work
+
+to Explorer.gwt.xml:
+  <!-- fix bug with annotation from jsr305 -->
+  <super-source path="annotation"/>
+Compile with -strict or with -logLevel set to TRACE or DEBUG to see all errors.
+     [java]    Finding entry point classes
+     [java]       [ERROR] Unable to find type 'com.google.api.explorer.client.ExplorerEntryPoint'
+     [java]          [ERROR] Hint: Previous compiler errors may have made this type unavailable
+     [java]          [ERROR] Hint: Check the inheritance chain from your module; it may not be inheriting a required module or a module may not be adding its source path entries properly
+
+  <source path="annotation" />
+also causes above failure
+
+put the friggin class in - still failing
+
+ah i think putting it in Embedded.gwt.xml seems to have fixed prob
+
+no that caused this error really:
+
+     [java]                Preparing method style
+     [java]                   Finding resources
+     [java]                      [ERROR] Resource com/google/api/explorer/public/explorer.css not found. Is the name specified as Class.getResource() would expect?
+     [java]    [ERROR] Errors in 'file:/Users/magibson/projects/google-apis-explorer-read-only/build/classes/com/google/api/explorer/client/Resources.java'
+     [java]       [ERROR] Line 29:  Failed to resolve 'com.google.api.explorer.client.Resources' via deferred binding
+     [java]    Scanning for additional dependencies: generated://6C3E6AD8F445C820180571E4C4232C5E/com/google/api/explorer/client/FullView_FullViewUiBinderImpl.java
+     [java]       Computing all possible rebind results for 'com.google.api.explorer.client.Resources'
+     [java]          Rebinding com.google.api.explorer.client.Resources
+     [java]             Invoking generator com.google.gwt.resources.rebind.context.InlineClientBundleGenerator
+     [java]                Preparing method style
+     [java]                   Finding resources
+     [java]                      [ERROR] Resource com/google/api/explorer/public/explorer.css not found. Is the name specified as Class.getResource() would expect?
+    
+
+oh this is wierd the Nullable does seem to have gone away and replaced with .css not found error
+above even when running back in old state ?????
+
+can do svn diff but wierd:
+ndex: src/com/google/api/explorer/Explorer.gwt.xml
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/xml
+Index: src/com/google/api/explorer/Embedded.gwt.xml
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/xml
+Index: src/com/google/api/explorer/client/UrlEncoder.java
+=
+since when is xml binary - lame!
+
+anyways lets fix all the dam resource errors as thats whats flowing
+who the hell knows what happened with the Annotation bug
+i dont think its fixed
+
+    [java]                Preparing method collapse
+     [java]                   Finding resources
+     [java]                      [ERROR] Resource com/google/api/explorer/public/minus-box.gif not found. Is the name specified as Class.getResource() would expect?
+ 
+~/projects/google-apis-explorer-read-only $ fnd minus
+./war/public/.svn/prop-base/minus-box.gif.svn-base
+./war/public/.svn/text-base/minus-box.gif.svn-base
+./war/public/minus-box.gif
+
+ mkdir src/com/google/api/explorer/public
+
+cp war/public/minus-box.gif src/com/google/api/explorer/public/
+
+error went away!
+
+what about other way
+/src/com/google/api/explorer/client/Resources.java
+
+holy shit
+  //static final String PATH = "com/google/api/explorer/public/";
+  static final String PATH = "war/public/";
+
+fixxed all rest of errors!
+~/projects/google-apis-explorer-read-only $ ant explorer.gwtbuild 
+Buildfile: /Users/magibson/projects/google-apis-explorer-read-only/build.xml
+
+clean:
+   [delete] Deleting directory /Users/magibson/projects/google-apis-explorer-read-only/build
+
+explorer.verify:
+
+explorer.build:
+    [mkdir] Created dir: /Users/magibson/projects/google-apis-explorer-read-only/build/classes
+     [copy] Copying 106 files to /Users/magibson/projects/google-apis-explorer-read-only/build/classes
+     [echo] google-api-explorer: /Users/magibson/projects/google-apis-explorer-read-only/build.xml
+    [javac] /Users/magibson/projects/google-apis-explorer-read-only/build.xml:71: warning: 'includeantruntime' was not set, defaulting to build.sysclasspath=last; set to false for repeatable builds
+    [javac] Compiling 83 source files to /Users/magibson/projects/google-apis-explorer-read-only/build/classes
+
+explorer.gwtbuild:
+     [java] Compiling module com.google.api.explorer.Explorer
+     [java]    Validating newly compiled units
+     [java]       Ignored 76 units with compilation errors in first pass.
+     [java] Compile with -strict or with -logLevel set to TRACE or DEBUG to see all errors.
+     [java]    Computing all possible rebind results for 'com.google.gwt.user.client.UserAgentAsserter'
+     [java]       Rebinding com.google.gwt.user.client.UserAgentAsserter
+     [java]          Checking rule <generate-with class='com.google.gwt.editor.rebind.SimpleBeanEditorDriverGenerator'/>
+     [java]             [WARN] Detected warnings related to 'com.google.gwt.editor.client.SimpleBeanEditorDriver'.   Are validation-api-<version>.jar and validation-api-<version>-sources.jar on the classpath?
+     [java]             Specify -logLevel DEBUG to see all errors.
+     [java]             [WARN] Unknown type 'com.google.gwt.editor.client.SimpleBeanEditorDriver' specified in deferred binding rule
+     [java]    Compiling 6 permutations
+     [java]       Compiling permutation 0...
+     [java]       Compiling permutation 1...
+     [java]       Compiling permutation 2...
+     [java]       Compiling permutation 3...
+     [java]       Compiling permutation 4...
+     [java]       Compiling permutation 5...
+     [java]    Compile of permutations succeeded
+     [java] Linking into /Users/magibson/projects/google-apis-explorer-read-only/war/com.google.api.explorer.Explorer
+     [java]    Link succeeded
+     [java]    Compilation succeeded -- 80.186s
+
+BUILD SUCCESSFUL
+Total time: 1 minute 25 seconds
+
+wow - and who the hell knows how the annotation error went away???
+
+anyways whats next?
+
+we need to deploy this baby
+
+~/projects/google-apis-explorer-read-only $ lsl explorer.war 
+-rw-r--r--  1 magibson  MDSOL\domain users  76329115 Mar  7 13:21 explorer.war
+
+lets deploy that puppy
+
+cp ex
+
+oh my the date is wrong on my computer - it thinks it march 8!!!
+leap year
+boy was that throwing me
+oh wait its my watch thats wrong silly
+
+its plopping war file here
+oh wait 
+its not making a war file
+its ploppping stuff in the war directory
+funny that there isnt a war making thingy
+
+so do i jar up the war directory?? does it have all the jars it needs?
+well lets try it
+
+jar cvf explorer.war war/*
+OR
+cd war
+jar cvf explorer.war *
+
+cp explorer.war ~/tomcat/apache-tomcat-7.0.26/webapps/
+
+The requested resource (/explorer/war/public/com.google.api.explorer.Explorer.nocache.js) is not available.
+
+explorer.html seems to be in wrong place or js shoulda been dropped in public?
+cp public/explorer.html . 
+
+wow it loaded holy crap
+
+had to do this
+    <script type="text/javascript" src="com.google.api.explorer.Explorer/com.google.api.explorer.Explorer.nocache.js"></script>
+this needs cleaning up at some point - the ant file is plopping things funnily
+but good enough for now
+if you inspect element 
+<div class="GNDMKGVCJM" style=" ">Could not load services</div>
+
+so prob not surprisingly no svc loads
+
+i have no idea where this thing is even pointing
+
+ack BASE
+com/google/api/explorer/client/base/Config.java
+31:  public static final String DEFAULT_BASE_URL = "https://www.googleapis.com";
+40:  private static String baseUrl = DEFAULT_BASE_URL;
+
+https://www.googleapis.com/
+Not Found is response
+prob dont have authorization through oauth to begin with
+so cant test this i think against google
+need to do against ethans eureka i guess w no mauth
+
+might need to disable oauth?
+  public static final String AUTH_URL = "https://accounts.google.com/o/oauth2/auth";
+
+  /**
+   * Returns the OAuth2 token to use when making Discovery requests, or
+   * {@code null} if none was specified.
+   */
+  public static String getDiscoveryAuthToken() {
+    return Config.discoveryAuthToken;
+  }
+
+2 things to do while wait for ethan
+trace request to url for debugging
+oh maybe get devmode going? yea
+also look at oauth - 
+1 will it interfere with calling no mauth eureka
+2 look to rip it out and replace with mauth
+
+we need devmode i think
+
+    <script type="text/javascript" language="javascript" src="mawebapp/mawebapp.nocache.js"></script>
+
+just dont give it the big line of stuff when doing war?
+that comes from ant though dont it
+
+  <target name="devmode" depends="javac" description="Run development mode">
+    <java failonerror="true" fork="true" classname="com.google.gwt.dev.DevMode">
+      <classpath>
+        <pathelement location="src"/>
+        <path refid="project.class.path"/>
+        <pathelement location="/Users/magibson/projects/gwt-2.4.0/validation-api-1.0.0.GA.jar" />
+        <pathelement location="/Users/magibson/projects/gwt-2.4.0/validation-api-1.0.0.GA-sources.jar" />
+      </classpath>
+      <jvmarg value="-Xmx256M"/>
+      <arg value="-startupUrl"/>
+      <arg value="MaWebApp.html"/>
+      <arg line="-war"/>
+      <arg value="war"/>
+      <!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
+      <arg line="${gwt.args}"/>
+      <arg value="com.mdsol.MaWebApp"/>
+    </java>
+  </target>
+'
+
+dev mode is working
+got an error report:
+0:00:25.747 [ERROR] Uncaught exception escaped
+com.google.gwt.core.client.JavaScriptException: (TypeError):
+ Cannot call method 'newHttpRequest' of undefined 	
+at com.google.gwt.dev.shell.BrowserChannelServer.invokeJavascript(BrowserChannelServer.java:248) 
+	at com.google.gwt.dev.shell.ModuleSpaceOOPHM.doInvoke(ModuleSpaceOOPHM.java:136) 
+	at com.google.gwt.dev.shell.ModuleSpace.invokeNative(ModuleSpace.java:561) 
+	at com.google.gwt.dev.shell.ModuleSpace.invokeNativeObject(ModuleSpace.java:269)
+ 	at com.google.gwt.dev.shell.JavaScriptHost.invokeNativeObject(JavaScriptHost.java:91)
+ 	at com.google.gwt.core.client.impl.Impl.apply(Impl.java) 
+	at com.google.gwt.core.client.impl.Impl.entry0(Impl.java:213)
+ 	at sun.reflect.GeneratedMethodAccessor39.invoke(Unknown Source)
+ 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+ 	at java.lang.reflect.Method.invoke(Method.java:597)
+ 	at com.google.gwt.dev.shell.MethodAdaptor.invoke(MethodAdaptor.java:103)
+ 	at com.google.gwt.dev.shell.MethodDispatch.invoke(MethodDispatch.java:71)
+ 	at com.google.gwt.dev.shell.OophmSessionHandler.invoke(OophmSessionHandler.java:172)
+ 	at com.google.gwt.dev.shell.BrowserChannelServer.reactToMessages(BrowserChannelServer.java:292) 
+	at com.google.gwt.dev.shell.BrowserChannelServer.processConnection(BrowserChannelServer.java:546)
+ 	at com.google.gwt.dev.shell.BrowserChannelServer.run(BrowserChannelServer.java:363) 
+	at java.lang.Thread.run(Thread.java:680)
+
+well who knows what to do with that
+
+Ethan:  okay
+https://eureka-sandbox.imedidata.net/
+the apis are at https://eureka-sandbox.imedidata.net/apis
+well, api anyway, as there's only the one now
+ https://eureka-sandbox.imedidata.net/apis/eureka/v1/rest
+
+
+the full url is
+ https://www.googleapis.com/discovery/v1/apis
+
+  /** Path to the Directory listing all APIs. */
+  public static final String DIRECTORY_REQUEST_PATH =
+      "/discovery/" + ApiServiceFactory.DISCOVERY_VERSION + "/apis";
+
+there it is
+
+so it aint working - it aint oauth - dam wishful thinking
+well the error above is certainly suspicious aint it
+
+how the hell does devmode work
+
+you can debug on java!:
+http://code.google.com/webtoolkit/doc/latest/tutorial/debug.html
+
+if i want breakpoint i need to do eclipse - we'll see
+
+well lets explore taht error i guess
+
+com.google.gwt.core.client.JavaScriptException: (TypeError):
+ Cannot call method 'newHttpRequest' of undefined 	
+at com.google.gwt.dev.shell.BrowserChannelServer.invokeJavascript(BrowserChannelServer.java:248) 
+	at com.google.gwt.dev.shell.ModuleSpaceOOPHM.doInvoke(ModuleSpaceOOPHM.java:136) 
+	at com.google.gwt.dev.shell.ModuleSpace.invokeNative(ModuleSpace.java:561) 
+	at com.google.gwt.dev.shell.ModuleSpace.invokeNativeObject(ModuleSpace.java:269)
+ 	at com.google.gwt.dev.shell.JavaScriptHost.invokeNativeObject(JavaScriptHost.java:91)
+ 	at com.google.gwt.core.client.impl.Impl.apply(Impl.java) 
+	at com.google.gwt.core.client.impl.Impl.entry0(Impl.java:213)
+ 	at sun.reflect.GeneratedMethodAccessor39.invoke(Unknown Source)
+ 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+ 	at java.lang.reflect.Method.invoke(Method.java:597)
+ 	at com.google.gwt.dev.shell.MethodAdaptor.invoke(MethodAdaptor.java:103)
+ 	at com.google.gwt.dev.shell.MethodDispatch.invoke(MethodDispatch.java:71)
+ 	at com.google.gwt.dev.shell.OophmSessionHandler.invoke(OophmSessionHandler.java:172)
+ 	at com.google.gwt.dev.shell.BrowserChannelServer.reactToMessages(BrowserChannelServer.java:292) 
+	at com.google.gwt.dev.shell.BrowserChannelServer.processConnection(BrowserChannelServer.java:546)
+ 	at com.google.gwt.dev.shell.BrowserChannelServer.run(BrowserChannelServer.java:363) 
+	at java.lang.Thread.run(Thread.java:680)
+
+ ~/projects/google-apis-explorer-read-only/src $ ack newHttpRequest
+com/google/api/explorer/client/base/http/crossdomain/CrossDomainRequest.java
+69:    $wnd.googleapis.newHttpRequest(requestObj).execute(callback);
+
+com/google/api/explorer/client/base/http/crossdomain/CrossDomainRequestBuilder.java
+44:    return !!$wnd.googleapis && !!$wnd.googleapis.newHttpRequest;
+
+it appears to be commented out - but that could be illusory
+  native void sendRequest(JavaScriptObject requestObj) /*-{
+    var self = this;
+    var callback = $entry(function(response) {
+      self.
+      @com.google.api.explorer.client.base.http.crossdomain.CrossDomainRequest::onresponse(Lcom/google/gwt/core/client/JavaScriptObject;)
+      (response);
+    });
+
+    $wnd.googleapis.newHttpRequest(requestObj).execute(callback);
+  }-*/;
+
+  private static native boolean scriptLoaded() /*-{
+    return !!$wnd.googleapis && !!$wnd.googleapis.newHttpRequest;
+  }-*/;
+
+com.google.gwt.core.client.JavaScriptException: (TypeError): Cannot call method 'newHttpRequestZZZ' of undefined 	at com.google.gwt.dev.shell.BrowserChannelServer.invokeJavascript(BrowserChannelServer.java:248) 
+
+it is calling that!!!
+we may need eclipse breakpoints
+
+so
+$wnd.googleapis.
+is null - not getting assigned
+
+and this is sendRequest - thats pretty fundamental!
+so where the hell does $wnd.googleapis get assigned?
+
+ack wnd
+com/google/api/explorer/client/AnalyticsManager.java
+33:    if ($wnd._gaq) {
+34:      $wnd._gaq.push(['_trackPageview', pageName]);
+
+com/google/api/explorer/client/base/http/crossdomain/CrossDomainRequest.java
+69:    $wnd.googleapis.newHttpRequestZZZ(requestObj).execute(callback);
+
+com/google/api/explorer/client/base/http/crossdomain/CrossDomainRequestBuilder.java
+44:    return !!$wnd.googleapis && !!$wnd.googleapis.newHttpRequestYYY;
+80:    $wnd['__GOOGLEAPIS'] = {
+
+com/google/api/explorer/client/embedded/EmbeddedEntryPoint.java
+152:    $wnd.updateExplorer = $entry(function(method, token) {
+
+im at a loss 
+where the hell is this supposed to be assigned ?????
+
+its NOT GWT its api explorer i suspect
+
+yea googleapis is not at all in ack of sample apps
+so this is something that has to be assigned somewhere in explorer
+and they took it out?
+and what is it?
+its some sort of request object?
+
+so this is NOT a GWT fundamental
+however there must be some way in GWT of assigning vars to window/$wnd
+
+http://osdir.com/ml/Google-Web-Toolkit/2009-12/msg02338.html
+HTTPRequest fetchreq = new HTTPRequest(url);
+
+http://www.gwtsite.com/how-to-access-web-services-with-gwt/
+
+http://google-web-toolkit.googlecode.com/svn/javadoc/1.5/com/google/gwt/user/client/HTTPRequest.html
+
+http://code.google.com/p/gwt-google-apis/
+
+so when you make objects in gwt they prob get attached to $wnd
+so they are prob should be making a googleapis object
+with an httprequest method
+and its just not there
+
+has this code been gutted?
+
+there is a HTTPRequest object
+com.google.gwt.user.client 
+  Class HTTPRequest
+which has been replaced by RequestBuilder!
+Deprecated. As of GWT 1.5, replaced by RequestBuilder.
+which is the object we are dealing with i believe
+
+
+http://google-web-toolkit.googlecode.com/svn/javadoc/1.5/com/google/gwt/http/client/RequestBuilder.html
+
+Builder for constructing Request objects.
+
+By default, this builder is restricted to building HTTP GET and POST requests due to a bug in Safari's implementation of the XmlHttpRequest object.
+
+Please see http://bugs.webkit.org/show_bug.cgi?id=3812 for more details.
+
+Required Module
+
+Modules that use this class should inherit com.google.gwt.http.HTTP.
+<module>
+  <!-- other inherited modules, such as com.google.gwt.user.User -->
+  <inherits name="com.google.gwt.http.HTTP"/>
+  <!-- additional module settings -->
+</module>
+
+are we inheriting that??? i doubt it
+
+but thats not going to set googlesapis - thats very specific - oish
+
+we need to figure how to get 
+$wnd.googleapis.newHttpRequest(requestObj).execute(callback);
+in there 
+that is set up a googleapis 
+which i think is just a hash
+that is attached to $wnd which is window global in javascript
+im not sure its a hash cos it has a method newHttpRequest
+that takes a request Obj
+and whatever that returns has a exectue method
+
+we should look up that article that talks about making service calls in gwt
+and in general we need to understand gwt better
+
+ native void sendRequest(JavaScriptObject requestObj)
+
+ * Returned by requests made by a {@link CrossDomainRequestBuilder}.
+ *
+ * @author jasonhall@google.com (Jason Hall)
+ */
+public final class CrossDomainRequest {
+
+http://www.gwtsite.com/how-to-access-web-services-with-gwt/
+February 6th, 2008
+OLD!
+
+http://code.google.com/webtoolkit/doc/latest/tutorial/Xsite.html
+newer - gwt 2.4 i think?
+The Same Origin Policy (SOP) is a browser security measure that restricts client-side JavaScript code from interacting with resources not originating from the same domain name, protocol and port.
+There are two options for working around SOP security:
+Proxy on your own server
+Load the JSON response into a <script> tag
+
+Proxy on your own server
+The first option is to play by the rules of SOP and create a proxy on your local server. You can then make HTTP calls to your local server and have it go fetch the data from the remote server. This works because the code running on your web server is not subject to SOP restrictions. Only the client-side code is.
+Specifically for the StockWatcher application, you could implement this strategy by writing server-side code to download (and maybe cache) the JSON-encoded stock quotes from a remote server. You could then use any mechanism we want for retrieving the data from the local server: GWT RPC or direct HTTP using RequestBuilder.
+One downside to this approach is that it requires additional server-side code. Another is that the extra HTTP call increases the latency of remote calls and adds to the workload on our web server.
+
+Load the JSON response into a <script> tag
+Another option is to dynamically load JavaScript into a <script> tag. Client-side JavaScript can manipulate
+ <script> tags, just like any other element in the HTML Document Object Model (DOM).
+ Client-side code can set the src attribute of a <script> tag to automatically download and execute
+ new JavaScript into the page.
+This strategy is not subject to SOP restrictions.
+ So you can effectively use it to load JavaScript (and therefore JSON) from remote servers.
+This is the strategy you'll use to get the JSON-formatted stock data from a remote server.
+
+hmmm 
+wonder is exp is doing 1 or 2? proxy or script?
+
+ Builds requests to make to an cross-domain proxy iframe.
+ *
+ * <p>
+ * This consists of adding a <script> tag to the page to load the JS library to
+ * make cross-domain requests to the server.
+ * </p>
+ *
+ * @author jasonhall@google.com (Jason Hall)
+ */
+public class CrossDomainRequestBuilder {
+
+it is #2 script tag
+
+  private static native boolean scriptLoaded() /*-{
+    return !!$wnd.googleapis && !!$wnd.googleapis.newHttpRequestYYY;
+  }-*/;
+
+!! ?? is that not not - that makes no sense? why would you do that?
+
+  private static native void setBaseUrl() /*-{
+    var proxy = @com.google.api.explorer.client.base.Config::baseUrl + '/static/proxy.html';
+    $wnd['__GOOGLEAPIS'] = {
+      'googleapis.config': {
+        'proxy': proxy,
+        'gcv':
+            @com.google.api.explorer.client.base.http.crossdomain.CrossDomainRequestBuilder::JS_CLIENT_NAME
+      }
+    };
+  }-*/;
+
+this may be setting up googleapis?? __GOOGLEAPIS may get converted to googleapis
+  public CrossDomainRequest makeRequest(
+      final ApiRequest request, AsyncCallback<ApiResponse> callback) {
+    final CrossDomainRequest xdr = new CrossDomainRequest(callback, timeoutMillis);
+
+    /** Adds a script tag to the page to load the JS library used to make requests. */
+    if (!scriptLoaded()) {
+      ScriptInjector.fromUrl(JS_CLIENT_URL).setCallback(new Callback<Void, Exception>() {
+        public void onSuccess(Void result) {
+          setBaseUrl();
+
+sys out goes to console where dev mode launched
+should also try sys err
+
+scriptLoaded is false so this code should go...
+    /** Adds a script tag to the page to load the JS library used to make requests. */
+    if (!scriptLoaded()) {
+      ScriptInjector.fromUrl(JS_CLIENT_URL).setCallback(new Callback<Void, Exception>() {
+        public void onSuccess(Void result) {
+          setBaseUrl();
+          doMakeRequest(request, xdr);
+        }
+
+        public void onFailure(Exception e) {
+          throw new RuntimeException(e);
+        }
+      }).inject();
+
+
+js client url 
+https://ssl.gstatic.com/gb/js/ae_f85e3bd0744c7080861c3ae42085d071.js
+
+why is that the js client url??
+and where does wnd api explorer get set?
+      ScriptInjector.fromUrl(JS_CLIENT_URL).setCallback(new Callback<Void, Exception>() {
+        public void onSuccess(Void result) {
+	  System.out.println("Success! "+result);
+          setBaseUrl();
+	  System.out.println(" set base url ");
+          doMakeRequest(request, xdr);
+	  System.out.println("did doMakeRequest "+request);
+        }
+
+        public void onFailure(Exception e) {
+	  System.out.println("on Failure "+e);
+          throw new RuntimeException(e);
+        }
+      }).inject();
+
+and what does ScriptInjector do - lets look at that
+import com.google.gwt.core.client.ScriptInjector;
+its a gwt class
+
+Dynamically create a script tag and attach it to the DOM. Usage with script as local string:
+
+   String scriptBody = "var foo = ...";
+   ScriptInjector.fromString(scriptBody).inject();
+ 
+Usage with script loaded as URL:
+
+   ScriptInjector.fromUrl("http://example.com/foo.js").setCallback(
+     new Callback() {
+        public void onFailure(Exception reason) {
+          Window.alert("Script load failed.");
+        }
+        public void onSuccess(Void result) {
+          Window.alert("Script load success.");
+        }
+     }).inject();
+ 
+i think its injecting to the wrong friggin url
+where the hell is JS_CLIENT_URL set???
+
+ack JS_CLIENT_URL
+com/google/api/explorer/client/base/http/crossdomain/CrossDomainRequestBuilder.java
+39:  private static final String JS_CLIENT_URL = "https://ssl.gstatic.com/gb/js/" + JS_CLIENT_NAME;
+56:    System.out.println("CDR.makeRequest "+callback+" scriptLoaded? "+scriptLoaded()+" js client url " +JS_CLIENT_URL);
+60:      ScriptInjector.fromUrl(JS_CLIENT_URL).setCallback(new Callback<Void, Exception>() {
+
+googleapis is all over the ssl.gstatic.com
+
+lets see if its being injected to
+
+so no diff in static before & after making inection
+so doesnt seem like im injecting
+
+i guess i should try pointing it to a local script
+not sure why its pointing to that script
+it knows about local
+and thats where googleapis is being looked for
+and what is it injecting?
+
+oh wait
+ae-2-ssl is the script being injected or inted into im so conused?
+
+ok this is wierd
+so that javascript is being injected it seems
+and exceuted
+i can see it and breakpoint it in chrome
+
+and ae is setting a var called googleapis
+and this var is getting set to window.googleapis
+but that is not going over to $wnd.googleapis
+nor does googleapis have a newHttpRequest method
+so it seems this injection script and the calling code are out of synch!
+god dam it!
+is there older versions of this code???
+
+or how can we make it work ?
+or is there newer versions of the requesting code
+
+god dam this crap - fun fun fun
+
+well at least we have a notion of the injection that is going on
+
+
+http://groups.google.com/group/gwt-google-apis/browse_thread/thread/7ad4c6308ee9d600
+interesting thread
+
+
+I believe I may know what's causing this issue, but I'm not sure of the 
+solution. 
+First, a bit of back story: 
+The GWT library loads a JS script to facilitate making cross-domain HTTP 
+requests. This is done in ClientGoogleApiRequestTransport, using 
+ScriptInjector. It decides whether it needs to do this by checking whether 
+$wnd.googleapis is defined, since this is defined in the JS script it needs 
+to load. 
+I believe -- though I'll need to do a bit more research to be sure -- that 
+the +1 button script that you reference also loads the googleapis object 
+with a newHttpRequest member, which may or may not be the same one the GWT 
+client needs to function properly. 
+If it does load the object, but it's not the correct one, then the GWT 
+client won't load its own script, and will try to use the existing/bad one 
+instead, possibly causing the problems you're seeing. 
+I'll look into this a bit more today and try to come up with a solution. One 
+situation we want to be sure to avoid is having the JS script that the GWT 
+library needs supercede the one that the +1 button needs, effectively 
+breaking the +1 button. The two should be able to live in harmony together. 
+Thanks for the bug report, and I'll update this thread when I know more. 
+- Jason 
+
+
+im thinking this just isnt viable should i keep trying???
+or am i wasting my time?
+
+or should i pursue this get request
+
+02:00:00.277 [ERROR] Uncaught exception escaped
+com.google.gwt.core.client.JavaScriptException: (TypeError): Cannot call method 'get' of undefined
+ 	at com.google.gwt.dev.shell.BrowserChannelServer.invokeJavascript(BrowserChannelServer.java:248) 
+	at com.google.gwt.dev.shell.ModuleSpaceOOPHM.doInvoke(ModuleSpaceOOPHM.java:136) 
+	at com.google.gwt.dev.shell.ModuleSpace.invokeNative(ModuleSpace.java:561) 
+	at com.google.gwt.dev.shell.ModuleSpace.invokeNativeObject(ModuleSpace.java:269) 
+	at com.google.gwt.dev.shell.JavaScriptHost.invokeNativeObject(JavaScriptHost.java:91) 
+	at com.google.gwt.core.client.impl.Impl.apply(Impl.java) 
+	at com.google.gwt.core.client.impl.Impl.entry0(Impl.java:213) 
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) 
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39) 
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+ 	at java.lang.reflect.Method.invoke(Method.java:597) 
+	at com.google.gwt.dev.shell.MethodAdaptor.invoke(MethodAdaptor.java:103) 
+	at com.google.gwt.dev.shell.MethodDispatch.invoke(MethodDispatch.java:71) 
+	at com.google.gwt.dev.shell.OophmSessionHandler.invoke(OophmSessionHandler.java:172) 
+	at com.google.gwt.dev.shell.BrowserChannelServer.reactToMessages(BrowserChannelServer.java:292) 
+	at com.google.gwt.dev.shell.BrowserChannelServer.processConnection(BrowserChannelServer.java:546) 
+	at com.google.gwt.dev.shell.BrowserChannelServer.run(BrowserChannelServer.java:363) 
+	at java.lang.Thread.run(Thread.java:680)
+
+so where the hell is this get coming from????
+
+    window.googleapis.ApiServer.makeRequest(requestObj).execute(callback);
+
+    window.googleapis.ApiServer.makeHttpRequests(requestObj).execute(callback);
+com.google.gwt.core.client.JavaScriptException: (TypeError): Cannot read property 'key' of undefined 	at com.google.gwt.dev.shell.BrowserChannelServer.invokeJavascript(BrowserChannelServer.java:248) 	at com.google.gwt.dev.shell.ModuleSpaceOOPHM.doInvoke(ModuleSpaceOOPHM.java:136) 	at com.google.gwt.dev.shell.ModuleSpace.invokeNative(ModuleSpace.java:561) 	at com.google.gwt.dev.shell.ModuleSpace.invokeNativeObject(ModuleSpace.java:269) 
+so these 2 methods take 3 parameters not one
+
+
+
+http://news.slashdot.org/story/07/03/28/1349219/gwt-java-ajax-programming
+function makeHTTPRequest(url, onLoadFunc, onErrorFunc) {
+var request;
+if(window.XMLHttpRequest) {
+try {
+request = new XMLHttpRequest();
+} catch(e) {
+alert(e);
+return;
+}
+
+function testHTTPRequest() {makeHTTPRequest("mockups/load-data.txt", handleHTTPResponseForArray, handleHTTPError);}
+function handleHTTPResponseForArray(str) {
+// UNPARSED TEXT EXAMPLE
+handleHTTPResponse(str);
+// ARRAY EXAMPLE
+var textarea = document.getElementById("textarea2");
+var result="";
+var array=eval(str);
+var hashMap=new Array(array.length);
+for(var i=0;i<array.length;i++) {
+hashMap[array[i][0]] = array[i][1];
+result += "key:" + array[i][0];
+result += "\t\t\tval:" + array[i][1] + "\n";
+}
+function handleHTTPError(str) {
+alert(str);
+}
+
+osapi._registerMethod("googleapis.newHttpRequest",{name:"googleapis",execute:googleapis.ApiClient.pb});
+exportSym_("googleapis.newHttpRequest",getObj_("googleapis.newHttpRequest",osapi))};
+
+how bout that
+thats in the injection script
+so it is there just somehow not accessible
+
+googleapis.newHttpRequest
+undefined
+googleapis.ApiClient.pb
+function (a,b){for(var c=0,d=a.length;c<d;c++){var e=a[c];e.key=e.id;var f=e.headers||{};f=googleapis.ApiClient.A(f);f=googleapis.ApiClient.ka(f);e.headers=f;googleapis.ApiClient.la(e.params)}c=googleapis.ApiClient.oa(a,b);googleapis.b.S("makeHttpRequests",a,c)}
+
+for some reason newHttpRequest aint working but ApiClient.pb is
+the register method shit aint flyin it seems
+
+window.googleapis.ApiClient.pb
+function (a,b){for(var c=0,d=a.length;c<d;c++){var e=a[c];e.key=e.id;var f=e.headers||{};f=googleapis.ApiClient.A(f);f=googleapis.ApiClient.ka(f);e.headers=f;googleapis.ApiClient.la(e.params)}c=googleapis.ApiClient.oa(a,b);googleapis.b.S("makeHttpRequests",a,c)}
+$wnd.googleapis.ApiClient.pb
+TypeError: Cannot read property 'ApiClient' of undefined
+
+
+com.google.gwt.core.client.JavaScriptException: (TypeError): Cannot call method 'execute' of undefined 	at com.google.gwt.dev.shell.BrowserChannelServer.invokeJavascript(BrowserChannelServer.java:248) 
+
+i know where that is
+
+  window.googleapis.ApiClient.pb(requestObj).execute(callback);
+
+maybe with pb its not chaining?
+    window.googleapis.ApiClient.pb(requestObj);
+    window.googleapis.execute(callback);
+com.google.gwt.core.client.JavaScriptException: (TypeError): Object #<Object> has no method 'execute' 	at com.google.gwt.dev.shell.BrowserChannelServer.invokeJavascript(BrowserChannelServer.java:248) 
+
+ window.googleapis.ApiClient.pb(requestObj);
+Uncaught TypeError: Illegal invocation
+o.(anonymous function)ae_f85e3bd0744c7080861c3ae42085d071.js:691
+Wae_f85e3bd0744c7080861c3ae42085d071.js:651
+f
+
+osapi._registerMethod("googleapis.newHttpRequest",{name:"googleapis",execute:googleapis.ApiClient.pb});
+exportSym_("googleapis.newHttpRequest",getObj_("googleapis.newHttpRequest",osapi))};
+
+whatever that is aint workin
+
+(function(){osapi._registerMethod=function(g,f){
+var a=typeof ___!=="undefined";
+if(g=="newBatch"){return
+}
+var d=g.split(".");
+var c=osapi;
+for(var b=0;
+b<d.length-1;
+b++)
+{c[d[b]]=c[d[b]]||{};
+c=c[d[b]]
+}
+var e=function(j){
+var i=osapi.newBatch();
+var h={};
+h.execute=function(m){var k=a?___.untame(m):m;
+var l=a?___.USELESS:this;
+i.add(g,this);
+i.execute(function(n)
+{if(n.error)
+{k.call(l,n.error)
+}
+else{k.call(l,n[g])
+}
+})
+};
+if(a){___.markInnocent(h.execute,"execute")
+}j=j||{};
+j.userId=j.userId||"@viewer";
+j.groupId=j.groupId||"@self";
+h.method=g;
+h.transport=f;
+h.rpc=j;
+return h
+};
+if(a&&typeof ___.markInnocent!=="undefined"){___.markInnocent(e,g)
+}if(c[d[d.length-1]]){gadgets.warn("Skipping duplicate osapi method definition "+g+" on transport "+f.name)
+}else{c[d[d.length-1]]=e
+}}
+})();;
+
+register method is also where it picks up execute method
+
+are some of my jars not right??? should double check that
+i did get some from funny places
+but i think its fine as i think i got all gwt stuff from 2.4 ??
+well double check
+
+wo there is a newRequest on window
+
+and on $wnd there is
+com_google_api_explorer_Explorer
+XMLHttpRequest
+
+
+tried newRequest on window.googlesapis:
+03:33:57.415 [ERROR] Uncaught exception escaped
+com.google.gwt.core.client.JavaScriptException: (TypeError): Object #<Object> has no method 'indexOf' 	at com.google.gwt.dev.shell.BrowserChannelServer.invokeJavascript(BrowserChannelServer.java:248) 	at com.google.gwt.dev.shell.ModuleSpaceOOPHM.doInvoke(ModuleSpaceOOPHM.java:136) 	at com.google.gwt.dev.shell.ModuleSpace.invokeNative(ModuleSpace.java:561) 
+
+osapi._registerMethod("googleapis.newHttpRequest",{name:"googleapis",execute:googleapis.ApiClient.pb});
+exportSym_("googleapis.newHttpRequest",getObj_("googleapis.newHttpRequest",osapi))};
+
+that worked
+and a whole new problem arises:
+
+Uncaught TypeError: Illegal invocation
+o.(anonymous function)ae_f85e3bd0744c7080861c3ae42085d071.js:691
+Wae_f85e3bd0744c7080861c3ae42085d071.js:651
+f
+
+and what the hell does one do with that
+i should review my jars/setup and look for anything funny
