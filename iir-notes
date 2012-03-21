@@ -5630,6 +5630,21 @@ index e0662bd..3bda320 160000
 git add vendor/apps/imedidata/
 git commit -m "
 
+########
+move these to new
+in a hurry
+2/28 tues office
+
+ok what now
+need try running!
+
+wierd - need to_s in oh i get it - because using string not # in test - bad test!
+    full_path = IMEDIDATA_API_PATH + "users/" + user_uuid.to_s + ".xml" # .json/.xml ?
+user.rb - user_uuid
+
+ git pull origin feature/support_mauth
+
+
 
 2/29/12 wed tcom brooklyn
 ok i need to clean up the mess from yesterday
@@ -5704,3 +5719,1042 @@ and it might be imedidata doesnt return data xml for users
 
 
 ok lets fork dupe and take a look
+*****
+
+
+
+*****
+3/2 to 3/9 worked on gwt api explorer - see notes for that
+
+*****
+3/12/12 monday office
+back to iir
+
+need to get mauth client in there
+
+from michael from ethan
+
+---------- Forwarded message ----------
+From: Ethan Thiel <ethiel@mdsol.com>
+Date: Fri, Feb 17, 2012 at 5:55 PM
+Subject: mauth-client
+To: Michael West <mwest@mdsol.com>
+
+
+-gem 'rack-mauth', :git => "git@github.com:mdsol/rack-mauth.git", :ref => 'd8ced6e'
+-gem 'mauth_signer', :git => 'git@github.com:mdsol/mauth_signer.git', :ref => '933a834'
++gem 'mauth-client', :git => 'git@github.com:mdsol/mauth-client.git', :ref => '495a38e'
+
+mauth-client's ref will change from :ref => '495a38e' to :tag => 'v2.0.0' when mauth-client is released. 
+
+replace your invocation of Medidata::MAuthMiddleware with the exact same invocation of MAuth::Rack::RequestAuthenticator. if you were using symbolize_keys you no longer need to, if not, that's fine too. for me that was essentially:
+-    use Medidata::MAuthMiddleware, Eureka.mauth_config
++    use MAuth::Rack::RequestAuthenticator, Eureka.mauth_config
+
+signing your responses is also a good thing to add, so add a corresponding middleware of MAuth::Rack::ResponseSigner. DON'T do this unless you have a private key and app_uuid (but I'm sure imedidata is using this) 
++    use MAuth::Rack::ResponseSigner, Eureka.mauth_config
+
+
+well im simultaneously looking into disaboing mauth
+what does balance do
+from hipchat
+do you know how balance does what they do - i guess i should look at the balance code and see what @ben is talking about
+Madalina T.
+11:05 AM
+not sure how balance works around this if at all it does but we don't write custom code in imedidata to accomodate clients development or test environments
+Mark G.
+11:05 AM
+as clearly i dont have an understanding
+k
+Ben Y.
+11:06 AM
+# renders a 404 if there is no request token, or an expiry notice if the token has expired 
+def api_authenticate
+  unless RAILS_ENV == "development" || RAILS_ENV == "performance"
+    @request_token = RequestToken.find_by_token(PRIVATE_KEY.private_decrypt(Base64::decode64(params.delete(:RequestToken))))
+
+    render :nothing => true, :status => 404 and return if @request_token.blank?
+    render :text => "The token has expired." and return if @request_token.expired?
+  end
+end
+
+Hide full text
+in lib/api_authentication.rb
+We disable in performance because Teo's testing tools do not support token security (or any form of encryption)
+What we should do is have a config option
+that can be set in a yml file
+and then it's at the discretion of the consumer to disable/enable it as needed.
+Mark G.
+11:16 AM
+vendor/apps/imedidata/db/bootstrap.rb
+4:require 'fakeweb' if RAILS_ENV == "test" || RAILS_ENV == "development" 
+with @yi s help
+found the above in balance
+so i think combinig the 2
+Mark G.
+11:17 AM
+that in dev request tokens arent sent and perhaps fakeweb is actually used for some requests? is that true? this is balance imedidata submodule
+
+
+ok mauth client
+ethan gchat conv:
+
+Ethan:  this is weird
+ me:  what is this?
+ Ethan:  not sure, but something in how mauth headers are set here
+it may be weirdness in the way ares does things
+you set headers on the class?
+ me:  youre looking at iir i take it
+ Ethan:  like, User.headers['x-mws-time'] ?
+yeah
+ me:  oh yea its crappy for now
+was gonna change it
+but we figured its all gonna change with eureka anyways
+so lazily left it til eureka
+ Ethan:  yeah, but that's going to break horribly if ...
+no, wait
+rails isn't multithreaded, is it?
+ me:  oh in going to mauth client i see
+ Ethan:  cause that'd break it certainly
+nah, going to mauth client shouldn't change things a lot
+I'm just finding this pattern of setting headers on the class to set them on the request very weird
+ me:  what would break what?
+whats the alternative - call me clueless
+ Ethan:  I don't know, I didn't say I had an alternative
+I just said it's weird
+ me:  well youre wierd
+ Ethan:  and not thread safe, but maybe that doesn't matter
+ me:  
+so i know threads in java - i dont know thread in rails
+ Ethan:  I mean, it's conceptually the same as using a global variable for your request headers
+ me:  so why isnt this thread safe?
+ Ethan:  because User.headers is on the class and the class is shared across all threads
+ me:  mauth_headers = MAUTH_SIGNER.signed_request_headers(:app_uuid => IIR_APP_UUID,
+                            :request_url => path, :verb => verb)
+   mauth_headers.each {|k,v| resource.headers[k] = v}
+are you talking about the above code
+ Ethan:  no
+the resource.headers part
+resource.headers[k] = v
+resource is User
+so User.headers is shared across all threads
+ me:  oh
+well to be honest i wasnt sure how else to do this
+but right
+ Ethan:  so if two simultaneous requests are made on the User model, they may get the wrong headers
+ me:  so you are saying it could end up setting it across all requests/threads that are flowing through
+right
+because its User class not user instance right?
+and User class cuts across threads
+
+Ethan:  yes
+ me:  well that aint no good
+ Ethan:  now (1) I don't think it's a problem because rails isn't multi-threaded (I think?) (2) I don't know the right way to do it, or even if there is a right way to do it with ares
+so maybe just say fuck it
+ me:  MauthSigner.set_mauth_headers(self,full_path)
+right theres the call
+rails isnt multi threaded???
+ Ethan:  nope
+ me:  so how does rails handle multpile requests coming in?
+ Ethan:  um
+sequentially
+one at a time
+ me:  how the hell does that scale?
+ Ethan:  not well
+you spin up more rails processes
+and put them behind a load balancer
+but each individual one handles requests one at a time
+ me:  is taht what imed does?
+ Ethan:  that's what all our apps do
+ me:  multi threading seems like a basic to me - shocking
+ Ethan:  I am inclined to agree
+ me:  maybe rails 4
+so even rails 3 isnt multi?
+ Ethan:  I don't think so
+I'm not sure
+ me:  well thats one of the few things java/servlets got right
+well good to know
+so right then no threading issue and ok to do User header
+i guess thats why ares does it that way
+ Ethan:  I mean, I know it was totally broken before, and they "fixed" rails multithreading by sticking one big mutex around requests.
+well, no, I think we're just abusing ares' header stuff
+ me:  i was a little surpised it was a class method
+ Ethan:  I don't think it's intended for mauth-type stuff
+ me:  oh well maybe theres another way to do this - this was the way i found - and it took a little digging
+ Ethan:  it's for headers that you set once at the beginning and apply to every request
+ me:  oh i see - so what im doing is not what they intended it for
+woops
+yea i dont know how ares does headers on instances - will have to look into that
+ Sent at 11:52 AM on Monday
+ Ethan:  I think rodrigo did something related to this
+let me see if I can find it
+ me:  oh he does that other project you referenced once which i forget the name - agi something ?
+ Ethan:  yeah, agifog
+not to be confused with agi, which is different
+or fog, which is different
+or fogagi which ... no, I just made that one up.
+ me:  what is agifog anyways?
+ oh wait, it's in agi, not agifog
+here we are
+https://github.com/jbz/agi/blob/master/lib/active_resource/extend/mauth_signer.rb
+
+lets open a new branch 
+first pull from dev
+
+here we are
+https://github.com/jbz/agi/blob/master/lib/active_resource/extend/mauth_signer.rb
+ Sent at 12:00 PM on Monday
+ Ethan:  hmm. now I'm not so sure. rails itself has allegedly been thread-safe since 2.2
+which I buy
+but I'm not sure if things actually take advantage and make multiple simultaneous requests of a rails process
+I'm having trouble finding anything on that
+ me:  hmm insteresting
+ Ethan:  anyway! doing things in a thread-unsafe manner is generally not preferable
+so if you can fix your ares usage with the patch that agi uses, that'd be cool
+ me:  right - need to fix this
+
+imitate agi!
+
+dev
+pdev
+make-branch feature/mauth-client
+
+maybe 1st refacotr for agi way??
+1st lets see if works
+
+dam the non killable ness
+;lets try to fix that in another branch - its so annoying
+
+
+
+foreman went from 0.36.1 to 0.40.0 on feb 29
+lock on 0.36.1!
+
+https://sites.google.com/a/mdsol.com/knowledgebase/home/departments/engineering/on-demand-portfolio/services/core-services/mauth/mauth-client
+
+https://columbo-portal-current.s3.amazonaws.com/mauth/mauth-client-design/MAuth/Client.html
+
+cuc test is no good well just tests if nothing major wrong with code
+but it stubs out mauth so no real test at all
+
+
+
+******
+3/13/12 tues office
+******
+
+ok lets try the mauth refactor i guess if it doesnt work just abandon branch
+
+https://github.com/jbz/agi/blob/master/lib/active_resource/extend/mauth_signer.rb
+
+agi / lib / active_resource / extend / mauth_signer.rb
+
+# Monkey Patch to hook Mauth Signer into ActiveResource
+module ActiveResource #:nodoc:
+  module Extend
+    module MauthSigner
+       class ActiveResource::Connection
+         # get request(:get, path, build_request_headers(headers, :get, self.site.merge(path)))
+         # delete request(:delete, path, build_request_headers(headers, :delete, self.site.merge(path)))
+         # put request(:put, path, body.to_s, build_request_headers(headers, :put, self.site.merge(path)))
+         # post request(:post, path, body.to_s, build_request_headers(headers, :post, self.site.merge(path)))
+
+         def request(method, path, *arguments)
+           mauth_config = AppConfig["mauth"].symbolize_keys
+           mauth_config[:private_key] = File.read(mauth_config[:private_key_file])
+           mauth_signer = MAuth::Signer.new(mauth_config)
+
+           mauth_params = {
+             :verb => method.to_s.upcase,
+             :request_url => URI.parse(path).path,
+             :body => [:post, :put].include?(method) ? arguments.first : nil,
+             :app_uuid => mauth_config[:app_uuid]
+           }
+           signed_headers = mauth_signer.signed_request_headers(mauth_params)
+
+           arguments.last.update(signed_headers)
+
+           # this is the original part
+           result = ActiveSupport::Notifications.instrument("request.active_resource") do |payload|
+             payload[:method]      = method
+             payload[:request_uri] = "#{site.scheme}://#{site.host}:#{site.port}#{path}"
+             payload[:result]      = http.send(method, path, *arguments)
+           end
+           handle_response(result)
+         rescue Timeout::Error => e
+           raise TimeoutError.new(e.message)
+         rescue OpenSSL::SSL::SSLError => e
+           raise SSLError.new(e.message)
+         end
+       end
+     end
+  end
+end
+
+
+ ~/projects/agi (master) $ ack MauthSigner
+app/models/rds_parameter_group.rb
+2:  include ActiveResource::Extend::MauthSigner if AppConfig["mauth"]["enable_mauth"]
+
+app/models/rds_security_group.rb
+2:  include ActiveResource::Extend::MauthSigner if AppConfig["mauth"]["enable_mauth"]
+
+app/models/rds_server.rb
+2:  include ActiveResource::Extend::MauthSigner if AppConfig["mauth"]["enable_mauth"]
+
+lib/active_resource/extend/mauth_signer.rb
+4:    module MauthSigner
+
+
+uninitialized constant ActiveResource::Extend
+
+application.rb
+    # Custom directories with classes and modules you want to be autoloadable.
+    config.autoload_paths += %W(#{config.root}/lib)
+
+hmmmmm
+not sure how to include something deep in lib?
+
+from ugandhar to steal a study - 
+
+mysql-iir
+
+update studies set parent_id = 5 where id = 4;
+update study_invitations set root_study_group_id = 5 where study_id = 4;
+update app_assignments set root_study_group_id = 5 where study_id = 4;
+update app_assignments set app_id = 3 where study_id = 4;
+
+
+******************
+3/14/12 wed office
+******************
+
+ok need to respond to ethans comments
+
+
+18
+down vote
+accepted
+A method "def" can serve as a "begin" statement:
+
+def foo
+  ...
+rescue
+  ...
+end
+
+
+ok NEW sprint
+############
+SPRINT 6
+3/14/12 wed
+############
+
+
+*************
+3/15/12
+thurs 
+office
+*************
+
+kevin showed me qpl - not working on now but should write up
+
+login-imedidata.com url
+kevinshroff  Password123
+
+scrool down GM QuickPrice - GM Worldwide
+
+indication 
+type in "heart"
+
+drop down group by
+Therapuetic aread eg "CARDIOVASCULAR" 
+green shading on mouse over
+
+git checking out from remote
+http://stackoverflow.com/questions/67699/how-do-i-clone-all-remote-branches-with-git
+git checkout origin/experimental
+
+If you have many remote branches that you want to fetch at once:
+
+$ git remote update
+$ git pull --all
+Now you can checkout any branch as you need to, without hitting the remote repo.
+
+To create a local branch based on a remote branch, do something like:
+git checkout -b dev refs/remotes/origin/dev
+Branch dev set up to track remote branch refs/remotes/origin/dev.
+Switched to a new branch "dev"
+
+In order to work on top of a specific remote branch, assuming it's the origin remote:
+git checkout -b branch origin/branchname
+
+gb -a
+* develop
+  feature/foreman-fix
+  feature/imed-submod
+  feature/init-rails
+  feature/mauth-client
+  feature/mauth-key
+  feature/mauth-refactor
+  feature/mauth-signer
+  feature/more-setup
+  feature/procfile-foreman-subcon
+  feature/study-mauth
+  master
+  remotes/origin/budget_submodule
+  remotes/origin/develop
+  remotes/origin/feature/create_activity
+  remotes/origin/feature/cucumber_setup
+  remotes/origin/feature/foreman-fix
+  remotes/origin/feature/header_scenarios_passing
+  remotes/origin/feature/imed-submod
+  remotes/origin/feature/init-rails
+  remotes/origin/feature/mauth-client
+  remotes/origin/feature/mauth-key
+  remotes/origin/feature/mauth-refactor
+  remotes/origin/feature/mauth-signer
+  remotes/origin/feature/more-setup
+  remotes/origin/feature/nav-to-list
+  remotes/origin/feature/procfile-foreman-subcon
+  remotes/origin/feature/shamus_setup
+  remotes/origin/feature/study-index
+  remotes/origin/feature/study-mauth
+  remotes/origin/fix_submodule
+  remotes/origin/footer
+  remotes/origin/footer_ux
+  remotes/origin/iir_header_rebased_with_develop
+  remotes/origin/iir_header_setup
+  remotes/origin/logout
+  remotes/origin/master
+  remotes/origin/medidata_help
+  remotes/origin/medidata_logo
+  remotes/origin/navigation_bar_iir
+
+
+git checkout -b branch origin/branchname
+
+git checkout -b feature/
+
+oh wait this is a svc - oh no it isnt
+
+git fetch
+From github.com:mdsol/iir
+   b839f63..7b7faee  develop    -> origin/develop
+ * [new branch]      feature/dupe_post -> origin/feature/dupe_post
+ * [new branch]      feature/show -> origin/feature/show
+ * [new branch]      navigation_iir_complete -> origin/navigation_iir_complete
+ * [new branch]      navigation_iir_test -> origin/navigation_iir_test
+ * [new branch]      navigation_story -> origin/navigation_story
+ * [new branch]      pr_missed_out_changes -> origin/pr_missed_out_changes
+
+git checkout -b feature/dupe_post origin/feature/dupe_post
+
+~/i (develop) $ git checkout -b feature/dupe_post origin/feature/dupe_post
+M	vendor/apps/budgets_service
+M	vendor/apps/imedidata
+Branch feature/dupe_post set up to track remote branch feature/dupe_post from origin.
+Switched to a new branch 'feature/dupe_post'
+ ~/i (feature/dupe_post) $ 
+
+worked!
+lets run failing scenario
+
+shes still on forem 0.4 - i should change that manually for now i guess? as it is a pain
+though actually im not gonna use foreman just cuc
+
+failing:
+cu features/study/show.feature:31
+alias test-create-budget
+
+The document "{\"budget\":{\"initiating_user_uuid\":\"fake-uuid\",\"study_group_uuid\":\"fake_study_group_uuid\",\"study_uuid\":\"638637\"}}" does not have a valid root
+
+yea its trying to xml that json
+
+
+hmmm so how should i investigate - 
+i am going to have to make changes to dupe
+so should point to local dupe and then breakpoint that
+
+  #gem 'dupe', :git => 'git@github.com:magibson/dupe.git'
+  gem 'dupe', :path => '/Users/magibson/projects/dupe'
+
+bundle install
+
+i guess notes now switch over to dupe notes
+
+ok back from dupe - dupe fixed for post and hopefully put to
+in fact might be fixed in general except the automatice ares stuff which we dont use
+
+i think its time to start slapping mauth on to the services
+maybe start with budget since its ugandars
+
+1st need to check it out and branch it
+git@github.com:mdsol/budgets.git
+
+hmmm theres the submodule and the full checkout
+
+going with full checkout - submodules are silly
+oh need to change ValidationFeature to Feature typo
+
+ok so what needs doing 
+can look at docs or look at imedidata branch
+
+
+gem 'mauth-client', :git => "git@github.com:mdsol/mauth-client.git", :tag => 'v2.0.1'
+bundle install
+
+If adding to a Rails 3.x application, update your environment.rb file as follows:
+
+Rails::Initializer.run do |config|
+mauth_conf = YAML.load_file(File.join(Rails.root, "config", "mauth.yml"))[Rails.env]
+if mauth_conf['private_key_file']
+  mauth_conf['private_key'] = File.read(mauth_conf['private_key_file'])
+end
+  require 'mauth/rack'
+  config.middleware.use MAuth::Rack::ResponseSigner, mauth_conf # OPTIONAL; only use if you are registered in mauth service
+  config.middleware.use MAuth::Rack::RequestAuthenticator, mauth_conf
+end
+
+
+ssh-keygen -t rsa -b 2048 -f local_iir
+ssh-keygen -f local_iir.pub -e -m pem 
+or to file
+ssh-keygen -f local_iir.pub -e -m pem > local_iir.pub.pem
+
+
+ssh-keygen -f local_budget.pub -e -m pem > local_budget.pub.pem
+
+ssh-keygen -f local_budget.pub -e -m pem > local_budget.pub.pem
+ssh-keygen: illegal option -- m
+
+ssh-keygen -f local_budget.pub -e pem > local_budget.pub.pem
+
+ssh-keygen -t rsa -b 2048 -f local_budget
+ssh-keygen -f local_budget.pub -e -m pem > local_budget.pub.pem
+
+the pem doesnt work
+
+  -E      This option will read a private or public OpenSSH RSAv2 key file
+             and print the RSA public key in a PEM encoded format suitable for
+             the openssl(1) command to stdout.
+
+ssh-keygen -f local_budget.pub -E
+
+ssh-keygen: illegal option -- E
+
+hmmm diff versions of ssh keygen apparently
+
+ah its just -e
+ -e          Convert OpenSSH to RFC 4716 key file.
+that must be a pem file
+
+ssh-keygen -f local_budget.pub -e > local_budget.pub.pem
+
+pd ~/fiddle/iir/reference
+ssh-keygen -t rsa -b 2048 -f reference
+ssh-keygen -f reference.pub -e > reference.pub.pem
+
+pd ~/fiddle/iir/cost-analysis
+ssh-keygen -t rsa -b 2048 -f cost-analysis
+ssh-keygen -f cost-analysis.pub -e > cost-analysis.pub.pem
+
+pd ~/fiddle/iir/activity
+ssh-keygen -t rsa -b 2048 -f activity
+ssh-keygen -f activity.pub -e > activity.pub.pem
+
+keys are made 
+lets contrive app uuids
+
+config/mauth.yml
+iir_app_uuid: d38e7edc-5113-11e1-95fe-70cd60fffe66
+
+7-4-4-4-12
+is format
+
+iirdevt-xxxx-xxxx-xxxx-referencexxx
+iirdevt-xxxx-xxxx-xxxx-costanalysis
+iirdevt-xxxx-xxxx-xxxx-activityxxxx
+iirdevt-xxxx-xxxx-xxxx-budgetxxxxxx
+
+
+activity public key
+---- BEGIN SSH2 PUBLIC KEY ----
+Comment: "2048-bit RSA, converted from OpenSSH by magibson@qp1150wndnm.ad.mdsol.com"
+AAAAB3NzaC1yc2EAAAABIwAAAQEAvixfDeHDo9NC2nP+C21KuvGvPDKDlob+rqlogwIOMU
+J/JoCIr8kDg7TuQ1st44zqNXvEeo4f08v6eBR7qjY4FyU6/yhgXzkRGpld9jIfb9IVI1sT
+YUurc+PJgiMwqaOzYZ9aW3q6Yu1N2+P2ME5ULKC4NqO4huBdSCS3bPm+qK4r1DwRBw6CgT
+LSuyB/Ndta8NV6johPn5KKw2MzSxdS9FRB19nKNE3EqGPhkYyVZUy4kriARuW7wLG2OwJ5
+GrXTB0SeTxEQpu1UKhjmgn9/erPAsOD8boLlc5ajKkGYZjMT7FPlL4wzm+bP4mSmILRsek
+wTHGI2RVBmgVft/Rdt3w==
+---- END SSH2 PUBLIC KEY ----
+
+budget public key
+---- BEGIN SSH2 PUBLIC KEY ----
+Comment: "2048-bit RSA, converted from OpenSSH by magibson@qp1150wndnm.ad.mdsol.com"
+AAAAB3NzaC1yc2EAAAABIwAAAQEAvXNI48PYUnofCqtVcKrtAdHT7ooJoak/TXxmK1mhfo
+a9mr9LAYKzo1S7q362U2eIDVG0TiWeFi5iVPk+nddwHlGf8KoFaFSi1AGjos8W5FY5k/bh
+Cp4wmUa2lz85AyHeL+1l93x72Dz5DJuEuo0f/nFWafrIe1Ve8XoXFAf68MApFjeo0MOoUD
+WBmr00bp9PsVoUaBFrGMLrKjJ7JzAoCIny6OlSupgqjfefXW89ZQi2mcelWpcjaIpl3O2L
+AlAQohtYHi//ywhPoaXYL0sdZlU2MdDlYiEUZOTSf7nE9wXCXUbJkIf3n1rw9WuiTwXN/Q
+peAHH+NegQGnoVyQoL6w==
+---- END SSH2 PUBLIC KEY ----
+
+reference public key
+---- BEGIN SSH2 PUBLIC KEY ----
+Comment: "2048-bit RSA, converted from OpenSSH by magibson@qp1150wndnm.ad.mdsol.com"
+AAAAB3NzaC1yc2EAAAABIwAAAQEAptUR6VeSUDwJhHDZQLXxROvmHh/QF9xH29gMUvtDVj
+9LaZv4sbyemOZ2w8OuA21rkFVvKXlqQYIrmnurwfcBbL7MtS/FMNPc+nIkLgtotqeGIvR8
+fMlVg8qmDbIi/mT5oQmO/zT/wzXmy3Kj4G6jP+VAiJIpvtpq2nkN/tClQLtG1/mhFeYT1T
+xpwc/taYIli0vvC/b7XlKUW5MeosFFln1pqPusHgqCMfCda+y9GVw/pIfVvA3/KXotU4eV
+tvQlZiF6EpLx2PXZWfhWeFq018Qsjlb0I+50NEoKg5cb+L652mlp2idh2AW/X+nwVm4Qo8
+wcBha8bOv4/ndwNwifpQ==
+---- END SSH2 PUBLIC KEY ----
+
+cost-analysis public key
+---- BEGIN SSH2 PUBLIC KEY ----
+Comment: "2048-bit RSA, converted from OpenSSH by magibson@qp1150wndnm.ad.mdsol.com"
+AAAAB3NzaC1yc2EAAAABIwAAAQEAyreDZLsJ7PUL1LNXxwz5HSA9W8X8B3aAeoPxE5HShr
+Crix4lpj/ZGNVuZfJLAg+68sf05e2cg56rCmiU+Im9s+/hAEC3ZjyV437x25Q8nwF4F1Dx
+AbTz3Qs+VIjwpdtzsg9CvUITHocUJrTErpWizHGKRPc3fU/+ohhj/ftbtTEGv4KqXXRVEQ
+REcgKmxtTdBb2zMC3qamwBSXTVrtcMii9swN4RHTzWyP5oAypzZqWGNeXiPfrjnkl3hYk8
+rPAZ7hzi7Zjzm0HRw/PeLnljS4REFwkcob2eoSISsGIVmjvGJLFaW8p5HY730SQkbv6LeL
+DVrODyER/TzpYFMW+2GQ==
+---- END SSH2 PUBLIC KEY ----
+
+
+possible dummy app uuids - feel free to change or i can make more robust ones if you like:
+
+iirdevt-xxxx-xxxx-xxxx-referencexxx
+iirdevt-xxxx-xxxx-xxxx-costanalysis
+iirdevt-xxxx-xxxx-xxxx-activityxxxx
+iirdevt-xxxx-xxxx-xxxx-budgetxxxxxx
+
+
+well who knows when john louis will have that ready
+but might as well set it all up on the branch i guess
+
+
+hmmmm - dont know where pub key is for old iir key
+
+
+
+OLD from 2/27 email to john louis
+hey johnlouis
+what format do you prefer public keys in
+these 2 are actually in 2 different formats - sorry - i can resend
+however you like
+the 1st one the email program broke up long lines - thats probably
+going to be a problem
+the 2nd one replaces new lines with \n
+just let me know how you like em and ill resend
+im guessing you might prefer the latter?
+thanks for putthing this up!
+cheers - mark
+iir app_uuid
+d38e7edc-5113-11e1-95fe-70cd60fffe66
+iir mark local public key
+-----BEGIN RSA PUBLIC KEY-----
+MIIBCgKCAQEAy8uLxcS4BMStRiRRV+pDxujhaWJOQzM9kPOOHw7r80DVpbUUDpZF
+aQdnUpDlIq3ptY8hVnEgLGKzCGlNeot/aWJh7s01CuAgTP1WhfILU7XhlXtbsuh+
++MlhDbkDQsEePcIOGzQCBQHHcxn+DBAwSbN5sNfpB/BQkmXmgXkbTgP8aNEQNr8y
+wypmXYQ5zOnDBFPOBbcrhm4kfUzVtWbQ87ukAyQDsTh0/Tjf76xRf4mRB0VipPjj
+tw7wFGULSckco1ZpnaTwb6NUJrXnI3l1eArPUBFAInrlNYOSYow/+vRG9/Cg0bhc
+LmVpeKJSPw1PM65rqv0g5dbVO6PlfrDqAwIDAQAB
+-----END RSA PUBLIC KEY-----
+imedidata app uuid
+63566d60-4c62-11e1-b86c-0800200c9a66
+imedidata mark public key
+-----BEGIN RSA PUBLIC
+KEY-----\nMIIBCgKCAQEAtJQ15Qxju7lrXyXL8eRHQNa4KvG1Lief+reSwhVTAUTWqk1LRcZG\nh+fpu5IYG2LnL+nRiwBOirqTgsTt4EblTp7k8uzdawPg4Zfk7Y20OZ/F+LrQ/0JF\n2fGtdZvqyH4IY6GHtPvBEBZ5ERM5pJMMgk7WGp6ocNhpwwaE/ATAOTrnNAFtX2Mw\nQ5e0IihZYywM0iDuddBVI5pqtgE6WvJQ2KFk//9VZqYax2kxDOT/QSIJDQhtuP9R\nuc4Km+T8X27GVL6Vm1QX65wlOiVGGL67/FLuluDkBqIeUaNPYstFxBP8MEoHqhYf\n7D5vHV0JItLmnGTPn0p7fqx9rNtcvR2ERQIDAQAB\n-----END
+RSA PUBLIC KEY-----\n
+end of OLD email from 2/27
+
+used same key pair it seems for both imed & iir
+oh will have to do this for imed too - geez
+
+ok iir will be broken now since john louis wiped out key
+need to fix that up with new key
+actually its a new system
+need to fix it for me
+and then tell others to set up their keys with john louis
+lets 1st get it fixed for me
+take out private key
+update docs
+then send email to folks pointing to doc change
+
+1st lets run iir and see it fail
+
+it didnt fail
+i dont think jlp wiped out the keys yet
+hmmmmm - then maybe fix later
+lets set up budget 1st i guess
+
+YOUR NEW PERSONAL UUID IS:
+
+2058f324-59b0-452f-a4b2-065e30e7768a
+
+
+it is labeled "magibson" in mauth-innovate.imedidata.com
+
+when ready I will delete all other uuids I gave you in the past.
+
+thanks
+
+ah i see he hasnt deleted them yet
+
+so maybe i should send out directions 1st
+well lets 1st do budget new way then write up notes
+
+need to make mauth.yml.example file thats emptyish/exampleish - check that into git
+then make real one with .gitignore on it
+then try it
+
+trying to run budgets
+funny error:
+/Users/magibson/.rvm/gems/ruby-1.8.7-p352/gems/activesupport-3.1.1/lib/active_support/dependencies.rb:234:in `load': /Users/magibson/projects/budgets/config/initializers/session_store.rb:3: syntax error, unexpected ':', expecting $end (SyntaxError)
+...sion_store :cookie_store, key: '_budgets_session'
+cur
+ruby-1.8.7-p352
+thats the problem!
+al bud
+alias bud='cd ~/projects/budgets;  rvm use ruby-1.9.2-p290@budgets'
+ ~/projects/budgets (feature/mauth) $ bud
+Using /Users/magibson/.rvm/gems/ruby-1.9.2-p290 with gemset budgets
+
+`const_missing': uninitialized constant Rails::Initializer (NameError)
+clean bundle install
+
+http://guides.rubyonrails.org/rails_on_rack.html
+
+3.2.1 Adding a Middleware
+
+You can add a new middleware to the middleware stack using any of the following methods:
+
+config.middleware.use(new_middleware, args) – Adds the new middleware at the bottom of the middleware stack.
+config.middleware.insert_before(existing_middleware, new_middleware, args) – Adds the new middleware before the specified existing middleware in the middleware stack.
+config.middleware.insert_after(existing_middleware, new_middleware, args) – Adds the new middleware after the specified existing middleware in the middleware stack.
+# config/application.rb
+# Push Rack::BounceFavicon at the bottom
+config.middleware.use Rack::BounceFavicon
+# Add Lifo::Cache after ActiveRecord::QueryCache.
+# Pass { :page_cache => false } argument to Lifo::Cache.
+config.middleware.insert_after ActiveRecord::QueryCache, Lifo::Cache, :page_cache => false
+
+added to application.rb:
+    # MAUTH rack
+    mauth_conf = YAML.load_file(File.join(Rails.root, "config", "mauth.yml"))[Rails.env]
+    if mauth_conf['private_key_file']
+      mauth_conf['private_key'] = File.read(mauth_conf['private_key_file'])
+    end
+    require 'mauth/rack'
+
+    config.middleware.use MAuth::Rack::ResponseSigner, mauth_conf
+    config.middleware.use MAuth::Rack::RequestAuthentictor, mauth_conf
+
+need mauth.yml of course - progress
+
+lets first make mauth.yml - do a git ignore on it and then make sample
+
+YOUR NEW PERSONAL UUID IS: (app_uuid)
+
+2058f324-59b0-452f-a4b2-065e30e7768a
+
+lets dig up private key that should still be valid from iir
+  private_key: |
+        -----BEGIN RSA PRIVATE KEY-----
+        MIIEpQIBAAKCAQEAy8uLxcS4BMStRiRRV+pDxujhaWJOQzM9kPOOHw7r80DVpbUU
+        DpZFaQdnUpDlIq3ptY8hVnEgLGKzCGlNeot/aWJh7s01CuAgTP1WhfILU7XhlXtb
+        suh++MlhDbkDQsEePcIOGzQCBQHHcxn+DBAwSbN5sNfpB/BQkmXmgXkbTgP8aNEQ
+        Nr8ywypmXYQ5zOnDBFPOBbcrhm4kfUzVtWbQ87ukAyQDsTh0/Tjf76xRf4mRB0Vi
+        pPjjtw7wFGULSckco1ZpnaTwb6NUJrXnI3l1eArPUBFAInrlNYOSYow/+vRG9/Cg
+        0bhcLmVpeKJSPw1PM65rqv0g5dbVO6PlfrDqAwIDAQABAoIBAQC3IB5nBg/9aOXy
+        42ucvktND7KNyeJdjEvEVrbcvcHUAex5TK/LM8kHSbnUfZMIiJI7rXPdgyXP/Ji3
+        9DfE6FkDT36E4SzKqv8bb4IyNn9rJ0Kf2gtaRoTh9cMaW6fMclBEWn3mf+NYsHKS
+        wUaBfIKHl5jACiPCGHWuN5bbvQGGJX5YrHSvaAtvAvSVoqk9e08IZPWkUxTWZq46
+        QNI4Zr5NaeD14xn5YnKvLDmiigZkqwGPj3JlNm2NBjvBgJZjBkF0oYCunPOoFOxS
+        /yjwIGJbvTXkIgeCSyH2e6hXEfCzTK2gu1m2PUa7iCvssNewCz120RHwdp/TG5BH
+        69OJYewxAoGBAPu7Wc3GZYD24qbwFTdGUtQAboJTgW8ZOCRz4u2Tbdo2Oylerx9v
+        n0CO5h0FBcJQq2fXPAag9gaHQjCAA+2DSK8qlFUNDIocK3DtVMFv/SYhn1Mo1eGk
+        cBtLRF+NfLm66/tI12UcExPRxgf6NfYe24Eus+ZPq2+fouS90HePlTWVAoGBAM9A
+        H9nf5vQunk8JCVzJvbLg/076GVGEPnCAJT8uor/Tv93eu7/wRXQZnKrFAZ44krh0
+        3S0DGD+Uweu0JXmJENpqIV8ZeCSlUBEGgN9ivue6glOAjCpndeiW+cfbIMHcVsha
+        Mhi+TP00setPZt9IQNbRVTccdTCF+jIDV4W7wQs3AoGAGiRswRf3dpstEpUgPutI
+        sseQsmwlpvoBgJegW3fSErVLE5LHsQYQjc3JS/43iOSDyHbrvux8YFUvpIXG4qWd
+        qMNNQD/oq3cdc87R3Hza11jqiOJWw+Yl1k/Mu/efmlI1K5V2+QMfYBGK9U0gyXyO
+        4y2MdUCU1zTG3+ZufdwlbLkCgYEAgl1Lq7jzhdVtLzn38a3U7ZgqAHvBQU12GT4C
+        L+Qd65w+rElWwD1a8tTJf4G8qtHbOLwKBC5WKmhgMut2RyS4vSrVIwTaVfLGkm8M
+        0XdDrm/bWrsZb/L0cAHHzLdBu6/lxtE1gerycrOa1vFzPDAu2PGEMM5tyL/9yUfg
+        3fZkT7ECgYEA5Obilp8Qa+mJRrFq+9XM9p9Nyy1uZiD0YE4ZhYPXH6fiDO2S/EOH
+        ShnUvZnlRy1XA0pjQp74f9hQswBQE5DQDQSFSaR6vGPKurkW2k+TgdR8gR98OJGU
+        oSM/J2VRPdlFRsQW+5x4BJb1MFiIkfvPIACkXPR4ITLhmuptSQbXh3w=
+        -----END RSA PRIVATE KEY-----
+
+/Users/magibson/.rvm/gems/ruby-1.9.2-p290@budgets/gems/rake-0.9.2.2/lib/rake/ext/module.rb:36:in `const_missing': uninitialized constant MAuth::Rack::RequestAuthentictor (NameError)
+
+
+need to test this out with curl/scripties - tonya is still working on wiring it into iir client
+
+i think ethan wrote some new stuff for the curlies
+
+rackmauth - script is in curl_gen_script branch
+git checkout -b feature/curl_gen_script origin/feature/curl_gen_script
+cp test/curlgen.rb ~/projects/budgets/
+
+actually could just work/config run script in rack mauth directory itself
+
+https://sites.google.com/a/mdsol.com/knowledgebase/home/departments/engineering/on-demand-portfolio/services/core-services/mauth/mauth-client-cli-tool
+curl gen no more!
+
+cd ~/projects
+git clone git@github.com:mdsol/mauth-client.git
+cd mauth-client
+
+mkdir config && cd config
+
+bin/mauth-client GET  https://eureka-innovate.imedidata.com/apis
+
+bin/mauth-client GET https://localhost:3000/budgets/v1/budgets/729b6850-a0cc-4a85-8066-f96f95006ec0
+
+ok added to budget dev db with ugandar email
+rails console
+Budget.create({:initiating_user_uuid => "307602f2-469f-11e1-ad6f-00261824db2f", "study_uuid" => "d2216ad8-5199-11e1-95fe-70cd60fffe66", "study_group_uuid" =>"35aa8dec-5199-11e1-95fe-70cd60fffe66", :phase_uuid => "5b660b29-2413-4a4e-a0b0-b0f351b29f73", :indication_uuid => "1", :location_uuid => "1", })
+
+
+bin/mauth-client GET https://localhost:3000/budgets/v1/budgets/729b6850-a0cc-4a85-8066-f96f95006ec0
+~/projects/mauth-client (master) $ bin/mauth-client GET https://localhost:3000/budgets/v1/budgets/729b6850-a0cc-4a85-8066-f96f95006ec0
+* connect to localhost on port 3000
+* getting our SSL on
+> GET /budgets/v1/budgets/729b6850-a0cc-4a85-8066-f96f95006ec0 HTTP/1.1
+> X-MWS-Time: 1332177164
+> X-MWS-Authentication: MWS 2058f324-59b0-452f-a4b2-065e30e7768a:JoRFAHYLAh0hhbyReT10QDpVWiZvB7Tc4z1RZQ1/L6OM4zyIYTdWQUqnlTQenGSwv3VSC6lhg5yN4Gf/tfyHN1fp4vTbSOBh23CFcIfsBwZbAFHlb/hqHajy9UIDH0zugPORYKWv3J9T1SAdp2AckbkUUYE19lS3WCA113/CyJwhiZFCATCN/5gxdODgAArMIZvcZaEwakn767K8FWYRS4eNDw+TaT4ASw83/s9+IQoSOJFFJwpbW98bgQLypFYQHl9TXviOdtO5CbWq/ZxtW6VTrzX740rGC3gipetsallpUOgZwbBt/CkfBEgfW9zAbUkYFCeTOp2VHtd74WpDeQ==
+> 
+/Users/magibson/.rvm/rubies/ruby-1.8.7-p352/lib/ruby/1.8/net/http.rb:586:in `connect': SSL_connect returned=1 errno=0 state=SSLv2/v3 read server hello A: unknown protocol (OpenSSL::SSL::SSLError)
+	from /Users/magibson/.rvm/rubies/ruby-1.8.7-p352/lib/ruby/1.8/net/http.rb:586:in `connect'
+	from /Users/magibson/.rvm/rubies/ruby-1.8.7-p352/lib/ruby/1.8/net/http.rb:553:in `do_start'
+	from /Users/magibson/.rvm/rubies/ruby-1.8.7-p352/lib/ruby/1.8/net/http.rb:542:in `start'
+	from /Users/magibson/.rvm/rubies/ruby-1.8.7-p352/lib/ruby/1.8/net/http.rb:1035:in `request'
+	from /Users/magibson/.rvm/rubies/ruby-1.8.7-p352/lib/ruby/1.8/net/http.rb:772:in `get'
+	from /Users/magibson/.rvm/gems/ruby-1.8.7-p352/gems/faraday-0.7.6/lib/faraday/adapter/net_http.rb:59:in `call'
+	from bin/mauth-client:57:in `call'
+	from /Users/magibson/projects/mauth-client/lib/mauth/faraday.rb:17:in `call'
+	from /Users/magibson/projects/mauth-client/lib/mauth/faraday.rb:10:in `call'
+	from /Users/magibson/.rvm/gems/ruby-1.8.7-p352/gems/faraday_middleware-0.8.5/lib/faraday_middleware/request/encode_json.rb:21:in `call'
+	from /Users/magibson/.rvm/gems/ruby-1.8.7-p352/gems/faraday-0.7.6/lib/faraday/connection.rb:210:in `run_request'
+	from /Users/magibson/.rvm/gems/ruby-1.8.7-p352/gems/faraday-0.7.6/lib/faraday/connection.rb:93:in `get'
+	from bin/mauth-client:84:in `send'
+	from bin/mauth-client:84
+
+bundle install
+and which ruby/rails?
+its currently in 1.8.7
+
+rvm use ruby-1.9.2-p290
+bomb
+rvm use 1.8.7-p352
+
+
+for some reason my request was https instead of http that was problem
+
+bin/mauth-client GET http://localhost:3000/budgets/v1/budgets/729b6850-a0cc-4a85-8066-f96f95006ec0
+NOT
+bin/mauth-client GET https://localhost:3000/budgets/v1/budgets/729b6850-a0cc-4a85-8066-f96f95006ec0
+
+and the response signer stays
+apparetnly we want to sign responses
+
+so i think this is ready for a pr?? isnt it?
+should i rebase it? why not
+
+wait we are not ready
+
+a few things
+need to git ignore config/mauth.yml
+need to put in sample config/mauth.yml.example
+need to put in disabling of mauth? in config somewhere?
+
+oh also need to run cuc - prob broken!
+
+need to doc 
+1 setting up keys 
+2 testing it out
+
+
+********************
+3/20/12 tues office
+********************
+ok budget service has mauth whats next
+i think reference service in prep for eureka
+the hard part is that phil is away so may not know how to set it up with data and test it
+may not want to do eureka for test
+
+what are the steps
+git clone
+rvm 1.9
+bundle install
+make branch!
+add to gem file
+config file
+mauth.yml.example
+mauth.yml w private key & app_uuid - git ignored
+make data (???)
+test with CLI (???)
+
+
+http://localhost:3000/v1/phases
+returns:
+[{"uuid":"5b660b29-2413-4a4e-a0b0-b0f351b29f73","name":"Phase 1"},{"uuid":"b4e3fa0c-54cc-4749-a589-7d8808a34453","name":"Phase 2"},{"uuid":"e991d87b-d8c9-45d7-b344-77937670ef52","name":"Phase 3"},{"uuid":"43d5aedb-cce4-419e-82a4-ef18474f60fc","name":"Phase 4"},{"uuid":"fcf189f0-99ae-41df-80b5-8ff1a29aa051","name":"Unknown"}]
+
+hardwired into the controller
+cool!
+
+this doesnt work - i suspect because i dont have csv/data loaded
+curl -s http://0.0.0.0:3000/references/indications?search_term=pk
+<h1>Routing Error</h1>
+<p><pre>No route matches [GET] &quot;/references/indications&quot;</pre></p>
+
+lets try
+curl -s http://0.0.0.0:3000/v1/phases
+[{"uuid":"5b660b29-2413-4a4e-a0b0-b0f351b29f73","name":"Phase 1"},{"uuid":"b4e3fa0c-54cc-4749-a589-7d8808a34453","name":"Phase 2"},{"uuid":"e991d87b-d8c9-45d7-b344-77937670ef52","name":"Phase 3"},{"uuid":"43d5aedb-cce4-419e-82a4-ef18474f60fc","name":"Phase 4"},{"uuid":"fcf189f0-99ae-41df-80b5-8ff1a29aa051","name":"Unknown"}]
+
+yup that works
+have a testable now!
+
+gemfile
+bundle install
+config file
+mauth.yml.example
+mauth.yml w private key & app_uuid - git ignored
+##make data (???)
+test with CLI (???)
+
+
+gem 'mauth-client', :git => "git@github.com:mdsol/mauth-client.git", :tag => 'v2.0.1'
+bundle install
+
+dont forget to enable mauth for dev
+
+curl -s http://0.0.0.0:3000/v1/phases
+Unauthorized
+
+cool its working - well at least its unauthorizing
+
+test w cli!
+
+cd ~/mc/config
+ ln -s ~/ref/config/mauth.yml ref-mauth.yml
+rm mauth.yml
+  ln -s ref-mauth.yml mauth.yml
+
+wow it worked
+i think we are ready for pr?
+
+
+from ethan
+use the MAUTH_CONFIG_YAML variable ("might be nice to have cmd line param in mauth client for mauth.yml file - if thats not already there?")
+MAUTH_CONFIG_YAML=~/some_mauth_config.yml mauth-client get http://foobar
+i should try that
+
+ MAUTH_CONFIG_YAML=~/projects/reference/config/mauth.yml bin/mauth-client  GET http://localhost:3000/v1/phases
+
+alright well lets do cost analysis
+
+oh actually i should make submodule of ref svc! in iir 
+so ready for eureka
+
+making a submodule is always a little sticky aint it
+
+
+***********************
+3/21/12 wed office
+******************
+
+so where am i at
+submodule is made and merged for ref
+i think now its back to mauth
+need to do cost analysis
+
+(foolow install direcs...)
+git clone
+rvm 1.9
+bundle install
+db... yml & rake
+
+make branch!
+add to gem file
+bundle install
+config file - application.rb
+mauth.yml.example
+mauth.yml w private key & app_uuid - git ignored
+make data (???)
+test with CLI (???) - ask tonya?
+
+doc cli test
+
+change docs for submodule and install
+
+how do i load a csv file into mysql?
+
+http://localhost:3000/v1/costs/22698ad3-8dc4-4ee9-9fbf-beac8644b60b?location_uuid=4b6500ad-7428-4e0b-8df4-91eca1344579&indication_uuid=6868b538-fe5d-4575-9577-0e6d1a6e31ca&phase_uuid=b4e3fa0c-54cc-4749-a589-7d8808a34453
+
+LOAD DATA INFILE 'data.txt' INTO TABLE db2.my_table;
+
+alias mysql-cost-analysis="mysql -u root cost_analysis_development"
+
+mysql -u root cost_analysis_development
+
+LOAD DATA INFILE '/Users/magibson/projects/cost_analysis/industry_costs.csv' INTO TABLE cost_analysis_development.industry_costs;
+
+LOAD DATA INFILE '/Users/magibson/projects/cost_analysis/indication_maps.csv' INTO TABLE cost_analysis_development.indication_maps;
+
+LOAD DATA INFILE '/Users/magibson/projects/cost_analysis/industry_costs.csv' INTO TABLE cost_analysis_development.industry_costs;
+ERROR 1062 (23000): Duplicate entry '0---' for key 'industry_costs_search_index'
+
+i guess ill try navicat tool? 
+
+MAUTH_CONFIG_YAML=~/projects/cost_analysis/config/mauth.yml bin/mauth-client GET http://localhost:3000/v1/costs/22698ad3-8dc4-4ee9-9fbf-beac8644b60b?location_uuid=4b6500ad-7428-4e0b-8df4-91eca1344579&indication_uuid=6868b538-fe5d-4575-9577-0e6d1a6e31ca&phase_uuid=b4e3fa0c-54cc-4749-a589-7d8808a34453
+
+make pr
+update docs
+when tonya fixes cost analysis data dump try that out
+
+need to update to new submodule in iir for cost analysis and budget - already done for ref
+
+
+ok on to activities
+
+#(foolow install direcs...)
+#git clone
+#rvm 1.9
+#bundle install
+#db... yml & rake
+
+#make branch!
+#add to gem file
+#bundle install
+#config file - application.rb
+#mauth.yml.example
+#mauth.yml w private key & app_uuid - 
+make data (???)
+test with CLI (???) - ask tonya?
+commit ignore pr
+doc cli test
+
+http://0.0.0.0:3000/v1/activities?search_term=fee
+
+MAUTH_CONFIG_YAML=./config/mauth.yml ~/projects/mauth-client/bin/mauth-client GET http://localhost:3000/v1/activities?search_term=fee
+MAUTH_CONFIG_YAML=~/projects/activities/config/mauth.yml ~/projects/mauth-client/bin/mauth-client GET "http://localhost:3000/v1/activities?search_term=fee"
+MAUTH_CONFIG_YAML=~/projects/activities/config/mauth.yml ~/projects/mauth-client/bin/mauth-client GET "http://0.0.0.0:3000/v1/activities?search_term=fee"
+
+
+got activities csvs from tonya
+procedure_frequencies activities activities_synonyms
+
+alias mysql-activities="mysql -u root activity_development"
+
+LOAD DATA INFILE '/Users/magibson/Downloads/procedure_frequencies.csv' INTO TABLE activity_development.procedure_frequencies;
+
+
+it works - have to load data via navicat - wont load via mysql cmd line
+
+ready to commit pr

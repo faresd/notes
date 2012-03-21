@@ -1021,7 +1021,7 @@ curl -v -H 'Authorization: MWS 993516ea-3dfb-11e1-a84d-70cd60fffe66:lyfN0lxXqFsX
 < Content-Length: 171
 < Set-Cookie: _session_id=bcac22ec7b00e2f8f4b49a4cca10fba2; path=/; HttpOnly
 < Cache-Control: private, max-age=0, must-revalidate
-< 
+< .al
 * Closing connection #0
 {"study_groups":[{"uuid":"5446b210-a273-11e0-9e1a-12313d21beb5","href":"http://localhost:3000/api/v2/study_groups/5446b210-a273-11e0-9e1a-12313d21beb5","name":"Arsenal"}]} 
 
@@ -1046,3 +1046,10 @@ getting hash in env.rb or yaml config from preinit - and checking with env there
 have to have :tag in tags in yaml file as hash is keyed on symbols not strings! this eluded me!
 
 
+
+
+
+ssh-keygen -t rsa -b 2048 -f local_iir
+ssh-keygen -f local_iir.pub -e -m pem 
+or to file
+ssh-keygen -f local_iir.pub -e -m pem > local_iir.pub.pem

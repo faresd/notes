@@ -1,3 +1,5 @@
+2/29/12 - tcom brooklyn
+
 forked it
 did ack for xml
 
@@ -165,3 +167,459 @@ debugger
 end
 
 thats not hardired to xml ???
+
+
+3/1/12 thurs - office
+email from matt parker - dupe dude:
+Although I wrote the bulk of this code nearly two years ago, I just took a look at it again and I'm pretty sure
+ the active_resource monkey patches here 
+https://github.com/moonmaster9000/dupe/blob/master/lib/dupe/active_resource_extensions.rb
+ will be the only thing that need to be updated. write they just assume everything is an XML request, 
+instead of checking the self.class.format or something. 
+
+ok need to pull onto my deskptop the fork
+cd ~/projects
+git clone git@github.com:magibson/dupe.git
+
+so a mock must come back as xml
+act_res_ext.get
+        response = request(:get, path, build_request_headers(headers, :get, self.site.merge(path)))
+network.request
+network.match.mocked_response
+network.match returns mock
+so its 
+mock.mocked_response
+lib/dupe/mock.rb 
+has a bunch of subclasses of Mock for get put...
+and a superclass Mock
+nice to see classes & superclasses!
+
+      def mocked_response(url, body = nil)
+        raise(
+          StandardError, 
+          "Tried to mock a response to a non-matched url! This should never occur. My pattern: #{@url_pattern}. Url: #{url}"
+        ) unless match?(url)
+      
+        grouped_results = url_pattern.match(url)[1..-1]
+        grouped_results << body if body
+        resp = @response.call *grouped_results
+        process_response(resp, url)
+      end
+ 
+class Dupe
+  class Network
+    class GetMock < Mock #:nodoc:
+      def process_response(resp, url)
+        case resp
+          
+          when NilClass
+            raise ResourceNotFoundError, "Failed with 404: the request '#{url}' returned nil." 
+            
+          when Dupe::Database::Record
+            resp = resp.to_xml_safe(:root => resp.__model__.name.to_s)
+
+          when Array
+            if resp.empty?
+              resp = [].to_xml :root => 'results'
+            else
+              resp = resp.map {|r| HashPruner.prune(r)}.to_xml(:root => resp.first.__model__.name.to_s.pluralize)
+            end
+        end
+        Dupe.network.log.add_request :get, url, resp
+        resp
+      end
+    end
+  end
+end
+
+
+there it is!!! to_xml!
+dupe database record - what the hell is that all about??
+im guessing we hit array and not that
+  resp = resp.map {|r| HashPruner.prune(r)}.to_xml(:root => resp.first.__model__.name.to_s.pluralize)
+that seems like a crucial bit
+
+
+hook up code locally so can debug
+  gem 'dupe', :path => '~/projects/dupe'
+bundle install
+
+so xml test is failing - cuc - why?
+ Background:                                                  # features/study/list.feature:11
+    Given a user exists with name: "Test User"                 # features/step_definitions/session_steps.rb:3
+    And a study exists with name: "Hooshy"                     # features/step_definitions/study_steps.rb:1
+    And user "Test User" is an Investigator for study "Hooshy" # features/step_definitions/study_steps.rb:5
+    And I am logged in as "testuser" with name "Test User"     # features/step_definitions/session_steps.rb:7
+      undefined method `collect!' for #<Hash:0x00000107234b70> (NoMethodError)
+      ./app/models/user.rb:43:in `studies'
+      ./app/controllers/investigator/studies_controller.rb:6:in `index'
+      ./features/step_definitions/session_steps.rb:14:in `/^I am logged in as "([^\"]*)" with name "([^\"]*)"$/'
+      features/study/list.feature:15:in `And I am logged in as "testuser" with name "Test User"'
+
+    User.find( :all, :from => "/api/v2/users/#{uuid}/studies#{SFX}" )
+
+its ugandhars new line
+theres prob a mock that needs to happen ther
+i think need to debug and dig into it
+
+User.find
+AR/base method missing
+base find
+base find_every 
+pp options
+{:from=>"/api/v2/users/fake-uuid/studies.xml"}
+when String
+   897                path = "#{from}#{query_string(options[:params])}"
+pp path
+"/api/v2/users/fake-uuid/studies.xml"
+
+eventually makes it to dupe/act_res_ext.get
+uses http mock.respond to
+pp response
+#<ActiveResource::Response:0x0000010331bc40
+ @body=
+  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<study>\n  <id type=\"integer\">1</id>\n  <name>Hooshy</name>\n  <user>\n    <id>fake-uuid</id>\n    <name>Test User</name>\n    <login nil=\"true\"></login>\n    <uuid>fake-uuid</uuid>\n  </user>\n</study>\n",
+ @code=200,
+ @headers={"Content-Length"=>"233"},
+ @message="200">
+
+ 929          def instantiate_collection(collection, prefix_options = {})
+=> 930            collection.collect! { |record| instantiate_record(record, prefix_options) }
+   931          end
+  
+theres the problem - funny
+i think dupe doesnt work with the way that ugandhar is working active resource
+backtrace
+--> #0 ActiveResource::Base.instantiate_collection(collection#Hash) 
+       at line /Users/magibson/.rvm/gems/ruby-1.9.2-p290@iir/gems/activeresource-3.1.3/lib/active_resource/base.rb:930
+    #1 ActiveResource::Base.find_every(options#Hash) 
+       at line /Users/magibson/.rvm/gems/ruby-1.9.2-p290@iir/gems/activeresource-3.1.3/lib/active_resource/base.rb:898
+    #2 ActiveResource::Base.find 
+       at line /Users/magibson/.rvm/gems/ruby-1.9.2-p290@iir/gems/activeresource-3.1.3/lib/active_resource/base.rb:814
+    #3 User.studies at line /Users/magibson/projects/iir/app/models/user.rb:44
+
+there is a collect method but no collect! ?????
+pp collection.class
+Hash
+
+array has collect! hash doesnt - so its expecting an array!
+prob array of hashes?
+
+wow totally wacky
+Dupe.find(:study)
+returns a study - the 1st study taht qualifies NOT a list
+Dupe.find(:studies)
+returns a list of studies
+
+when get the collect! error that means you should be supplying a list and arent!
+not the most informative errors in the world i must say
+
+ok got scenario passing with above fix
+now running is not working again
+with collect! issue
+lets try it with json
+
+cuc fails with json with this message
+   And I am logged in as "testuser" with name "Test User"     # features/step_definitions/session_steps.rb:7
+      No mocked service response found for '/api/v2/users/fake-uuid.json' (Dupe::Network::RequestNotFoundError)
+      /Users/magibson/projects/dupe/lib/dupe/network.rb:50:in `match'
+
+with json it dev works 
+lets try again with xml
+yup fails with xml
+
+scenarios pass with xml fail with xml
+   And user "Test User" is an Investigator for study "Hooshy" # features/step_definitions/study_steps.rb:5
+    And I am logged in as "testuser" with name "Test User"     # features/step_definitions/session_steps.rb:7
+      No mocked service response found for '/api/v2/users/fake-uuid.json' (Dupe::Network::RequestNotFoundError)
+
+hmmm foreman doesnt seem to be gracefully dying anymore - bummer
+
+ok running cuc now with json everywher and still failing
+   Given a study exists with name: "woozy"                # features/step_definitions/study_steps.rb:1
+    And I am logged in as "testuser" with name "Test User" # features/step_definitions/session_steps.rb:7
+      756: unexpected token at '<?xml version="1.0" encoding="UTF-8"?>
+      <user>
+        <id>fake-uuid</id>
+        <name>Test User</name>
+        <login nil="true"></login>
+        <uuid>fake-uuid</uuid>
+      </user>
+      ' (MultiJson::DecodeError)
+      ./app/models/user.rb:33:in `find_user'
+      ./app/controllers/application_controller.rb:28:in `get_current_user'
+      ./features/step_definitions/session_steps.rb:14:in `/^I am logged in as "([^\"]*)" with name "([^\"]*)"$/'
+      features/general/page.feature:10:in `And I am logged in as "testuser" with name "Test User"'
+
+so lets get this to return json - just this
+so dupe mock is doing its thing its just returning xml
+
+wo! its hitting Dupe::Database::Record whatever that is
+i think that just means its not a list
+
+cool that worked
+just modified mock.rb class to return json for get
+
+
+
+******************
+3/15/12
+thurs
+office
+*******************
+
+need to get post working for tonya
+
+so where do i brekpoint this puppy to investigate
+
+failing:
+cu features/study/show.feature:31
+
+The document "{\"budget\":{\"initiating_user_uuid\":\"fake-uuid\",\"study_group_uuid\":\"fake_study_group_uuid\",\"study_uuid\":\"638637\"}}" does not have a valid root
+
+yea its trying to xml that json
+
+well lib/dupe/active_resource_extensions.rb post to begin with
+
+rdb:1) pp request(:post, path, body.to_s, build_request_headers(headers, :post, self.site.merge(path)))
+ActiveResource::InvalidRequestError Exception: Could not find a response recorded for <POST: /budgets/v1/budgets.json [{"Content-Type"=>"application/json"}] ({"budget":{"initiating_user_uuid":"fake-uuid","study_group_uuid":"fake_study_group_uuid","study_uuid":"392151"}})> - Responses recorded are: []
+
+i dont think tonya set up a dupe response in json?
+
+   108        # Makes a request to the remote service.
+   109        def request(method, path, *arguments)
+=> 110          result = ActiveSupport::Notifications.instrument("request.active_resource") do |payload|
+   111            payload[:method]      = method
+   112            payload[:request_uri] = "#{site.scheme}://#{site.host}:#{site.port}#{path}"
+   113            payload[:result]      = http.send(method, path, *arguments)
+   114          end
+   115          handle_response(result)
+   116        rescue Timeout::Error => e
+   117          raise TimeoutError.new(e.message)
+/Users/magibson/.rvm/gems/ruby-1.9.2-p290@iir/gems/activeresource-3.1.3/lib/active_resource/connection.rb:110
+result = ActiveSupport::Notifications.instrument("request.active_resource") do |payload|
+(rdb:1) p method
+:post
+(rdb:1) p path
+"/budgets/v1/budgets.json"
+(rdb:1) pp arguments
+["{\"budget\":{\"initiating_user_uuid\":\"fake-uuid\",\"study_group_uuid\":\"fake_study_group_uuid\",\"study_uuid\":\"392151\"}}",
+ {"Content-Type"=>"application/json"}]
+
+tahts active resource of course - familiar from monkey patch
+
+fails on instrument it seems
+
+how does one set up dupe response i forget
+need to look at sted defs
+
+  Given no budget exists for "Hooshy"
+
+show_steps.rb:
+Given /^no budget exists for "([^"]*)"$/ do |study_name|
+  @budget = nil
+  mock_post_budget
+end
+
+def mock_post_budget
+  Post %r{/budgets/v1/budgets\.json} do |post_data|
+  #raise Dupe::UnprocessableEntity.new(:name => " must be present.") unless post_data["name"]
+    budget = Dupe.create :budget, post_data
+  end
+end
+
+i think that method is failing to register properly or getting mangled on xml
+
+#<REXML::ParseException: The document "{\"budget\":{\"initiating_user_uuid\":\"fake-uuid\",\"study_group_uuid\":\"fake_study_group_uuid\",\"study_uuid\":\"392151\"}}" does not have a valid root>
+
+there it is - its parsing it as xml! and failing!
+
+in /Users/magibson/projects/dupe/lib/dupe/custom_mocks.rb
+   99  #         </authors>
+   100  
+   101  
+   102  def Get(url_pattern, &block)
+   103    Dupe.network.define_service_mock :get, url_pattern, block
+   104  end
+   105  
+   106  def Post(url_pattern, &block)
+=> 107    Dupe.network.define_service_mock :post, url_pattern, block
+   108  end
+
+
+netowrk.rb define_service_mock
+
+when :post
+=> 28          PostMock.new(url_pattern, response_proc).tap do |mock|
+   29            @mocks[verb].unshift mock
+   30          end
+
+PostMock isa mock.rb
+
+i think response_proc is key
+
+do |post_data|
+   65    #raise Dupe::UnprocessableEntity.new(:name => " must be present.") unless post_data["name"]
+   66      budget = Dupe.create :budget, post_data
+   67    end
+
+i think thats the response proc!
+
+funny debugger wasnt hit in that proc???
+PpostMock is initialized lib/dupe/netowork.rb
+but exists in mock.rb
+
+
+stepping into GetMock??? well maybe thats ok?? funny
+
+
+i seem to be in ac res ext .get ??
+
+it goes through a bunch of gets before it gets to post fyi
+
+but i cant breakpoint pinpoint where the hell that error message parse is coming from
+
+its failing before mocked_response call on mock/post_mock
+
+/Users/magibson/.rvm/gems/ruby-1.9.2-p290@iir/gems/activesupport-3.1.3/lib/active_support/notifications.rb
+   45        attr_accessor :notifier
+   46  
+   47        def publish(name, *args)
+   48          notifier.publish(name, *args)
+   49        end
+   50  
+   51        def instrument(name, payload = {})
+   52          if @instrumenters[name]
+=> 53            instrumenter.instrument(name, payload) { yield payload if block_given? }
+
+throws error
+
+
+/Users/magibson/.rvm/gems/ruby-1.9.2-p290@iir/gems/activesupport-3.1.3/lib/active_support/notifications/instrumenter.rb
+   12        end
+   13  
+   14        # Instrument the given block by measuring the time taken to execute it
+   15        # and publish it. Notice that events get sent even if an error occurs
+   16        # in the passed-in block
+   17        def instrument(name, payload={})
+   18          started = Time.now
+   19  
+=> 20          begin
+   21            yield
+
+that yield goes back ares request - which calls http.send
+        result = ActiveSupport::Notifications.instrument("request.active_resource") do |payload|
+   111            payload[:method]      = method
+   112            payload[:request_uri] = "#{site.scheme}://#{site.host}:#{site.port}#{path}"
+=> 113            payload[:result]      = http.send(method, path, *arguments)
+
+/Users/magibson/.rvm/gems/ruby-1.9.2-p290@iir/gems/activeresource-3.1.3/lib/active_resource/http_mock.rb
+   226          #   if response = self.class.responses.assoc(request)
+   227          #     response[1]
+   228          #   else
+   229          #     raise InvalidRequestError.new("Could not find a response recorded for #{request.to_s} - Responses recorded are: - #{inspect_responses}")
+   230          #   end
+   231          # end
+   232          module_eval <<-EOE, __FILE__, __LINE__ + 1
+   233            def #{method}(path, #{'body, ' if has_body}headers)
+=> 234              request = ActiveResource::Request.new(:#{method}, path, #{has_body ? 'body, ' : 'nil, '}headers)
+   235              self.class.requests << request
+   236              if response = self.class.responses.assoc(request)
+   237                response[1]
+   238              else
+   239                raise InvalidRequestError.new("Could not find a response recorded for \#{request.to_s} - Responses recorded are: \#{inspect_responses}
+
+wow my shell got hosed
+bummer i was so deep in there
+lets put debugger in src above
+
+/Users/magibson/.rvm/gems/ruby-1.9.2-p290@iir/gems/activeresource-3.1.3/lib/active_resource/http_mock.rb
+   232          module_eval <<-EOE, __FILE__, __LINE__ + 1
+   233            def #{method}(path, #{'body, ' if has_body}headers)
+   234  debugger
+   235              request = ActiveResource::Request.new(:#{method}, path, #{has_body ? 'body, ' : 'nil, '}headers)
+   236              self.class.requests << request
+   237              if response = self.class.responses.assoc(request)
+   238                response[1]
+   239              else
+=> 240                raise InvalidRequestError.new("Could not find a response recorded for \#{request.to_s} - Responses recorded are: \#{inspect_responses}")
+
+
+rdb:4) pp self
+#<ActiveResource::HttpMock:0x00000101ac0588
+ @site=#<URI::HTTP:0x00000104d27c60 URL:http://localhost:3005/budgets/v1/>>
+(rdb:4) pp self.class
+ActiveResource::HttpMock
+(rdb:4) pp self.class.responses
+[]
+
+assoc is a funny method for sure - its a poor mans object
+assoc(obj) → new_ary or nil
+Searches through an array whose elements are also arrays comparing obj with the first element of each contained array using obj.==. Returns the first contained array that matches (that is, the first associated array), or nil if no match is found. See also Array#rassoc.
+
+s1 = [ "colors", "red", "blue", "green" ]
+s2 = [ "letters", "a", "b", "c" ]
+s3 = "foo"
+a  = [ s1, s2, s3 ]
+a.assoc("letters")  #=> [ "letters", "a", "b", "c" ]
+a.assoc("foo")      #=> nil
+
+so the gets are also throwing the ex ???
+
+maybe try another passing scenario?
+or maybe dupe catches this exception so its suppose to fly?
+
+pp caller(0)...
+
+active_res_ext is overriding act res i think in calling request
+it expects an exception and it catches athat ex
+ "/Users/magibson/.rvm/gems/ruby-1.9.2-p290@iir/gems/ruby-debug-base19-0.11.25/lib/ruby-debug-base.rb:55:in `at_line'",
+ "/Users/magibson/projects/dupe/lib/dupe/active_resource_extensions.rb:16:in `rescue in get'",
+ "/Users/magibson/projects/dupe/lib/dupe/active_resource_extensions.rb:11:in `get'",
+ "/Users/magibson/.rvm/gems/ruby-1.9.2-p290@iir/gems/activeresource-3.1.3/lib/active_resource/base.rb:918:in `find_one'",
+ "/Users/magibson/.rvm/gems/ruby-1.9.2-p290@iir/gems/activeresource-3.1.3/lib/active_resource/base.rb:817:in `find'",
+ "/Users/magibson/projects/iir/app/models/user.rb:24:in `find_user'",
+ "/Users/magibson/projects/iir/app/controllers/application_controller.rb:28:in `get_current_user'",
+ 
+i found it!!!
+
+i was thrown that the normal behaviour is to throw exception and catch it
+the exception is fine
+
+/Users/magibson/projects/dupe/lib/dupe/active_resource_extensions.rb
+   31      def post(path, body = '', headers = {}) #:nodoc:
+   32  debugger
+   33        begin
+   34          response = request(:post, path, body.to_s, build_request_headers(headers, :post, self.site.merge(path)))
+   35  
+   36        # if the request threw an exception
+   37        rescue
+   38          unless body.blank?
+=> 39            resource_hash = Hash.from_xml(body)
+   40            resource_hash = resource_hash[resource_hash.keys.first]
+   41          end
+   42          resource_hash = {} unless resource_hash.kind_of?(Hash)
+   43          begin
+   44            mocked_response, new_path = Dupe.network.request(:post, path, resource_hash)
+ 
+there is is 
+body is json
+and its doing Hash.from_xml(body)
+and getting parse error!
+
+ok DONE
+new understanding of how dupe works that confused me
+active_resource_extension is monkey patch override of get post.. methods
+they make the normal request call (the same one that iir/mauth now overrides from rodrigo/agi fog)
+and it actually fails and throws an exception - this threw me - 
+was tracking down this exception - but the ex is normal!
+then on catching the exception it then makes the mocks
+and there it was parsing post body as xml instead of json
+
+oh actually theres other xml methods there - might as well jsonify them even though
+tonyas test passed
+the danger is it wont be tested
+ok jsonified all of active_resource_extensions
+
+this line was previous .from_xml - now json/xml according to flag
+          resource_hash = format_to_hash(body)

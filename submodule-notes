@@ -1,0 +1,37 @@
+http://book.git-scm.com/5_submodules.html
+
+http://chrisjean.com/2009/04/20/git-submodules-adding-using-removing-and-updating/
+
+http://help.github.com/submodules/    eh
+
+http://progit.org/book/ch6-6.html
+
+##cd vendors/apps
+##git checkout 
+git submodule add git@mygithost:billboard vendor/apps/billboard
+git status
+m .gitmodules
+git commit -m "add submod"
+git push
+
+make-branch feature/ref-submod
+cd ~/i
+git submodule add git@github.com:mdsol/references.git vendor/apps/references
+git status
+m .gitmodules
+git commit -m "ref submod" vendor/apps/references
+
+cd vendor/apps/references
+rvm gemset create references
+rvm use ruby-1.9.2-p290@references
+gem install bundler
+bundle install
+
+foreman...
+references_service: subcontract --rvm ruby-1.9.2-p290@references --chdir vendor/apps/references --signal INT -- bundle exec railse server -p 3007
+
+
+
+getting a new submod
+git submodule init
+git submodule update
