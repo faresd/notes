@@ -59,3 +59,40 @@ and change line in html that points to javascript
 
 it comes up but no services loading/displaying
 
+javascript errors 
+doing injection - retrieving a javascript from google website and injecting it into running script
+to use to contact services 
+that injected script didnt jibe with my compiled script
+the explorer code had in it embedded javascript that was calling the injected code
+and that call was failing - so the open source and the injection code were out of synch
+
+fixed some stuff live - wresteld with it
+the errors just got worse and more confusing from funny compiled javascript
+
+
+killer:
+the javascript i was seeing locally and javascript on actual site were different!
+broken source and working source were out of synch!! divergence
+
+
+red flags
+forums are dead 
+authors not replying to email
+not much out there on google
+
+took a while to figure out as was learning GWT which is a confusing framework
+
+
+also got dupe working with json - forked the code
+
+and upgraded mauth to ethans mauth client
+
+refactored mauth per ethans request following rodrigos agi fog - 
+thread safe
+only have to do an include for doing mauth headers
+
+
+retrospective
+know when to hold em know when to fold em
+just because its google dont mean it aint crap
+keep learning new stuff

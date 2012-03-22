@@ -264,8 +264,10 @@ Switched to a new branch 'feature/support_mauth'
 that seemed to work
 commit and push at root?
 
+END OF CREATING IMEDIDATA SUBMODULE IN IIR
 
 
+IMEDIDATA GEMSET
 
 make gemset for imedidata!
 cd vendor/apps/imedidata  ??
@@ -374,7 +376,7 @@ yales set up doc
 https://docs.google.com/a/mdsol.com/document/d/1lU2AdayPO4MKxUauc7dNnBGioIQSAZqr0GbcGM5AG4Q/edit?pli=1
 
 
-do we need to int imedidatas submodules?
+do we need to init imedidatas submodules?
 
 
 git submodule init; git submodule update
@@ -969,7 +971,7 @@ https://sites.google.com/a/mdsol.com/knowledgebase/home/departments/engineering/
 time to install authmedidata!
 
 
-Part 3: Install authmedidata
+PART 3: INSTALL AUTHMEDIDATA
 
 
 In a new shell, follow the rvm instructions from before, using ruby 1.9.2-p290 with authmedidata (for example) as the gemset name. Remember to gem update --system and checkout the gemset before the next step.
@@ -986,6 +988,7 @@ Now clone the authmedidata repository, install the gems and run the server:
 Your environment should be fully configured at this point. Navigate to http://localhost:3000 to view the running iMedidata app.
 
 
+AUTHMEDIDATA SUBMODULE
 cd vendor/apps
 how do i make a new submodule i forgot again
 git submodule add git@github.com:mdsol/imedidata.git vendor/apps/imedidata ->
@@ -6758,3 +6761,83 @@ LOAD DATA INFILE '/Users/magibson/Downloads/procedure_frequencies.csv' INTO TABL
 it works - have to load data via navicat - wont load via mysql cmd line
 
 ready to commit pr
+
+
+******************************************
+3/22/12 thurs brooklyn,on train to nj & NJ
+******************************************
+hmmm well note for next time gonna try to work from train
+figure out what piece of work you want to work on
+and the day before work on loading up laptop for that piece
+i want to work on budget service
+but i didnt load the latest budget service on computer
+woops
+also want to work on submodules for iir - which is pretty internetty
+however couldve loaded a submodule help page and then written down proposed
+commands to run once internet is back
+hmmm
+well can still attempt to write budget scenarios as i do have an old budget
+as submodule of iir to use as reference - well lets try
+theres also an iir task but its lowest priority
+darn 
+
+well 1st docs we need to write for grigory
+main difference is loading up data:
+
+DOCS FOR LOADING UP ACTIVITY DATA FROM CSV FILES WITH NAVICAT
+(please correct these directions if there is an error)
+download navicat for mysql - web address - & install & run - i only could find free 30 day trial - 
+Tonya says theres a free lite version - i couldnt find it - 30 day trial ok for now.
+get 3 csv files from tonya or frank or mark
+bring up navicat
+add a connection for mysql db (keep default settings - empty pwd...)
+click on connection gives list of databases
+click on activities_development db
+should see a list of tables that correspond with 3 csv files
+click on a table and click import data
+click/accept csv file (default)
+hit a bunch of conintues - defaults all work
+except for mapping page
+you need to explicitly map each column - skip the id column and otherwise they are in order
+1st field (after id) maps to 1st column in file, 2nd to 2nd...
+hit continue (a few times)
+and finally the csv file will load into the table
+do this for all 3 csv files
+
+ok thats pretty much the navicat directions
+
+SUBMODULES
+so for submodules i can can scan through the notes here and see if theres anything informative
+alias add-locale-update="cd ~/i/config/locales; git fetch; git checkout origin/HEAD; cd ../..; git add config/locales"
+
+#cd vendor/apps/budgets
+cd vendor/apps
+git fetch?
+git checkout origin/HEAD ??? HEAD?
+do we need to check out develop branch
+?git checkout -b develop origin/develop -- isnt that backward?? maybe not
+alias make-branch='git checkout -b '
+cd ../..
+git add vendor/apps/budgets ??
+git commit -m "adding submodule"  ??
+git submodule add budget-branch budgets
+git submodule add origin
+
+see submodule-notes...
+
+HOLMDEL
+ok lets update grigory docs 1st
+
+need to try running fs - which wasnt working before actually
+
+foreman seems to now be barfing on rvm???
+yet its still same 0.3.2 version i think - but could be a different 0.3.2?
+RVM is not a function, selecting rubies with 'rvm use ...' will not work.
+well really its subcontractor - i think?
+
+and foreman is still 0.36
+wierd!
+
+budget service submod done - oh wait havent done with enabled mauth
+well actually i dont think iir is yet calling budget
+just imedidata & need to add for references w eureka

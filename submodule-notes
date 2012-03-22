@@ -35,3 +35,179 @@ references_service: subcontract --rvm ruby-1.9.2-p290@references --chdir vendor/
 getting a new submod
 git submodule init
 git submodule update
+
+
+updating iir to point submodule at a new version/later git commit of submodule
+alias add-locale-update="cd ~/i/config/locales; git fetch; git checkout origin/HEAD; cd ../..; git add config/locales"
+
+#cd vendor/apps/budgets
+cd vendor/apps
+git fetch?
+git checkout origin/HEAD ??? HEAD?
+do we need to check out develop branch
+?git checkout -b develop origin/develop -- isnt that backward?? maybe not
+alias make-branch='git checkout -b '
+cd ../..
+git add vendor/apps/budgets ??
+git commit -m "adding submodule"  ??
+git submodule add budget-branch budgets
+git submodule add origin...? budgets
+
+git submodule add git@github.com:mdsol/imedidata.git vendor/apps/imedidata
+git commit -m "adding imed submodule"
+
+need to rm wrong submodule
+To remove a submodule you need to:
+Delete the relevant line from the .gitmodules file.
+Delete the relevant section from .git/config. -- not in there
+Run git rm --cached path_to_submodule (no trailing slash).
+Commit and delete the now untracked submodule files.
+
+git checkout -b name  origin/or-branch
+is shorthand for
+git branch b-name
+git checkout b-name?
+
+
+git submodule add git@github.com:mdsol/authmedidata.git vendor/apps/authmedidata
+this does git add for you - just need to do git commit & push
+
+
+git submodule status (of balance i think)
+ c729b7c10bbaea038f4d061b04bbd9def7a07c41 vendor/apps/castronaut (branched-v2010.1.0-298-gc729b7c)
+ edf44b715386b677e2264fabcfe3c62f85622639 vendor/apps/imedidata (release2011.1.4.2-675-gedf44b7)
+ 6fee9373e52a6e7591820a9133537169834009eb vendor/plugins/acts_as_auditable (v2010.1.0-15-g6fee937)
+ 0473d6c0867fe5e327ec8084943e7b04c47563c2 vendor/plugins/imedidata_client (balance-release-2011.2.0-34-g0473d6c)
+ 5bb763e5a8059d35e81ad25579558fda37062e05 vendor/plugins/medidata_buttons (v2010.1.0-23-g5bb763e)
+ 75d741453f54c3a9c45368e8edf69732e969363c vendor/plugins/rubycas-client (remotes/origin/session_stores)
+ a77bd87143e8587e90d60fc1fb0ebcbddff3d3fc vendor/plugins/shamus (0.0.1-3-ga77bd87)
+ cf5e4407d1e6127db415fd2f7886a79e6921ec22 vendor/plugins/watirworld (cf5e440)
+
+ah - iir-notes line 2465 - had to update to latest imedidata
+ok how do you update to latest submod?
+
+i think this is cd vendor/apps/imedidata
+git fetch
+git checkout origin/feature/support_mauth
+-Subproject commit 05a233adcf95aa98e56836e5964cb43313468350
++Subproject commit e0662bd1264da8feea09b79ecf0f2d4387078362-dirty
+
+cd ../../..
+git commit -m "new submodule..." ?
+then need to do 
+cp database.yml
+cp cloud.yml
+cd imed
+rake db:migrate
+
+lets try budgets!
+gss
+ f739dfe980294ab9f25de5fcfb7e476c21ea4adc vendor/apps/activities_service (remotes/origin/feature/add_api_path-1-gf739dfe)
+ f5bdd2809b3610065a642650bd460dbb22915921 vendor/apps/authmedidata (release2011.2.0.2)
+ 282953ece7ebf0de104152cbd0f4afcd3bf10f30 vendor/apps/budgets_service (remotes/origin/padded_last_modified-1-g282953e)
+ 3bda320cf05b0b6a00d9d673891c9719d3f2735b vendor/apps/imedidata (release2011.1.6-213-g3bda320)
+ 9cac22a8ebc24e7f5db63f9f9c61c3c24b4e2d35 vendor/apps/references (remotes/origin/feature/mauth-1-g9cac22a)
+ 75d741453f54c3a9c45368e8edf69732e969363c vendor/plugins/rubycas-client (remotes/origin/session_stores)
+
+cd vendor/apps/budgets
+git fetch
+gb -a
+* (no branch)
+  develop
+  remotes/origin/BudgetStatusUpdate
+  remotes/origin/HEAD -> origin/develop
+  remotes/origin/add_filters_tobudget_index
+  remotes/origin/budget_cost
+  remotes/origin/budget_cost_create
+  remotes/origin/budget_cost_final
+  remotes/origin/budget_cost_implementation
+  remotes/origin/budget_cost_scenarios
+  remotes/origin/budget_status_added_to_budget-show
+  remotes/origin/budget_status_history
+  remotes/origin/budget_status_history_create
+  remotes/origin/budget_status_history_final
+  remotes/origin/budget_status_history_url_corrected
+  remotes/origin/budget_status_history_url_merged_with_mauth
+  remotes/origin/budget_status_index
+  remotes/origin/budget_status_to_budget-index
+  remotes/origin/budgetsTest
+  remotes/origin/correct_urls
+  remotes/origin/develop
+
+git checkout origin/develop
+Previous HEAD position was 282953e... Merge pull request #15 from mdsol/padded_last_modified
+HEAD is now at 06b222f... Merge pull request #30 from mdsol/budgetsTest
+
+gss
+ f739dfe980294ab9f25de5fcfb7e476c21ea4adc vendor/apps/activities_service (remotes/origin/feature/add_api_path-1-gf739dfe)
+ f5bdd2809b3610065a642650bd460dbb22915921 vendor/apps/authmedidata (release2011.2.0.2)
++06b222f44e186ef016c40681419759ce30267050 vendor/apps/budgets_service (remotes/origin/HEAD)
+ 3bda320cf05b0b6a00d9d673891c9719d3f2735b vendor/apps/imedidata (release2011.1.6-213-g3bda320)
+ 9cac22a8ebc24e7f5db63f9f9c61c3c24b4e2d35 vendor/apps/references (remotes/origin/feature/mauth-1-g9cac22a)
+ 75d741453f54c3a9c45368e8edf69732e969363c vendor/plugins/rubycas-client (remotes/origin/session_stores)
+
+woops forgot to make branch
+
+make-branch "feature/update-service-submodules"
+
+cd vendor/app/budget-service
+use ruby-1.9.2-p290@budgets   !
+bundle install
+
+this does commit through gitx
+cp config/mauth.yml.example config/mauth.yml (see mauth.yml doc)
+edit config/mauth.yml: put in your personal mauth app_uuid and mauth private key (see above)
+cp config/database.yml.example config/database.yml
+bundle exec rake db:create
+bundle exec rake db:migrate
+
+dont foret the dam gemsets - i can see why their a pain
+
+ok budgets done
+lets do references - yea need to get new eureka stuff
+
+(make branch if havent already)
+gss | g ref
+5: 9cac22a8ebc24e7f5db63f9f9c61c3c24b4e2d35 vendor/apps/references (remotes/origin/feature/mauth-1-g9cac22a)
+cd ~/ir
+rvm use ruby-1.9.2-p290@references
+git fetch
+gb -a
+# NOT develop for references!
+git checkout origin/development
+Previous HEAD position was 9cac22a... Merge pull request #17 from mdsol/feature/mauth
+HEAD is now at f359f5a... Merge pull request #18 from mdsol/api_document_yml_file
+cd ~/i; gss | g ref
+5:+f359f5a32946f62668912ad52ff40bd57b8449ee vendor/apps/references (heads/development)
+cd ~/ir
+cur
+bundle install
+cp config/mauth.yml.example config/mauth.yml 
+edit config/mauth.yml: put in your personal mauth app_uuid and mauth private key (see above)
+OR
+cp ~/random-stuff/iir/mauth.yml config/mauth.yml
+cp config/database.yml.example config/database.yml
+bundle exec rake db:migrate
+test with rs and ifs
+commit!
+crap i forgot to commit and did git submodule update and it wiped it out! oish!
+
+ok reference is in
+
+lets do cost-analysis - tedious stuff updating these buggers
+cost analysis is not yet a submodule!
+
+ok ref is committed
+lets do activities
+
+gss | g act
+1: f739dfe980294ab9f25de5fcfb7e476c21ea4adc vendor/apps/activities_service (remotes/origin/feature/add_api_path-1-gf739dfe)
+iact
+git fetch
+git checkout orign/develop
+Previous HEAD position was f739dfe... Merge pull request #10 from mdsol/feature/add_api_path
+HEAD is now at ec9daf5... Merge pull request #14 from mdsol/feature/mauth
+bundle install
+cp ~/random-stuff/iir/mauth.yml config/mauth.yml
+bundle exec rake db:migrate
+commit
