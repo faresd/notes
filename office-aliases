@@ -1,1 +1,466 @@
-/Users/magibson/.al
+alias realias="source ~/.bash_aliases"
+alias reprof="source ~/.bash_profile"
+alias al=alias
+alias alg="al | g"
+alias re=reprof
+alias m=more
+alias h=head
+alias t=tail
+alias k=kill
+alias g="grep -n"
+#alias gr="g -r"
+function rg { g -rs $1 * 
+}
+alias gr=rg
+## also see ~/.ackrc
+alias ackp="ack --pager 'less -R'"
+alias ak="ack --ignore-dir vendor"
+alias akp="ak --pager 'less -R'"
+alias a5="ak -A 5"
+alias akl="ak -l"
+alias akcode="ak --ignore-dir bin --ignore-dir features --ignore-dir spec --ignore-dir public/stylesheets --ignore-dir coverage"
+alias akc="akcode"
+alias akc5="akcode -A 5"
+alias akcp="akc --pager 'less -R'"
+function akpgOld {
+  t="akcode $@ | m"
+  eval $t
+}
+function ak2old {
+    eval "akc $1 | g $2 | m"
+}
+function ak2 {
+    eval "akc $1.*$2\|$2.*$1"
+}
+function ak2p {
+    eval "akcp $1.*$2\|$2.*$1" 
+}
+alias a2=ak2np
+alias akcl="akc -l"
+alias ack-types="ack --help type | m"
+
+function fnd {
+    find . -name *$1*
+}
+
+alias pd=pushd
+alias e="emacs &"
+alias xe="xemacs &"
+alias dirs="dirs -v"
+alias sc="source ~/.bash_profile"
+alias hs=history
+alias d=dirs
+alias pd2="pd +2"
+alias pd3="pd +3"
+alias pd4="pd +4"
+alias pd5="pd +5"
+alias pd6="pd +6"
+alias pd7="pd +7"
+alias p2="pd +2"
+alias p3="pd +3"
+alias p4="pd +4"
+alias p5="pd +5"
+alias p6="pd +6"
+alias p7="pd +7"
+alias 1="pd +1; d"
+alias 2="p2 ; d"
+alias 3="p3 ; d"
+alias 4="p4 ; d"
+alias 5="p5 ; d"
+alias 6="p6 ; d"
+alias 7="p7 ; d"
+alias 8="pd +8 ; d"
+alias 9="pd +9 ; d"
+alias 10="pd +10 ; d"
+alias 11="pd +11 ; d"
+alias 12="pd +12 ; d"
+alias 13="pd +13 ; d"
+alias 14="pd +14 ; d"
+#alias jg=~/bin/javagrep
+#alias jgc=~/bin/javagrep-context
+#alias jc=jgc
+#alias rg=~/bin/rgrep
+#alias f=~/bin/myfind
+#alias jf=~/bin/javafind
+#alias rs=~/bin/replace-string
+#alias rjs=~/bin/replace-java-string
+#
+alias lsl="ls -l"
+alias lsa="ls -al"
+# sort by size, ls --help better than man ls
+alias lss="ls -lSh"
+# sort by date/time
+alias lsd="lsl -t"
+#
+#alias cu="cvs update"
+#alias cdf="cvs diff"
+#alias df="cvs diff"
+#
+export EDITOR=emacs
+#export CVS_RSH=ssh
+#
+alias ping-seeker="ping seeker.lbl.gov"
+# seeker 131.243.193.58
+alias ping-ip="ping 131.243.193.58"
+alias pi=ping-ip
+alias ping-yahoo="ping yahoo.com"
+alias py=ping-yahoo
+
+
+# git
+alias push="git push origin"
+alias com="git commit -am "
+alias co="git checkout"
+alias gc=co
+alias pull="git pull origin"
+alias gs="git status"
+alias gd="gs; git diff"
+alias gdh="git diff HEAD"
+alias gdc="git diff --cached"
+# diff branch with master
+alias gdm="git diff master"
+# diff local branch with remote branch
+alias gdo="git diff origin"
+alias gb="git branch"
+alias gba="git branch -a"
+# make branch AND switch to it
+alias make-branch="git checkout -b "
+alias stash="git stash"
+alias st-list="stash list"
+alias sl=st-list
+# put msg in with save
+alias stash-save="stash save"
+alias ss=stash-save
+alias stash-apply="stash apply"
+alias stash-pop="stash pop"
+alias sp=stash-pop
+function stash-pop-num {
+  git stash apply stash@{$1}
+  git stash drop stash@{$1}
+}
+alias stash-clear="stash clear"
+alias ga="git add"
+alias resolve-conflict="git add -u"
+alias gl="git log"
+alias grl="git reflog"
+
+####
+###### new medidata stuff
+function imd() {
+	#cd ~/projects/imedidata
+        cd ~/projects/magibson-imedidata
+	rvm use 1.8.7-p249@imedidata
+}
+
+function cas() {
+    cd ~/projects/casmedidata
+    rvm use 1.8.7-p174@casmedidata
+}
+
+function load() {
+    cd ~/projects/mediloader
+    rvm use 1.8.7-p352@mediloader
+}
+function bal() {
+	cd ~/b/
+    rvm use 1.8.7-p174 # @balance # gemset???
+}
+
+function gmc() {
+    cd ~/g/
+    rvm use 1.8.7-p352@gmc
+    #rvm ree@parley #ugandhar insists on not doing this proper
+}
+function docks() {
+    cd ~/projects/docks
+    rvm use 1.8.7-p352@docks
+}
+function rackmauth() {
+    cd ~/projects/rack-mauth
+    #rvm use 1.9.2-p290@rackmauth
+    rvm use 1.8.7-p249@rackmauth
+}
+alias iir='cd ~/iir; rvm use ruby-1.9.2-p290@iir'
+alias bud='cd ~/projects/budgets;  rvm use ruby-1.9.2-p290@budgets'
+
+
+alias rc="rvm current"
+alias current="rvm current"
+alias cur="rvm current"
+alias rvm-dir="rvm gemdir"
+alias pd-rvm-dir="pd `rvm gemdir`"
+
+
+## funny locales
+alias submod="git submodule update; gs"
+alias submod-status="git submodule status"
+alias add-locale-update="cd ~/i/config/locales; git fetch; git checkout origin/HEAD; cd ../..; git add config/locales"
+alias locale-update-cmt="add-locale-update; git commit -m "
+alias locale-update="locale-update-cmt 'update locale'"
+
+# branch
+alias dev="co develop" #; submod"
+alias devt="co development" # for references
+alias auth="feature/api-v2-authenticate"
+alias pa="push feature/api-v2-authenticate"
+alias coauth="co feature/api-v2-authenticate; submod"
+
+
+conf=feature/remove_user_confirm
+function push-branch {
+		 push $1
+}
+alias cconf="co feature/remove_user_confirm; submod"
+#alias pc="push feature/remove_user_confirm"
+alias pc="push-branch $conf"
+alias pullconf="pull feature/remove_user_confirm"
+
+# launch local imedidata - this hangs in shell - background it? but its ctrl-C to shutdown
+alias imed="imd; ~/i/script/server"
+alias run-imed=imed
+# cas is old medidata auth - new one is authmedidata
+alias start-cas="~/c/bin/castronaut"
+alias cs="cas; start-cas"
+
+alias run-auth='cd ~/projects/authmedidata; rvm 1.9.2-p290@authmedidata; rails server'
+
+alias run-jazzhands='cd ~/projects/jazzhands; rvm use 1.8.7-p302@jazzhands; rails server --port 4000'
+
+# rake
+alias be="bundle exec"
+alias rk="bundle exec rake"
+alias gem-rake-list="gem list -d rake"
+alias gem-list="gem list"
+alias gemset-list="rvm gemset list"
+alias rvm-list="rvm list"
+alias gemset-clean-install="rvm gemset empty; gem install bundler; bundle install"
+alias clean-gemset="rvm gemset empty; gem install bundler; bundle install"
+alias bi="bundle install"
+curr="~/i"
+alias cu="cucumber"
+alias icu="cd ~/i; cu"
+alias cuv="cu -p vapir"
+alias all-spec="rk spec"
+alias test-all="rk cruise:features:all"
+alias cuc-validation="cu --tags @VALIDATION,@REVIEW"
+alias cdi="cd ~/i"
+alias cv="cdi; cuc-validation"
+alias cuc-no-draft="cu -p selenium --tags ~@DRAFT,~@WIP"
+alias cu-sel="cu -p selenium"
+alias coverage="rk cruise:coverage"
+alias cov="rk cruise:coverage"
+
+
+# ??
+alias cuc-invites=" cv features/invitations/invitations.feature"
+
+	
+ft=features
+el=$ft/elearning
+override=$el/override.feature
+
+gen=$ft/general
+aud=$gen/audit.feature
+
+tm=$ft/teams
+team=$tm/teams.feature
+
+invit=$ft/invitations
+invsit=$invit/sites.feature
+invf=$invit/invitations.feature
+
+usr=$ft/users
+acc=$usr/accept_invitation.feature
+
+function test-assig {
+	echo  cucumber features/elearning/assignments.feature:$1
+	cu features/elearning/assignments.feature:$1	 		
+}
+
+function test_old {
+  echo cucumber $1:$2
+  # only do : if $2 exists ??
+  cu $1:$2
+}
+function test {
+  c="$1"
+  if [ -n "$2" ]; then
+    c="$c:$2"
+  fi
+  # echo cucumber $1:$2
+  echo "cuc file: " $c
+  # only do : if $2 exists ??
+  cu $c
+}
+## usage: t $whatev line#
+alias t=test
+function over {
+  test $override $1
+}
+function audit { test $aud $1 
+}
+function teams { test $team $1
+} 
+function inv-site { test $invsit $1
+}
+
+dec=feature/decline-invite-confirm
+alias codec="co $dec; submod"
+
+# balance test
+inv=$ft/inventory
+pl=$inv/packlists
+upl=$pl/upload.feature
+function upload { test $upl $1
+} 
+# usage: t $ppr 24
+ppr=$pl/post_processing.feature
+# usage ppro 24
+function ppro { test $ppr $1
+}
+
+# BALANCE
+alias git-balance="git clone git@github.com:mdsol/balance.git"
+lg=$ft/logistics 
+ts=$lg/treatment_schedule
+mn=$ts/manage.feature
+st=$ft/site
+alias cdb="cd ~/b"
+alias cdg="cd ~/g"
+alias update="rk app:update"
+alias migrate-db="rk db:migrate; rk db:seed; rk environment RAILS_ENV=test db:migrate; rk environment  RAILS_ENV=test db:seed"
+alias rt="rk routes"
+alias run-bal="cdb; foreman start"
+alias run-gmc="cdg; echo 'dont forget to launch delayed job';  bundle exec rails server"
+alias run-delay-job-gmc="cdg; script/delayed_job run"
+#Type localhost:3000 into your browser and login with the username balanceuser and password Password3
+alias run=run-gmc
+# make sure to comment out 1st line of foreman, and then run foreman in 2nd console
+alias debug-run-bal="cd ~/b; ./script/server -u -p 3000"
+alias debug-run-gmc="bundle exec rails server --debugger"
+alias grep-run-bal-ps="ps auxwww | g redis-server"
+alias run-imedi-in-bal="cd vendor/apps/imedidata/; ./script/server -p 3001 -e development"
+alias run-imed-bal=run-imedi-in-bal
+alias init-bal="echo 'put fakeweb in Gemfile in imedidata!!!';cdb; ./bin/balance_init"
+alias reset-bal="echo 'put fakeweb in Gemfile in imedidata!!!';cdb; ./bin/balance_reset"
+# better way is to mysqldump and reload, -A is for all dbs
+## if just db change then just run migrations
+alias dump-master="mysqldump -u root -A > master-balance.sql"
+alias load-master="mysql -u root < master-balance.sql" 
+alias db="cd ~/b; script/dbconsole"
+# need to run this if seeding has gotten into a bad state by ctrl-C in the middle of it
+alias seed="RAILS_ENV=test bundle exec rake db:seed"
+
+alias ruby-ps="ps auxw | g ruby"
+alias ps-ruby="ps auxw | g ruby"
+alias psr=ps-ruby
+function rm-bk { 
+   bks=`find . -name *~`;
+   if [ "$bks" != "" ]
+       then rm $bks
+   fi
+   #rm `find . -name *~`;
+   if [ -e dump.rdb ]
+     then rm dump.rdb
+   fi
+}
+#alias rm-bk='rm `find . -name *~`; rm dump.rdb'
+alias bk-bk='mv `find . -name *~` ~/fiddle'
+alias rm-bk-old="rm *~; */*~; rm */*/*~; rm */*/*/*~" # should do find
+alias rb=rm-bk
+
+pass_branch="feature/passing-with-exception"
+blank_br=feature/oqs-for-blank-seqnum
+notes=feature/notes-and-additionalbatchid
+noarm=feature/no-arm-no-treat
+ignorefld=feature/ignore-mapping-field
+ignall=feature/mapping-ignore-all
+ignall2=feature/mapping-ignore-all2
+ie6bug=feature/ie6-href-bug
+reass=feature/reassign-depot-click
+chkdis=feature/check-for-disable-buttons
+rere=feature/reword-remaining
+nofrc=feature/no-force-browsing-mapping
+nochg=feature/no-change-at-while-proc
+igbug=feature/ignore-all-bug
+igbg=feature/ignore-bug
+fmrfc=feature/field-mapper-refac
+fmr2=feature/field-mapper-refac2
+atno=feature/while-at-proc-no-change
+lgsp=feature/long-spinner
+nfb=feature/no-force-map
+rs3=feature/research-s3 # not pushed to server yet wip/research
+ice=feature/int-create-errs
+tcst=feature/tcs-tags
+current_branch=$tcst
+psh="git push origin"
+#alias pb="$psh $current_branch"
+# will push to remote with branch of same name 
+alias pb="$psh HEAD"
+alias coc="co $current_branch; submod"
+alias gdbr="git diff origin/$current_branch"
+alias ms="co master; submod"
+alias fetch-master="git fetch origin master"
+alias merge-master="git merge origin master"
+alias pull-master="pull master"
+alias pm=pull-master
+alias pdev="git pull origin develop"
+alias pdevt="git pull origin development"
+
+alias bk-rebase="mkdir .git/rebase-apply-BAK; cp .git/rebase-apply/* .git/rebase-apply-BAK; rm -rf .git/rebase-apply"
+alias bk-rb="mvdir .git/rebase-apply .git/rebase-apply-BAK"
+alias rebase="git rebase master"
+alias continue-rebase="git rebase --continue"
+
+#alias delete-remote-branch="git push origin :branch_to_delete"
+
+
+
+#If you've messed up the working tree, but haven't yet committed your mistake, 
+#you can return the entire working tree to the last committed state 
+#http://book.git-scm.com/4_undoing_in_git_-_reset,_checkout_and_revert.html
+alias revert-uncommitted="git reset --hard HEAD"
+#revert the most recent commit
+alias revert-last-commit="git revert HEAD"
+# git checkout -b feature/branchname origin/feature/branchname
+alias git-check-out-branch="git checkout -b " #feature/branchname origin/feature/branchname
+alias sc="~/b/script/console"
+#RAILS_ENV=test script/console
+
+alias restart-mysql="sudo /Library/StartupItems/MySQLCOM/MySQLCOM restart"
+
+alias run-iir="foreman start"
+alias fs="foreman start"
+alias fc="foreman check"
+
+alias mysql-iir="mysql -u root imedidata_development"
+alias dump-all-db="mysqldump -u root -A > ~/i/config/imedidata-iir-dev-db-DUMP.sql"
+alias dump-iir-imed-db="mysqldump -u root --databases imedidata_iir_development > ~/i/config/imedidata-iir-dev-db-DUMP.sql"
+alias msq="mysql -u root"
+alias mysql-cost-analysis="mysql -u root cost_analysis_development"
+alias mysql-activities="mysql -u root activity_development"
+
+alias submod-stat="git submodule status"
+alias iir-debug="bundle exec rails server --debugger -p 3000"
+alias iir-imed-debug="cd ~/i/vendor/apps/imedidata; bundle exec script/server -p 3001 --debugger"
+
+alias test-study="cu features/study/list.feature:11"
+alias test-login="cu features/general/page.feature:29"
+alias test-create-budget="cu features/study/show.feature:31"
+
+function f {
+  find . -name $1
+}
+function fnd {
+  find . -name "*$1*"
+}  
+function fd {
+  find . -name "*.$1"
+}
+alias jf="fd jar"
+alias wf="fd war"
+
+alias rs="rails server"
+alias rails-server-debug="rails server --debugger"
+alias rsd="rails server --debugger"
+alias run-budget="cd ~/projects/budgets; rails server"
