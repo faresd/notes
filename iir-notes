@@ -7876,3 +7876,19 @@ testing for eureka?
 
 fix mauth issue?
 deploy with mauth?
+
+************************
+3/28/12 office
+*****************
+
+ok need to repeat and fix isaac nailing of funny thing with key change still suceeding
+and need to do a test sans dupies for the phase dropdown - using mock or webmock or something
+mayube webmock to get a feel for that
+or straigh mocks to get a feel for that
+
+first update to latest
+
+so how do i want to run
+its just reference
+so run ref separate
+oh its just cli with ref
