@@ -1,7 +1,8 @@
 alias realias="source ~/.bash_aliases"
+alias reprof="source ~/.bash_profile"
 alias al=alias
 alias alg="al | g"
-alias re=realias
+alias re=reprof
 alias m=more
 alias h=head
 alias t=tail
@@ -180,6 +181,7 @@ function rackmauth() {
     rvm use 1.8.7-p249@rackmauth
 }
 alias iir='cd ~/iir; rvm use ruby-1.9.2-p290@iir'
+alias bud='cd ~/projects/budgets;  rvm use ruby-1.9.2-p290@budgets'
 
 
 alias rc="rvm current"
@@ -197,7 +199,8 @@ alias locale-update-cmt="add-locale-update; git commit -m "
 alias locale-update="locale-update-cmt 'update locale'"
 
 # branch
-alias dev="co develop"
+alias dev="co develop" #; submod"
+alias devt="co development" # for references
 alias dev-sub="co develop; submod"
 alias auth="feature/api-v2-authenticate"
 alias pa="push feature/api-v2-authenticate"
@@ -225,6 +228,7 @@ alias run-auth='cd ~/projects/authmedidata; rvm 1.9.2-p290@authmedidata; rails s
 alias run-jazzhands='cd ~/projects/jazzhands; rvm use 1.8.7-p302@jazzhands; rails server --port 4000'
 
 # rake
+alias be="bundle exec"
 alias rk="bundle exec rake"
 alias gem-rake-list="gem list -d rake"
 alias gem-list="gem list"
@@ -236,6 +240,7 @@ alias bi="bundle install"
 curr="~/i"
 alias cuc="cd $curr; cucumber"
 alias cu="cucumber"
+alias icu="cd ~/i; cu"
 alias cuv="cu -p vapir"
 alias all-spec="rk spec"
 alias test-all="rk cruise:features:all"
@@ -405,6 +410,7 @@ alias merge-master="git merge origin master"
 alias pull-master="pull master"
 alias pm=pull-master
 alias pdev="git pull origin develop"
+alias pdevt="git pull origin development"
 
 alias bk-rebase="mkdir .git/rebase-apply-BAK; cp .git/rebase-apply/* .git/rebase-apply-BAK; rm -rf .git/rebase-apply"
 alias bk-rb="mvdir .git/rebase-apply .git/rebase-apply-BAK"
@@ -421,6 +427,8 @@ alias continue-rebase="git rebase --continue"
 alias revert-uncommitted="git reset --hard HEAD"
 #revert the most recent commit
 alias revert-last-commit="git revert HEAD"
+# git checkout -b feature/branchname origin/feature/branchname
+alias git-check-out-branch="git checkout -b " #feature/branchname origin/feature/branchname
 alias sc="~/b/script/console"
 #RAILS_ENV=test script/console
 
@@ -437,6 +445,9 @@ alias fc="foreman check"
 alias mysql-iir="mysql -u root imedidata_development"
 alias dump-all-db="mysqldump -u root -A > ~/i/config/imedidata-iir-dev-db-DUMP.sql"
 alias dump-iir-imed-db="mysqldump -u root --databases imedidata_iir_development > ~/i/config/imedidata-iir-dev-db-DUMP.sql"
+alias msq="mysql -u root"
+alias mysql-cost-analysis="mysql -u root cost_analysis_development"
+alias mysql-activities="mysql -u root activity_development"
 
 alias submod-stat="git submodule status"
 alias gss="git submodule status"
@@ -444,10 +455,24 @@ alias iir-debug="bundle exec rails server --debugger -p 3000"
 alias idb="iir-debug"
 alias iir-imed-debug="cd ~/i/vendor/apps/imedidata; rvm use ruby-1.8.7-p249@imedidata; bundle exec script/server -p 3001 --debugger"
 
-alias test-login="cu features/general/page.feature:31"
-alias test-study="cu features/study/list.feature:18"
+alias test-study="cu features/study/list.feature:11"
+alias test-login="cu features/general/page.feature:29"
+alias test-create-budget="cu features/study/show.feature:31"
+
+function f {
+  find . -name $1
+}
+function fnd {
+  find . -name "*$1*"
+}  
+function fd {
+  find . -name "*.$1"
+}
+alias jf="fd jar"
+alias wf="fd war"
 
 alias rs="rails server"
+alias rails-server-debug="rails server --debugger"
 alias rsd="rails server --debugger"
 
 alias ibud="cd ~/ib/; rvm use ruby-1.9.2-p290@budgets"

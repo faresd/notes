@@ -237,6 +237,7 @@ alias gemset-clean-install="rvm gemset empty; gem install bundler; bundle instal
 alias clean-gemset="rvm gemset empty; gem install bundler; bundle install"
 alias bi="bundle install"
 curr="~/i"
+alias cuc="cd $curr; cucumber"
 alias cu="cucumber"
 alias icu="cd ~/i; cu"
 alias cuv="cu -p vapir"
@@ -355,7 +356,7 @@ alias ruby-ps="ps auxw | g ruby"
 alias ps-ruby="ps auxw | g ruby"
 alias psr=ps-ruby
 function rm-bk { 
-   bks=`find . -name *~`;
+   bks=`find . -name "*~"`;
    if [ "$bks" != "" ]
        then rm $bks
    fi
@@ -369,6 +370,9 @@ alias bk-bk='mv `find . -name *~` ~/fiddle'
 alias rm-bk-old="rm *~; */*~; rm */*/*~; rm */*/*/*~" # should do find
 alias rb=rm-bk
 
+function fd {
+  find . -name "*$1*"
+}
 pass_branch="feature/passing-with-exception"
 blank_br=feature/oqs-for-blank-seqnum
 notes=feature/notes-and-additionalbatchid
@@ -427,10 +431,14 @@ alias git-check-out-branch="git checkout -b " #feature/branchname origin/feature
 alias sc="~/b/script/console"
 #RAILS_ENV=test script/console
 
+# i think this is for my office desktop mac
 alias restart-mysql="sudo /Library/StartupItems/MySQLCOM/MySQLCOM restart"
+# for laptop
+alias start-mysql="cd /usr/local/mysql; sudo ./bin/mysqld_safe &"
 
 alias run-iir="foreman start"
 alias fs="foreman start"
+alias ifs="cd ~/i; rvm use ruby-1.9.2-p290@iir; fs"
 alias fc="foreman check"
 
 alias mysql-iir="mysql -u root imedidata_development"
@@ -441,8 +449,10 @@ alias mysql-cost-analysis="mysql -u root cost_analysis_development"
 alias mysql-activities="mysql -u root activity_development"
 
 alias submod-stat="git submodule status"
+alias gss="git submodule status"
 alias iir-debug="bundle exec rails server --debugger -p 3000"
-alias iir-imed-debug="cd ~/i/vendor/apps/imedidata; bundle exec script/server -p 3001 --debugger"
+alias idb="iir-debug"
+alias iir-imed-debug="cd ~/i/vendor/apps/imedidata; rvm use ruby-1.8.7-p249@imedidata; bundle exec script/server -p 3001 --debugger"
 
 alias test-study="cu features/study/list.feature:11"
 alias test-login="cu features/general/page.feature:29"
@@ -463,4 +473,23 @@ alias wf="fd war"
 alias rs="rails server"
 alias rails-server-debug="rails server --debugger"
 alias rsd="rails server --debugger"
-alias run-budget="cd ~/projects/budgets; rails server"
+
+alias ibud="cd ~/ib/; rvm use ruby-1.9.2-p290@budgets"
+alias iact="cd ~/ia; rvm use ruby-1.9.2-p290@activities"
+
+alias cp-mauth="cp ~/random-stuff/iir/mauth.yml config/mauth.yml"
+alias rb19="rvm use ruby-1.9.2-p290"
+
+alias mauth-cli="~/projects/mauth-client/bin/mauth-client"
+alias run-ref="cd ~/r; rvm use ruby-1.9.2-p290@references; rs -p 3007"
+alias test-ref="rb19; MAUTH_CONFIG_YAML=~/r/config/mauth.yml mauth-cli GET http://localhost:3007/v1/phases"
+alias run-budgets="cd ~/bud; rvm use ruby-1.9.2-p290@budgets; rs -p 3005"
+alias test-budgets="rb19; MAUTH_CONFIG_YAML=~/projects/budgets/config/mauth.yml mauth-cli GET http://localhost:3005/v1/budgets/f19a45b4-44ce-45cc-b37f-59ead773211b"
+alias run-cost-analysis="cd ~/ca; rvm use ruby-1.9.2-p290@cost_analysis; rs -p 3008"
+alias run-cost=run-cost-analysis
+alias test-cost="rb19; MAUTH_CONFIG_YAML=~/ca/config/mauth.yml mauth-cli GET 'http://localhost:3008/v1/costs/20f90c2c-6707-11e1-b86c-0800200c9a66?location_uuid=9301b148-6703-11e1-b86c-0800200c9a66&indication_uuid=d371ae28-66fc-11e1-b86c-0800200c9a66&phase_uuid=b4e3fa0c-54cc-4749-a589-7d8808a34453&build_tag=42'"
+alias run-activities="cd ~/a; rvm use ruby-1.9.2-p290@activities; rs -p 3006"
+alias test-activities3="rb19; MAUTH_CONFIG_YAML=~/a/config/mauth.yml mauth-cli GET 'http://localhost:3006/v1/activities?search_term=fee'"
+alias test-activities2="rb19; MAUTH_CONFIG_YAML=~/a/config/mauth.yml mauth-cli GET 'http://localhost:3006/v1/activities?search_term=Radiological'"
+alias test-activities="rb19; MAUTH_CONFIG_YAML=~/a/config/mauth.yml mauth-cli GET 'http://localhost:3006/v1/activities?search_term=Intravascular'"
+alias run-iir="cd ~/i; rvm use ruby-1.9.2-p290@iir; foreman start"
