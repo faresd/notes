@@ -1,0 +1,88 @@
+intro - neglected reveals for 3 reasons - 
+  pith(keep meeting short), technical/backend-no web pages, prep time takes away from coding time
+team in general - myself included - needs to reveal better
+
+i think the order should be:
+0) eureka api doc that ben did
+1)  show eureka - it working - the line of code - simple - and the api doc
+2) do the 4 mauth services
+3) then talk about the alternative of doing manual testing with api explorer - & show api explorer
+4) then mention work on dupe i did - and show dupe example code - my get & tonyas post
+and have discussion of automated testing for eureka
+
+if ben goes before me with api doc then do #3 first. then 1 2 & 4
+
+BEFORE DEMO
+have all 4 services up & running
+have 4 terminals with last command the test command
+have foreman running with services out of procfile - just iir imed auth - test this
+2 windows - 1 with 5 runnings, 1 with 4 tests
+emacs with dupe code ready
+browser - api explorer, iir w phases
+
+
+1) EUREKA
+run-iir
+browser: localhost:3000 
+dropdown of phases
+show studies_controller.rb code
+show config/eureka.yml in iir
+show config/initializers/eureka.rb in iir
+show bens api doc & docs on deploying - trenches
+
+2)MAUTH FOR SERVICES
+have all the services up & running locally
+show test doc:
+https://sites.google.com/a/mdsol.com/knowledgebase/home/departments/engineering/on-demand-portfolio/paas-high-performance-teams/iir/testing-mauth-service
+
+
+REFERENCES
+alias run-ref="cd ~/r; rvm use ruby-1.9.2-p290@references; rs -p 3007"
+alias test-ref="MAUTH_CONFIG_YAML=~/r/config/mauth.yml mauth-cli GET http://localhost:3007/v1/phases"
+run-ref
+test-ref
+
+BUDGETS
+Budget uuid: "f19a45b4-44ce-45cc-b37f-59ead773211b"
+1) run-budgets
+2) test-budgets
+MAUTH_CONFIG_YAML=~/projects/budgets/config/mauth.yml mauth-cli GET http://localhost:3000/v1/budgets/f19a45b4-44ce-45cc-b37f-59ead773211b
+
+COST ANALYSIS
+run-cost-analysis
+test-cost
+
+ACTIVITIES
+run-activities
+test-activites
+
+3)show api explorer - motivate
+http://code.google.com/apis/explorer/
+
+
+4) dupe - put in post - show example of dupe - case for dupe style for eureka - 
+  we need an AUTOMATED testing framework for eureka
+writing tests takes up a lot of developer time
+chad - 70%
+better framework - big win!
+rspec mock will be tedious & consuming
+webmock will force revealing of urls from eureka, and also a little tedious
+dupe!
+3rd party tool
+just xml no json - we are json
+forked/copied it and added in json
+
+ideal eureka mocking:
+
+Eurdupe.define :study do |study|
+    study.uuid  rand(10000).to_s 
+    study.name
+    study.user
+end
+
+study = Eurdupe.create :study, :name => study_name
+
+study = Eurdupe.find(:study) {|s| s.name == study_name }
+
+
+

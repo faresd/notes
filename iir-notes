@@ -6841,3 +6841,1038 @@ wierd!
 budget service submod done - oh wait havent done with enabled mauth
 well actually i dont think iir is yet calling budget
 just imedidata & need to add for references w eureka
+
+
+git rm to remove file
+
+
+eureka! references:
+To Setup Eureka in the Console
+require 'euresource'
+eureka_config = YAML.load_file('config/eureka.yml')[Rails.env]
+mauth_config = YAML.load_file('config/mauth.yml')[Rails.env]
+eureka_config['mauth_config'] = mauth_config
+eureka_config['logger'] = Rails.logger
+ec = Eureka::Client.new(eureka_config)
+
+To Consume Resources In the Console
+
+Euresource.eureka_client = ec
+Euresource::Phase.find(:all)
+
+Make a eureka config file like this for local development of stages as the byoung developer:
+i think want eureka.yml.example
+development:
+  eureka:
+    baseURI: https://eureka-innovate.imedidata.com/
+  stage: byoung
+  resources:
+    phases:
+      stage: byoung
+  apis:
+    mauth:
+      stage: innovate
+      version: v2.0.1
+
+
+these are in
+gem 'mauth-client', :git => 'git@github.com:mdsol/mauth-client.git', :tag => 'v2.0.1'
+gem 'eureka-client', :git => 'git@github.com:mdsol/eureka-client.git', :branch => 'unstable/euresource'
+
+so where should the above code go???
+i guess in initializers
+
+
+**********************
+3/23/12 fri holmdel
+**********************
+
+trying to do eureka 
+oh i do need to start the ref service of course
+
+require 'euresource'
+eureka_config = YAML.load_file('config/eureka.yml')[Rails.env]
+mauth_config = YAML.load_file('config/mauth.yml')[Rails.env]
+eureka_config['mauth_config'] = mauth_config
+eureka_config['logger'] = Rails.logger
+debugger
+ec = Eureka::Client.new(eureka_config)
+Euresource.eureka_client = ec
+
+put that in load_config
+require 'ueresource' returns false? is that what requires return ??
+no idea
+should download source and look at it -
+its a moving target of course
+also should try from rails console i guess like ben
+
+start ref service
+
+uninitialized constant Eureka (NameError)
+
+this seems to be for references - is this happening now?
+To Register a Service (references in this example)
+references_api = YAML.load_file 'config/api_document.yml'
+ec.deploy_apis!([references_api])
+
+i think 1st we have to figure out why Eureka not found
+so lets download source i guess
+
+i think i need a walkthrough from ben to get 2 terminal example working
+
+gem 'eureka-client', :git => 'git@github.com:mdsol/eureka-client.git', :branch => 'unstable/euresource'
+git clone git@github.com:mdsol/eureka-client.git
+git checkout -b unstable/euresource origin/unstable/euresource
+Branch unstable/euresource set up to track remote branch unstable/euresource from origin.
+Switched to a new branch 'unstable/euresource'
+git pull origin unstable/euresource
+From github.com:mdsol/eureka-client
+ * branch            unstable/euresource -> FETCH_HEAD
+Already up-to-date.
+
+
+
+gem environment
+RubyGems Environment:
+  - RUBYGEMS VERSION: 1.8.16
+  - RUBY VERSION: 1.9.2 (2011-07-09 patchlevel 290) [x86_64-darwin11.3.0]
+  - INSTALLATION DIRECTORY: /Users/magibson/.rvm/gems/ruby-1.9.2-p290@activities
+  - RUBY EXECUTABLE: /Users/magibson/.rvm/rubies/ruby-1.9.2-p290/bin/ruby
+  - EXECUTABLE DIRECTORY: /Users/magibson/.rvm/gems/ruby-1.9.2-p290@activities/bin
+  - RUBYGEMS PLATFORMS:
+    - ruby
+    - x86_64-darwin-11
+  - GEM PATHS:
+     - /Users/magibson/.rvm/gems/ruby-1.9.2-p290@activities
+     - /Users/magibson/.rvm/gems/ruby-1.9.2-p290@global
+  - GEM CONFIGURATION:
+     - :update_sources => true
+     - :verbose => true
+     - :benchmark => false
+     - :backtrace => false
+     - :bulk_threshold => 1000
+  - REMOTE SOURCES:
+     - http://rubygems.org/
+
+cur
+ruby-1.9.2-p290@activities
+
+crap im in activities
+im gonna add a .rvmrc
+and make a pr for it
+
+on no im in iir
+
+irb
+1.9.2-p290 :002 > $:
+ => ["/Users/magibson/.rvm/rubies/ruby-1.9.2-p290/lib/ruby/site_ruby/1.9.1", "/Users/magibson/.rvm/rubies/ruby-1.9.2-p290/lib/ruby/site_ruby/1.9.1/x86_64-darwin11.3.0", "/Users/magibson/.rvm/rubies/ruby-1.9.2-p290/lib/ruby/site_ruby", "/Users/magibson/.rvm/rubies/ruby-1.9.2-p290/lib/ruby/vendor_ruby/1.9.1", "/Users/magibson/.rvm/rubies/ruby-1.9.2-p290/lib/ruby/vendor_ruby/1.9.1/x86_64-darwin11.3.0", "/Users/magibson/.rvm/rubies/ruby-1.9.2-p290/lib/ruby/vendor_ruby", "/Users/magibson/.rvm/rubies/ruby-1.9.2-p290/lib/ruby/1.9.1", "/Users/magibson/.rvm/rubies/ruby-1.9.2-p290/lib/ruby/1.9.1/x86_64-darwin11.3.0"] 
+
+["/Users/magibson/.rvm/rubies/ruby-1.9.2-p290/lib/ruby/site_ruby/1.9.1", 
+"/Users/magibson/.rvm/rubies/ruby-1.9.2-p290/lib/ruby/site_ruby/1.9.1/x86_64-darwin11.3.0", 
+"/Users/magibson/.rvm/rubies/ruby-1.9.2-p290/lib/ruby/site_ruby", 
+"/Users/magibson/.rvm/rubies/ruby-1.9.2-p290/lib/ruby/vendor_ruby/1.9.1", 
+"/Users/magibson/.rvm/rubies/ruby-1.9.2-p290/lib/ruby/vendor_ruby/1.9.1/x86_64-darwin11.3.0",
+ "/Users/magibson/.rvm/rubies/ruby-1.9.2-p290/lib/ruby/vendor_ruby", 
+"/Users/magibson/.rvm/rubies/ruby-1.9.2-p290/lib/ruby/1.9.1", 
+"/Users/magibson/.rvm/rubies/ruby-1.9.2-p290/lib/ruby/1.9.1/x86_64-darwin11.3.0"] 
+
+lib/eureka-client/api_deployment.rb
+1:module Eureka
+amongst other places
+and theres a euresource.rb
+ack api_deployment.rb
+
+hmm maybe i should point to local source
+and put debugger in ???
+i dont see why its not picking up Eureka??
+with require
+
+gem 'eureka-client', :git => 'git@github.com:mdsol/eureka-client.git', :branch => 'unstable/euresource', :require => false
+whats require false?
+
+ah i think i got it!
+take out :require => false!
+
+gem 'eureka-client', :git => 'git@github.com:mdsol/eureka-client.git', :branch => 'unstable/euresource'
+
+ah!
+references has a eureka.yml.sample file that needs copying to 
+eureka.yml of course
+cd ~/ir
+cp config/eureka.yml.sample config/eureka.yml
+
+422 Unprocessable Entity (WebDAV) (RFC 4918)
+The request was well-formed but was unable to be followed due to semantic errors.[7]
+
+ec.deploy_apis!([references_api])
+Faraday::Error::ClientError: the server responded with status 422
+	from /Users/magibson/.rvm/gems/ruby-1.9.2-p290@references/gems/faraday-0.7.6/lib/faraday/response/raise_error.rb:8:in `on_complete'
+	from /Users/magibson/.rvm/gems/ruby-1.9.2-p290@references/bundler/gems/eureka-client-0ae8053c09d7/lib/eureka-client.rb:20:in `on_complete'
+	from /Users/magibson/.rvm/gems/ruby-1.9.2-p290@references/gems/faraday-0.7.6/lib/faraday/response.rb:9:in `block in call'
+	from /Users/magibson/.rvm/gems/ruby-1.9.2-p290@references/gems/faraday-0.7.6/lib/faraday/response.rb:62:in `on_complete'
+	from /Users/magibson/.rvm/gems/ruby-1.9.2-p290@references/gems/faraday-0.7.6/lib/faraday/response.rb:8:in `call'
+	from /Users/magibson/.rvm/gems/ruby-1.9.2-p290@references/gems/faraday_middleware-0.8.6/lib/faraday_middleware/response_middleware.rb:30:in `call'
+	from /Users/magibson/.rvm/gems/ruby-1.9.2-p290@references/gems/faraday_middleware-0.8.6/lib/faraday_middleware/request/encode_json.rb:21:in `call'
+	from /Users/magibson/.rvm/gems/ruby-1.9.2-p290@references/gems/faraday-0.7.6/lib/faraday/connection.rb:210:in `run_request'
+	from /Users/magibson/.rvm/gems/ruby-1.9.2-p290@references/gems/faraday-0.7.6/lib/faraday/connection.rb:98:in `post'
+	from /Users/magibson/.rvm/gems/ruby-1.9.2-p290@references/bundler/gems/eureka-client-0ae8053c09d7/lib/eureka-client.rb:70:in `block in deploy_apis!'
+	from /Users/magibson/.rvm/gems/ruby-1.9.2-p290@references/bundler/gems/eureka-client-0ae8053c09d7/lib/eureka-client.rb:69:in `map'
+	from /Users/magibson/.rvm/gems/ruby-1.9.2-p290@references/bundler/gems/eureka-client-0ae8053c09d7/lib/eureka-client.rb:69:in `deploy_apis!'
+	from (irb):12
+	from /Users/magibson/.rvm/gems/ruby-1.9.2-p290@references/gems/railties-3.1.1/lib/rails/commands/console.rb:45:in `start'
+	from /Users/magibson/.rvm/gems/ruby-1.9.2-p290@references/gems/railties-3.1.1/lib/rails/commands/console.rb:8:in `start'
+	from /Users/magibson/.rvm/gems/ruby-1.9.2-p290@references/gems/railties-3.1.1/lib/rails/commands.rb:40:in `<top (required)>'
+	from script/rails:6:in `require'
+	from script/rails:6:in `<main>'1.9.2p290 :013 > 
+
+
+    def deploy_apis!(apis)
+      apis.map do |api|
+        connection.post('apis', api)   # line 70 see above trace
+
+wait i think i need to launch on 3007 references
+3 terminals???
+
+hmmmm total impasse
+not sure what to do next ???????
+what the hell to do with 422
+i guess lets study stack trace?
+maybe step through with local source gem? - or debugger in gem source
+we should look at that api and make sure its well formed
+
+ pp [references_api]
+[{"name"=>"references",
+  "version"=>"v1.0.0",
+  "title"=>"Global reference data for the Medidata Platform",
+  "description"=>"Enumerations for study phases, indications and countries.",
+  "documentationLink"=>
+   "https://sites.google.com/a/mdsol.com/knowledgebase/home/departments/engineering/on-demand-portfolio/services/medidata-services/phile-service",
+  "labels"=>[],
+  "preferred"=>true,
+  "protocol"=>"rest",
+  "basePath"=>"/v1/",
+  "resources"=>
+   {"phases"=>
+     {"methods"=>
+       {"index"=>
+         {"id"=>"phases.index",
+          "path"=>"phases.json",
+          "httpMethod"=>"GET",
+          "description"=>"A list of phases."}}},
+    "indications"=>
+     {"methods"=>
+       {"index"=>
+         {"id"=>"indications.index",
+          "path"=>"indications.json",
+          "httpMethod"=>"GET",
+          "description"=>"A list of indications.",
+          "parameters"=>
+           {"search_term"=>
+             {"type"=>"string",
+              "description"=>
+               "A 2+ character search term that filters by indication code and/or the short description",
+              "required"=>false,
+              "location"=>"query"}}},
+        "show"=>
+         {"id"=>"indications.show",
+          "path"=>"indications/{uuid}.json",
+          "httpMethod"=>"GET",
+          "description"=>"Gets a single indication",
+          "parameters"=>
+           {"uuid"=>
+             {"type"=>"string",
+              "description"=>"UUID of the indication",
+              "required"=>true,
+              "location"=>"path"}}}}},
+    "countries"=>
+     {"methods"=>
+       {"index"=>
+         {"id"=>"countries.index",
+          "path"=>"countries.json",
+          "httpMethod"=>"GET",
+          "description"=>"A list of countries with 3 digit ISO code.",
+          "parameters"=>
+           {"search_term"=>
+             {"type"=>"string",
+              "description"=>
+               "A 3+ character search term that filters by country name and abbreviation",
+              "required"=>false,
+              "location"=>"query"}}}}}}}]
+ => [{"name"=>"references", "version"=>"v1.0.0", "title"=>"Global reference data for the Medidata Platform", "description"=>"Enumerations for study phases, indications and countries.", "documentationLink"=>"https://sites.google.com/a/mdsol.com/knowledgebase/home/departments/engineering/on-demand-portfolio/services/medidata-services/phile-service", "labels"=>[], "preferred"=>true, "protocol"=>"rest", "basePath"=>"/v1/", "resources"=>{"phases"=>{"methods"=>{"index"=>{"id"=>"phases.index", "path"=>"phases.json", "httpMethod"=>"GET", "description"=>"A list of phases."}}}, "indications"=>{"methods"=>{"index"=>{"id"=>"indications.index", "path"=>"indications.json", "httpMethod"=>"GET", "description"=>"A list of indications.", "parameters"=>{"search_term"=>{"type"=>"string", "description"=>"A 2+ character search term that filters by indication code and/or the short description", "required"=>false, "location"=>"query"}}}, "show"=>{"id"=>"indications.show", "path"=>"indications/{uuid}.json", "httpMethod"=>"GET", "description"=>"Gets a single indication", "parameters"=>{"uuid"=>{"type"=>"string", "description"=>"UUID of the indication", "required"=>true, "location"=>"path"}}}}}, "countries"=>{"methods"=>{"index"=>{"id"=>"countries.index", "path"=>"countries.json", "httpMethod"=>"GET", "description"=>"A list of countries with 3 digit ISO code.", "parameters"=>{"search_term"=>{"type"=>"string", "description"=>"A 3+ character search term that filters by country name and abbreviation", "required"=>false, "location"=>"query"}}}}}}}] 
+
+
+
+
+Ethan Thiel
+11:07 AM (11 minutes ago)
+
+to me 
+Eureka does return the error, it just doesn't show up by default in the faraday message. 
+
+replace
+
+ec.deploy_apis!([references_api])
+
+with
+
+error = (ec.deploy_apis!([references_api]) rescue $!)
+or
+
+
+and inspect error.response 
+
+the response body should tell you what is wrong 
+
+change require 'euresource' to 'eureka-client'
+
+pp error.response
+{:status=>422,
+ :headers=>
+  {"content-type"=>"application/json",
+   "connection"=>"close",
+   "status"=>"422",
+   "x-powered-by"=>"Phusion Passenger (mod_rails/mod_rack) 3.0.9",
+   "content-length"=>"108",
+   "x-mws-authentication"=>
+    "MWS 81e3062f-10d5-4e6e-b9f7-ffef3444d3a5:ibumgOvgpJm5YyW5KzoTEW6z8zn8n7WROudi17FdRH1e081aYjjlLorZIJT8jJRzx4Ie0aHEKBvfwXS/H6wkEXAYZqpUFq+Z7BjwhRHVSPkihowQ/Z6Ks+cdYdU5VgKB3zse2ak6HBOngeV1f59iZS2LEwOev9muzMDarQq0zUov2k63TGeL+4qKl4+lNsjegXjPpnM6ZcNWCnHR5kFYma05LW77y1LEd0SbijOXDK/TX5qTJ2qZ41cF7o6FGsrI2Vl6dymOxTeeUpnSM2HpkjyH7VAW0+9c9t6V9BfXQmkUGFfjB3LRH7QkSJSjs6LgrChIdlnjFGpZK0K11qXWhg==",
+   "x-mws-time"=>"1332516241",
+   "server"=>"nginx/1.0.6 + Phusion Passenger 3.0.9 (mod_rails/mod_rack)"},
+ :body=>
+  "{\n  \"errors\": {\n    \"version\": [\n      \"API must have a unique combination of name and version\"\n    ]\n  }\n}\n"}
+ => {:status=>422, :headers=>{"content-type"=>"application/json", "connection"=>"close", "status"=>"422", "x-powered-by"=>"Phusion Passenger (mod_rails/mod_rack) 3.0.9", "content-length"=>"108", "x-mws-authentication"=>"MWS 81e3062f-10d5-4e6e-b9f7-ffef3444d3a5:ibumgOvgpJm5YyW5KzoTEW6z8zn8n7WROudi17FdRH1e081aYjjlLorZIJT8jJRzx4Ie0aHEKBvfwXS/H6wkEXAYZqpUFq+Z7BjwhRHVSPkihowQ/Z6Ks+cdYdU5VgKB3zse2ak6HBOngeV1f59iZS2LEwOev9muzMDarQq0zUov2k63TGeL+4qKl4+lNsjegXjPpnM6ZcNWCnHR5kFYma05LW77y1LEd0SbijOXDK/TX5qTJ2qZ41cF7o6FGsrI2Vl6dymOxTeeUpnSM2HpkjyH7VAW0+9c9t6V9BfXQmkUGFfjB3LRH7QkSJSjs6LgrChIdlnjFGpZK0K11qXWhg==", "x-mws-time"=>"1332516241", "server"=>"nginx/1.0.6 + Phusion Passenger 3.0.9 (mod_rails/mod_rack)"}, :body=>"{\n  \"errors\": {\n    \"version\": [\n      \"API must have a unique combination of name and version\"\n    ]\n  }\n}\n"} 
+
+
+Euresource::Phase.find(:all)
+
+ => [#<Euresource::Phase:0x00000106b51420 @attributes={"uuid"=>"5b660b29-2413-4a4e-a0b0-b0f351b29f73", "name"=>"Phase 1"}, @options={:loaded_show=>false, :persisted=>true}>, #<Euresource::Phase:0x00000106b513d0 @attributes={"uuid"=>"b4e3fa0c-54cc-4749-a589-7d8808a34453", "name"=>"Phase 2"}, @options={:loaded_show=>false, :persisted=>true}>, #<Euresource::Phase:0x00000106b51380 @attributes={"uuid"=>"e991d87b-d8c9-45d7-b344-77937670ef52", "name"=>"Phase 3"}, @options={:loaded_show=>false, :persisted=>true}>, #<Euresource::Phase:0x00000106b51330 @attributes={"uuid"=>"43d5aedb-cce4-419e-82a4-ef18474f60fc", "name"=>"Phase 4"}, @options={:loaded_show=>false, :persisted=>true}>, #<Euresource::Phase:0x00000106b512e0 @attributes={"uuid"=>"fcf189f0-99ae-41df-80b5-8ff1a29aa051", "name"=>"Unknown"}, @options={:loaded_show=>false, :persisted=>true}>] 
+
+
+it works!
+i think the key was 2 things
+on client i changed stage to magibson
+and it wasnt finding anything for magibson
+so i was trying to register with magibson
+but finally got error and there was name clash
+already a references with that version
+so changed name to references-test-magibson
+and it deployed and then was found
+
+i think it wouldve worked also if i did stage byoung i think it wouldve found
+bens deployment - not positive
+could try it i suppose
+
+
+so whats my next step
+
+i guess its basiacally a model?
+so make a controller that accesses it?
+or make a model that accesses it
+
+so try no controller
+so where is phase called
+i guess should study page just list the phases for now
+eventually will be a drop down list
+
+setup should go in eureka.rb initialize file
+
+i need to either comment our ref scv or change port in procfile or stop it in other term
+and config it up - i dont think its configged up in my submod
+
+nmap -p 23 costanalysis-sandbox-94aa1353.cz4lsbnwubdn.us-east-1.rds.amazonaws.com
+
+taking out old appuuid in imedidata
+    :app_uuid: 63566d60-4c62-11e1-b86c-0800200c9a66 
+i dont think it works anymore
+putting in mine
+oh need to change private key too
+
+old imedidata private key:
+    :private_key: | 
+                    -----BEGIN RSA PRIVATE KEY-----
+                    MIIEpAIBAAKCAQEAtJQ15Qxju7lrXyXL8eRHQNa4KvG1Lief+reSwhVTAUTWqk1L
+                    RcZGh+fpu5IYG2LnL+nRiwBOirqTgsTt4EblTp7k8uzdawPg4Zfk7Y20OZ/F+LrQ
+                    /0JF2fGtdZvqyH4IY6GHtPvBEBZ5ERM5pJMMgk7WGp6ocNhpwwaE/ATAOTrnNAFt
+                    X2MwQ5e0IihZYywM0iDuddBVI5pqtgE6WvJQ2KFk//9VZqYax2kxDOT/QSIJDQht
+                    uP9Ruc4Km+T8X27GVL6Vm1QX65wlOiVGGL67/FLuluDkBqIeUaNPYstFxBP8MEoH
+                    qhYf7D5vHV0JItLmnGTPn0p7fqx9rNtcvR2ERQIDAQABAoIBAFTQ4FeK8DU2LAZu
+                    vFILRKRhtfMFwHHDTtL18kqStX/9E06+K0LElFA1T4U4Y3ZJiAjrK+674Cgs5igf
+                    0xLqeb3px+OJ+Z3QHooXTAF/80y1jMj9Bjk+qYxqhWyeJTKyb8JMFm+dZ9rkk0y/
+                    2O1B3DhASzQJnVgTbemaYE/280ptY6j8yIL8zJCDS77LexWx0uySwXINF+ZhRs2Q
+                    qpshGg4ijL07+PpzSr4KF05vewk93FO0j87AHq27FHO06aguWB81ubsyFHkalQhP
+                    AnCF2db6yD9r1spfIdgR2+QTjZ8JtUjq16SSh+lhGEr7CtapJvjOaibvsPigQw7N
+                    mjCC3ikCgYEA5+fl4uI8sp+4cpzvz3c7mRcUuKSirBsVYChQpdNUlzw09+ebvzS4
+                    jvxNXWnPD49mfKo1eifpGckVqMJlUQexVtDHsLhs7sYuDCZhDUOh9xExm/B89sQT
+                    jQ4PfeX+M9Xyasb6Ke4f2HHX/TXOlMF4daECkdTKlTuHiVtryMBxATMCgYEAx1cl
+                    9Rviv3aIC+UAK5GlsqI72OXdjkIkwk8WUswlm4tz513xVQon6xcIJ7rIA79uSo5L
+                    qXBR+CdUJlAuXzy6UpxiEeeLkKTluNjrEhkOYOnT3nMPVEAYiYUDtaCqqJ8DV85G
+                    GQ1++4x9Fdb2UCwpJNYDqFkYsR3tBReQVkb7VKcCgYAStVOHXSb2Zgo0PNLf0sed
+                    Dw6d4rI43ip4SmhPKGBPnwzK3wVihHdLGbGIEqwgnjnvXq/XvfaBHQbBSYVw5wT4
+                    cvlZGVe4X4aBdmsn7cfYLavp35nFMoY9P+AiEPbT6bOXx5uQ3GP3Sx/Yjomu2HjG
+                    TInvh9Ib/eRuQVDNrjCvnwKBgQCZZj4mhkQS9OMyzBI6dQWfFuuZOSMrM0lYYkYa
+                    h1E1hrY1yPxLZdpcNkgnUrxS7gCwzRn6lR3vKky+gxt8XJ5BrmhlwNqM/+hsPDmB
+                    ntiKycYqPD8CpaR8R2kYX0CVLHEFJA6bfuBGMdGceeTow2MSHsOHzLCMtCvOrFh9
+                    nHgSpwKBgQCF6vCKSV9iwbrayJq9WhUkvAeIKx8Ip5BskmqrbWXBXT1GL7JEINQw
+                    7uM1WCa1Bvc418HjR32VjOpch/LHEVlbiLQmqcjXUJU38WRpkEvUeQtbFcKCxi8u
+                    g3WJze/uHz/BG4tOGLEYD/HnYVOBkW75GzJbY7vFWAnYJ7V1652+DQ==
+                    -----END RSA PRIVATE KEY-----
+
+dam its not working!!!
+
+Missing required attributes to sign: [:app_uuid]
+on object to sign: #<MAuth::Request:0x00000107f3d0d8 @attributes_for_signing={:verb=>"GET", :request_url=>"/api/v2/users/307602f2-469f-11e1-ad6f-00261824db2f.json", :body=>nil}>
+Rails.root: /Users/magibson/projects/iir
+
+Application Trace | Framework Trace | Full Trace
+lib/active_resource/extend/mauth_signer.rb:42:in `mauth_headers'
+lib/active_resource/extend/mauth_signer.rb:17:in `request'
+app/models/user.rb:24:in `find_user'
+app/controllers/application_controller.rb:28:in `get_current_user'
+
+dam its timing out argh!
+
+hmm maybe put old imedidata keys back in there??
+
+
+maybe mauth is down??
+should try out cli stuff?
+
+oh i didnt do cli on this computer
+
+ActiveResource::ResourceNotFound (Failed.  Response code = 404.  Response message = Not Found.):
+  lib/active_resource/extend/mauth_signer.rb:27:in `request'
+  app/models/user.rb:24:in `find_user'
+  app/controllers/application_controller.rb:28:in `get_current_user'
+
+
+wierd error - not sure what to do
+resource not found??
+thats muath failing
+
+
+gem install bundler -v=1.0.0
+
+
+*************************
+3/26/12 monday holmdel
+************************
+
+ok my computer went to hell on friday
+#mysql stopped working - down
+#had to reboot - funkiness
+cli wasnt working
+mauth wasnt working
+ 
+we need to set up for demo minimally!
+
+1st mysql
+
+http://www.razorsql.com/articles/mysql_mac_os_x.html
+cd /usr/local/mysql
+
+Then type the following:
+
+sudo ./bin/mysqld_safe &
+
+that worked - cool
+
+ok lets get cli working
+got the bundle install fix from ugandhar
+
+
+lets start with budget 
+actually lets start with refs
+alias cp-mauth="cp ~/random-stuff/iir/mauth.yml config/mauth.yml"
+
+with mauth disabled curl works:
+curl -s http://localhost:3000/v1/phases
+[{"uuid":"5b660b29-2413-4a4e-a0b0-b0f351b29f73","name":"Phase 1"},{"uuid":"b4e3fa0c-54cc-4749-a589-7d8808a34453","name":"Phase 2"},{"uuid":"e991d87b-d8c9-45d7-b344-77937670ef52","name":"Phase 3"},{"uuid":"43d5aedb-cce4-419e-82a4-ef18474f60fc","name":"Phase 4"},{"uuid":"fcf189f0-99ae-41df-80b5-8ff1a29aa051","name":"Unknown"}]
+
+with mauth enabled get unauthorized
+progress
+
+now need to try cli
+
+alias mauth-cli="~/projects/mauth-client/bin/mauth-client"
+alias test-ref="MAUTH_CONFIG_YAML=~/r/config/mauth.yml mauth-cli GET http://localhost:3000/v1/phases"
+
+holy crap it worked!
+
+test-ref
+* connect to localhost on port 3000
+> GET /v1/phases HTTP/1.1
+> X-MWS-Authentication: MWS 2058f324-59b0-452f-a4b2-065e30e7768a:sDMIolGuZVUvG82+UghKAUIfUNi2rlYabsi4A1Pv17TNPrlUeknEoiJDt//AeZteuHBT7IOy0RaxBMPxk5KCddQoIgrme9232zMBODjsSpoCC1J4oK4Y876/WUKBjQrb3+qYeV7k3YPuNLMAUhcmBWlq4amUt/WVpbUsTZBsvST1QYYyLGsO5ZBWr8xUYWfHOpF3YuSLM469mGks05zZXQZG78KtAVg05AIjOlXrzwWSGPlKRPY5oHVYUa513ln7+cyVEEZIpizKiiFDciF6enfVB/kNTZQadPOs13WJiaqzKcdshIfwk8rJv1GJd9byqwjRlZ+6JsIzk9xNu8u3HA==
+> X-MWS-Time: 1332770756
+> 
+< HTTP/1.1 200
+< content-type: application/json; charset=utf-8
+< date: Mon, 26 Mar 2012 14:05:57 GMT
+< x-rack-cache: miss
+< x-mws-authentication: MWS 2058f324-59b0-452f-a4b2-065e30e7768a:MCmlAXzWrc/weuXoKjJtVS3utLZ/ahopWkW6qxf3U1H6Yvosx+fbW9tVlw0A1SIAxIVK+BVipVgTyg0+ulGcl+LH6deyG2AiFlMevb9zkcRgSxtjaox7dj47F54QIIyM80qiDPKAKPlFPLof2WVA0+dZUC+OuBkEJde+hlCl7LV44ZscROeYBmBm23wRrvWKAEPkRbprfC6syMS2u+ZNCZFOBnL5GZFhD4eu0pRfs1gv30zLcQY5VZe7fP+HfCk0391IpZhFXQ3bm4ZBQj8g+VS0yt+NxpG3DWL4aievSD9j0nP0lziIYP0ClzHjHVCM3scqK3Q7QIe4JQQpx1kRAw==
+< x-mws-time: 1332770757
+< x-ua-compatible: IE=Edge
+< etag: "3e19dc4263cfa1f42f7ae848eca363df"
+< cache-control: max-age=0, private, must-revalidate
+< x-runtime: 0.928093
+< content-length: 326
+< server: WEBrick/1.3.1 (Ruby/1.9.2/2011-07-09)
+< connection: close
+< 
+< [{"uuid":"5b660b29-2413-4a4e-a0b0-b0f351b29f73","name":"Phase 1"},{"uuid":"b4e3fa0c-54cc-4749-a589-7d8808a34453","name":"Phase 2"},{"uuid":"e991d87b-d8c9-45d7-b344-77937670ef52","name":"Phase 3"},{"uuid":"43d5aedb-cce4-419e-82a4-ef18474f60fc","name":"Phase 4"},{"uuid":"fcf189f0-99ae-41df-80b5-8ff1a29aa051","name":"Unknown"}]
+
+lets retry iir now
+what do i need to do
+also try with dev - and see if new eureka stuff is mucking it up
+
+i think just rs in iir?
+im blanking on how this was tested 
+must be cli right
+or going to website?
+
+iir rs in 1 terminal
+fs in another
+ref in a 3rd
+then try on web 
+is what i was doing
+can also try with cli? well actually that wouldnt test eureka
+eureka hides the urls
+maybe with rails console
+should try out rails console and make sure it works that way
+
+in iir ref subdomule
+rs -p 3007
+i think
+
+ActiveResource::ResourceNotFound in Investigator::StudiesController#index
+
+Failed.  Response code = 404.  Response message = Not Found.
+Rails.root: /Users/magibson/projects/iir
+
+Application Trace | Framework Trace | Full Trace
+lib/active_resource/extend/mauth_signer.rb:27:in `request'
+app/models/user.rb:24:in `find_user'
+app/controllers/application_controller.rb:28:in `get_current_user'
+
+not working
+
+
+Started GET "/?ticket=ST-1332771388r4B71A602C8C3B91F44" for 127.0.0.1 at 2012-03-26 10:16:42 -0400
+that seems suspicious
+
+
+Started GET "/?ticket=ST-1332771388r4B71A602C8C3B91F44" for 127.0.0.1 at 2012-03-26 10:16:42 -0400
+  Processing by Investigator::StudiesController#index as HTML
+  Parameters: {"ticket"=>"ST-1332771388r4B71A602C8C3B91F44"}
+Request contains ticket "ST-1332771388r4B71A602C8C3B91F44".
+Guessed service url: "http://localhost:3000/"
+Requesting CAS response for URI http://localhost:4567/proxyValidate?service=http%3A%2F%2Flocalhost%3A3000%2F&ticket=ST-1332771388r4B71A602C8C3B91F44
+CAS server responded with #<Net::HTTPClientError 422  readbody=true>:
+<cas:serviceResponse xmlns:cas="http://www.yale.edu/tp/cas">
+<cas:authenticationFailure code="INVALID_TICKET">The ticket 'ST-1332771388r4B71A602C8C3B91F44' has already been used up.</cas:authenticationFailure>
+</cas:serviceResponse>
+Ticket "ST-1332771388r4B71A602C8C3B91F44" failed validation -- INVALID_TICKET: The ticket 'ST-1332771388r4B71A602C8C3B91F44' has already been used up.
+Guessed service url: "http://localhost:3000/"
+Generated login url: http://localhost:4567/login?service=http%3A%2F%2Flocalhost%3A3000%2F
+Redirecting to "http://localhost:4567/login?service=http%3A%2F%2Flocalhost%3A3000%2F"
+Redirected to http://localhost:4567/login?service=http%3A%2F%2Flocalhost%3A3000%2F
+Completed 302 Found in 135ms
+
+
+Started GET "/?ticket=ST-1332771403rFF9EC6F82499A02DE0" for 127.0.0.1 at 2012-03-26 10:16:43 -0400
+  Processing by Investigator::StudiesController#index as HTML
+  Parameters: {"ticket"=>"ST-1332771403rFF9EC6F82499A02DE0"}
+Request contains ticket "ST-1332771403rFF9EC6F82499A02DE0".
+Guessed service url: "http://localhost:3000/"
+Requesting CAS response for URI http://localhost:4567/proxyValidate?service=http%3A%2F%2Flocalhost%3A3000%2F&ticket=ST-1332771403rFF9EC6F82499A02DE0
+CAS server responded with #<Net::HTTPOK 200 OK  readbody=true>:
+<cas:serviceResponse xmlns:cas="http://www.yale.edu/tp/cas">
+<cas:authenticationSuccess>
+  <cas:user>superadmin</cas:user>
+  <user_id>1</user_id>
+  <user_uuid>307602f2-469f-11e1-ad6f-00261824db2f</user_uuid>
+</cas:authenticationSuccess>
+</cas:serviceResponse>
+Ticket "ST-1332771403rFF9EC6F82499A02DE0" for service "http://localhost:3000/" belonging to user "superadmin" is VALID.
+Extra user attributes provided along with ticket "ST-1332771403rFF9EC6F82499A02DE0": {"user_id"=>1, "user_uuid"=>"307602f2-469f-11e1-ad6f-00261824db2f"}.
+  SQL (0.1ms)  BEGIN
+  SQL (0.2ms)  INSERT INTO `cas_sessions` (`service_ticket`, `session_id`) VALUES (?, ?)  [["service_ticket", "ST-1332771403rFF9EC6F82499A02DE0"], ["session_id", "6f08f87f63c2e64d6ea284bcfeab80e3"]]
+   (0.5ms)  COMMIT
+Wrote service session lookup file to #<CasSession id: 30, service_ticket: "ST-1332771403rFF9EC6F82499A02DE0", session_id: "6f08f87f63c2e64d6ea284bcfeab80e3"> with session id 6f08f87f63c2e64d6ea284bcfeab80e3.
+Completed 500 Internal Server Error in 733ms
+
+ActiveResource::ResourceNotFound (Failed.  Response code = 404.  Response message = Not Found.):
+  lib/active_resource/extend/mauth_signer.rb:27:in `request'
+  app/models/user.rb:24:in `find_user'
+  app/controllers/application_controller.rb:28:in `get_current_user'
+
+Rendered /Users/magibson/.rvm/gems/ruby-1.9.2-p290@iir/gems/actionpack-3.1.3/lib/action_dispatch/middleware/templates/rescues/_trace.erb (0.9ms)
+Rendered /Users/magibson/.rvm/gems/ruby-1.9.2-p290@iir/gems/actionpack-3.1.3/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (1.1ms)
+Rendered /Users/magibson/.rvm/gems/ruby-1.9.2-p290@iir/gems/actionpack-3.1.3/lib/action_dispatch/middleware/templates/rescues/diagnostics.erb within rescues/layout (3.8ms)
+
+
+Started GET "/favicon.ico" for 127.0.0.1 at 2012-03-26 10:16:43 -0400
+
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+
+Rendered /Users/magibson/.rvm/gems/ruby-1.9.2-p290@iir/gems/actionpack-3.1.3/lib/action_dispatch/middleware/templates/rescues/routing_error.erb within rescues/layout (0.5ms)
+
+
+oh i think things might be getting funky with cas and eureka client?? not sure
+
+
+i should go to dev and see if it all works
+and what this message looks like there
+
+
+mauth.yml disable mauth is false as it should be
+
+dam it doesnt work in dev - argh! whats going on
+so that means for better or worse that it has nothing to do with eureka
+it seems to be mauth
+
+
+
+
+Started GET "/?ticket=ST-1332771403rFF9EC6F82499A02DE0" for 127.0.0.1 at 2012-03-26 10:31:51 -0400
+  Processing by Investigator::StudiesController#index as HTML
+  Parameters: {"ticket"=>"ST-1332771403rFF9EC6F82499A02DE0"}
+Request contains ticket "ST-1332771403rFF9EC6F82499A02DE0".
+Guessed service url: "http://localhost:3000/"
+Requesting CAS response for URI http://localhost:4567/proxyValidate?service=http%3A%2F%2Flocalhost%3A3000%2F&ticket=ST-1332771403rFF9EC6F82499A02DE0
+CAS server responded with #<Net::HTTPClientError 422  readbody=true>:
+<cas:serviceResponse xmlns:cas="http://www.yale.edu/tp/cas">
+<cas:authenticationFailure code="INVALID_TICKET">The ticket 'ST-1332771403rFF9EC6F82499A02DE0' has already been used up.</cas:authenticationFailure>
+</cas:serviceResponse>
+Ticket "ST-1332771403rFF9EC6F82499A02DE0" failed validation -- INVALID_TICKET: The ticket 'ST-1332771403rFF9EC6F82499A02DE0' has already been used up.
+Guessed service url: "http://localhost:3000/"
+Generated login url: http://localhost:4567/login?service=http%3A%2F%2Flocalhost%3A3000%2F
+Redirecting to "http://localhost:4567/login?service=http%3A%2F%2Flocalhost%3A3000%2F"
+Redirected to http://localhost:4567/login?service=http%3A%2F%2Flocalhost%3A3000%2F
+Completed 302 Found in 632ms
+
+
+Started GET "/?ticket=ST-1332772312rD0CF39A0AB5716EA81" for 127.0.0.1 at 2012-03-26 10:31:52 -0400
+  Processing by Investigator::StudiesController#index as HTML
+  Parameters: {"ticket"=>"ST-1332772312rD0CF39A0AB5716EA81"}
+Request contains ticket "ST-1332772312rD0CF39A0AB5716EA81".
+Guessed service url: "http://localhost:3000/"
+Requesting CAS response for URI http://localhost:4567/proxyValidate?service=http%3A%2F%2Flocalhost%3A3000%2F&ticket=ST-1332772312rD0CF39A0AB5716EA81
+CAS server responded with #<Net::HTTPOK 200 OK  readbody=true>:
+<cas:serviceResponse xmlns:cas="http://www.yale.edu/tp/cas">
+<cas:authenticationSuccess>
+  <cas:user>superadmin</cas:user>
+  <user_id>1</user_id>
+  <user_uuid>307602f2-469f-11e1-ad6f-00261824db2f</user_uuid>
+</cas:authenticationSuccess>
+</cas:serviceResponse>
+Ticket "ST-1332772312rD0CF39A0AB5716EA81" for service "http://localhost:3000/" belonging to user "superadmin" is VALID.
+Extra user attributes provided along with ticket "ST-1332772312rD0CF39A0AB5716EA81": {"user_id"=>1, "user_uuid"=>"307602f2-469f-11e1-ad6f-00261824db2f"}.
+  SQL (0.2ms)  BEGIN
+  SQL (0.4ms)  INSERT INTO `cas_sessions` (`service_ticket`, `session_id`) VALUES (?, ?)  [["service_ticket", "ST-1332772312rD0CF39A0AB5716EA81"], ["session_id", "6f08f87f63c2e64d6ea284bcfeab80e3"]]
+   (0.5ms)  COMMIT
+Wrote service session lookup file to #<CasSession id: 31, service_ticket: "ST-1332772312rD0CF39A0AB5716EA81", session_id: "6f08f87f63c2e64d6ea284bcfeab80e3"> with session id 6f08f87f63c2e64d6ea284bcfeab80e3.
+Completed 500 Internal Server Error in 258ms
+
+MAuth::UnableToSignError (Missing required attributes to sign: [:app_uuid]
+on object to sign: #<MAuth::Request:0x00000104d97420 @attributes_for_signing={:verb=>"GET", :request_url=>"/api/v2/users/307602f2-469f-11e1-ad6f-00261824db2f.json", :body=>nil}>):
+  lib/active_resource/extend/mauth_signer.rb:42:in `mauth_headers'
+  lib/active_resource/extend/mauth_signer.rb:17:in `request'
+  app/models/user.rb:24:in `find_user'
+  app/controllers/application_controller.rb:28:in `get_current_user'
+
+Rendered /Users/magibson/.rvm/gems/ruby-1.9.2-p290@iir/gems/actionpack-3.1.3/lib/action_dispatch/middleware/templates/rescues/_trace.erb (1.5ms)
+Rendered /Users/magibson/.rvm/gems/ruby-1.9.2-p290@iir/gems/actionpack-3.1.3/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (1.3ms)
+Rendered /Users/magibson/.rvm/gems/ruby-1.9.2-p290@iir/gems/actionpack-3.1.3/lib/action_dispatch/middleware/templates/rescues/diagnostics.erb within rescues/layout (6.2ms)
+
+
+Started GET "/favicon.ico" for 127.0.0.1 at 2012-03-26 10:31:53 -0400
+
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+
+Rendered /Users/magibson/.rvm/gems/ruby-1.9.2-p290@iir/gems/actionpack-3.1.3/lib/action_dispatch/middleware/templates/rescues/routing_error.erb within rescues/layout (0.5ms)
+
+wow there doesnt seem to be an appuuid in the request param???
+debugger
+
+           mauth_headers = MAUTH_CLIENT.signed_headers(request)
+
+
+
+if (mauth_env && MAUTH_ENABLED)
+  MAUTH_CLIENT =  MAuth::Client.new(:private_key => mauth_env['private_key'],
+                                    :app_uuid => mauth_env['iir_app_uuid'])
+
+
+iir app uuid --> app uuid 
+thought i fixed that in branch???
+
+
+ok thats fixed 
+new error - which i think was the branch error:
+
+
+
+Started GET "/?ticket=ST-1332772312rD0CF39A0AB5716EA81" for 127.0.0.1 at 2012-03-26 10:54:52 -0400
+  Processing by Investigator::StudiesController#index as HTML
+  Parameters: {"ticket"=>"ST-1332772312rD0CF39A0AB5716EA81"}
+Request contains ticket "ST-1332772312rD0CF39A0AB5716EA81".
+Guessed service url: "http://localhost:3000/"
+Requesting CAS response for URI http://localhost:4567/proxyValidate?service=http%3A%2F%2Flocalhost%3A3000%2F&ticket=ST-1332772312rD0CF39A0AB5716EA81
+CAS server responded with #<Net::HTTPClientError 422  readbody=true>:
+<cas:serviceResponse xmlns:cas="http://www.yale.edu/tp/cas">
+<cas:authenticationFailure code="INVALID_TICKET">The ticket 'ST-1332772312rD0CF39A0AB5716EA81' has already been used up.</cas:authenticationFailure>
+</cas:serviceResponse>
+Ticket "ST-1332772312rD0CF39A0AB5716EA81" failed validation -- INVALID_TICKET: The ticket 'ST-1332772312rD0CF39A0AB5716EA81' has already been used up.
+Guessed service url: "http://localhost:3000/"
+Generated login url: http://localhost:4567/login?service=http%3A%2F%2Flocalhost%3A3000%2F
+Redirecting to "http://localhost:4567/login?service=http%3A%2F%2Flocalhost%3A3000%2F"
+Redirected to http://localhost:4567/login?service=http%3A%2F%2Flocalhost%3A3000%2F
+Completed 302 Found in 575ms
+
+
+Started GET "/?ticket=ST-1332773693r316A5819EE6BB88AF7" for 127.0.0.1 at 2012-03-26 10:54:53 -0400
+  Processing by Investigator::StudiesController#index as HTML
+  Parameters: {"ticket"=>"ST-1332773693r316A5819EE6BB88AF7"}
+Request contains ticket "ST-1332773693r316A5819EE6BB88AF7".
+Guessed service url: "http://localhost:3000/"
+Requesting CAS response for URI http://localhost:4567/proxyValidate?service=http%3A%2F%2Flocalhost%3A3000%2F&ticket=ST-1332773693r316A5819EE6BB88AF7
+CAS server responded with #<Net::HTTPOK 200 OK  readbody=true>:
+<cas:serviceResponse xmlns:cas="http://www.yale.edu/tp/cas">
+<cas:authenticationSuccess>
+  <cas:user>superadmin</cas:user>
+  <user_id>1</user_id>
+  <user_uuid>307602f2-469f-11e1-ad6f-00261824db2f</user_uuid>
+</cas:authenticationSuccess>
+</cas:serviceResponse>
+Ticket "ST-1332773693r316A5819EE6BB88AF7" for service "http://localhost:3000/" belonging to user "superadmin" is VALID.
+Extra user attributes provided along with ticket "ST-1332773693r316A5819EE6BB88AF7": {"user_id"=>1, "user_uuid"=>"307602f2-469f-11e1-ad6f-00261824db2f"}.
+  SQL (0.1ms)  BEGIN
+  SQL (0.4ms)  INSERT INTO `cas_sessions` (`service_ticket`, `session_id`) VALUES (?, ?)  [["service_ticket", "ST-1332773693r316A5819EE6BB88AF7"], ["session_id", "6f08f87f63c2e64d6ea284bcfeab80e3"]]
+   (0.4ms)  COMMIT
+Wrote service session lookup file to #<CasSession id: 32, service_ticket: "ST-1332773693r316A5819EE6BB88AF7", session_id: "6f08f87f63c2e64d6ea284bcfeab80e3"> with session id 6f08f87f63c2e64d6ea284bcfeab80e3.
+Completed 500 Internal Server Error in 1319ms
+
+ActiveResource::ResourceNotFound (Failed.  Response code = 404.  Response message = Not Found.):
+  lib/active_resource/extend/mauth_signer.rb:27:in `request'
+  app/models/user.rb:24:in `find_user'
+  app/controllers/application_controller.rb:28:in `get_current_user'
+
+Rendered /Users/magibson/.rvm/gems/ruby-1.9.2-p290@iir/gems/actionpack-3.1.3/lib/action_dispatch/middleware/templates/rescues/_trace.erb (1.0ms)
+Rendered /Users/magibson/.rvm/gems/ruby-1.9.2-p290@iir/gems/actionpack-3.1.3/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (1.0ms)
+Rendered /Users/magibson/.rvm/gems/ruby-1.9.2-p290@iir/gems/actionpack-3.1.3/lib/action_dispatch/middleware/templates/rescues/diagnostics.erb within rescues/layout (3.9ms)
+
+
+Started GET "/favicon.ico" for 127.0.0.1 at 2012-03-26 10:54:54 -0400
+
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+
+Rendered /Users/magibson/.rvm/gems/ruby-1.9.2-p290@iir/gems/actionpack-3.1.3/lib/action_dispatch/middleware/templates/rescues/routing_error.erb within rescues/layout (0.5ms)
+\
+
+
+           handle_response(result)
+maybe imedidta mauth is old and no longer
+
+the imedidata terminal seems ok - ???
+Processing Api::V2::UsersController#show to json (for 127.0.0.1 at 2012-03-26 10:54:54) [GET]
+10:54:54 imedidata.1           |   Parameters: {"format"=>"json", "action"=>"show", "id"=>"307602f2-469f-11e1-ad6f-00261824db2f", "controller"=>"api/v2/users"}
+10:54:54 imedidata.1           |   SQL (1.0ms)   SHOW TABLES
+10:54:54 imedidata.1           |     vendor/plugins/acts_as_auditable/lib/acts_as_auditable.rb:38:in `acts_as_auditable'
+10:54:54 imedidata.1           |     app/models/app.rb:27
+10:54:54 imedidata.1           |     lib/api_authentication_v2.rb:30:in `fake_request_token_from_mauth'
+10:54:54 imedidata.1           |     lib/api_authentication_v2.rb:19:in `api_authenticate_v2'
+10:54:54 imedidata.1           |     lib/server_proxy.rb:24:in `call'
+10:54:54 imedidata.1           |   Category Load (0.3ms)   SELECT * FROM `categories` WHERE (`categories`.`name` = 'Tables' AND `categories`.`parent_id` IS NULL) LIMIT 1
+10:54:54 imedidata.1           |     vendor/plugins/acts_as_auditable/lib/acts_as_auditable.rb:38:in `acts_as_auditable'
+10:54:54 imedidata.1           |     app/models/app.rb:27
+10:54:54 imedidata.1           |     lib/api_authentication_v2.rb:30:in `fake_request_token_from_mauth'
+10:54:54 imedidata.1           |     lib/api_authentication_v2.rb:19:in `api_authenticate_v2'
+10:54:54 imedidata.1           |     lib/server_proxy.rb:24:in `call'
+10:54:54 imedidata.1           |   Category Load (0.2ms)   SELECT * FROM `categories` WHERE (`categories`.`name` = 'Tables') LIMIT 1
+10:54:54 imedidata.1           |     vendor/plugins/acts_as_auditable/lib/acts_as_auditable.rb:52:in `acts_as_auditable'
+10:54:54 imedidata.1           |     app/models/app.rb:27
+10:54:54 imedidata.1           |     lib/api_authentication_v2.rb:30:in `fake_request_token_from_mauth'
+10:54:54 imedidata.1           |     lib/api_authentication_v2.rb:19:in `api_authenticate_v2'
+
+that looks ok to me ??
+need to put a debugger in there i think
+also should try clearing out cache in browser or do in firefox
+
+same error in firefox w no cookie
+
+i have it using the new key and app uuid which should do it
+it works for all the others
+
+failing in imedidata because my new app uuid is NOT registered with it
+oish
+lets try old app uuid and old key
+annoying for sure
+if that doesnt work will need to edt db to insert my app uuid i guess
+/Users/magibson/projects/iir/vendor/apps/imedidata/lib/api_authentication_v2.rb:32
+     app = App.find(:first, :conditions => ['uuid = ?', app_uuid])
+   32      if app.nil? # shouldnt happen
+=> 33        render :nothing => true, :status => 404 and return
+   34 
+
+oh wait this is the app_uuid that comes from iir
+that needs to be the same - awkward!
+there will need to be docs on getting your own app uuid into the db - annoying
+would be better if could make app uuid and sent that on to john louis
+though i suppose updating db isnt a big deal
+
+select id,name,base_url,uuid from apps;
++----+-----------+----------------------------------------+--------------------------------------+
+| id | name      | base_url                               | uuid                                 |
++----+-----------+----------------------------------------+--------------------------------------+
+|  1 | JazzHands | http://jazzhands-sandbox.imedidata.net | a722b962-46a0-11e1-a3e6-00261824db2f |
+|  2 | One Ring  | http://localhost:4000                  | a9cc880c-492d-11e1-842b-00261824db2f |
+|  3 | IIR       | http://localhost:3000                  | d38e7edc-5113-11e1-95fe-70cd60fffe66 |
++----+-----------+----------------------------------------+--------------------------------------+
+
+
+so iir was d38
+i wonder if thats still in mauth - 
+i guess we will find out
+and what the key is for it?
+
+oh lets just look in git
+
+from branch feature/mauth-key - as mauth.yml no lnonger in git
+
+  iir_app_uuid: d38e7edc-5113-11e1-95fe-70cd60fffe66
+  private_key: |
+        -----BEGIN RSA PRIVATE KEY-----
+        MIIEpQIBAAKCAQEAy8uLxcS4BMStRiRRV+pDxujhaWJOQzM9kPOOHw7r80DVpbUU
+        DpZFaQdnUpDlIq3ptY8hVnEgLGKzCGlNeot/aWJh7s01CuAgTP1WhfILU7XhlXtb
+        suh++MlhDbkDQsEePcIOGzQCBQHHcxn+DBAwSbN5sNfpB/BQkmXmgXkbTgP8aNEQ
+        Nr8ywypmXYQ5zOnDBFPOBbcrhm4kfUzVtWbQ87ukAyQDsTh0/Tjf76xRf4mRB0Vi
+        pPjjtw7wFGULSckco1ZpnaTwb6NUJrXnI3l1eArPUBFAInrlNYOSYow/+vRG9/Cg
+        0bhcLmVpeKJSPw1PM65rqv0g5dbVO6PlfrDqAwIDAQABAoIBAQC3IB5nBg/9aOXy
+        42ucvktND7KNyeJdjEvEVrbcvcHUAex5TK/LM8kHSbnUfZMIiJI7rXPdgyXP/Ji3
+        9DfE6FkDT36E4SzKqv8bb4IyNn9rJ0Kf2gtaRoTh9cMaW6fMclBEWn3mf+NYsHKS
+        wUaBfIKHl5jACiPCGHWuN5bbvQGGJX5YrHSvaAtvAvSVoqk9e08IZPWkUxTWZq46
+        QNI4Zr5NaeD14xn5YnKvLDmiigZkqwGPj3JlNm2NBjvBgJZjBkF0oYCunPOoFOxS
+        /yjwIGJbvTXkIgeCSyH2e6hXEfCzTK2gu1m2PUa7iCvssNewCz120RHwdp/TG5BH
+        69OJYewxAoGBAPu7Wc3GZYD24qbwFTdGUtQAboJTgW8ZOCRz4u2Tbdo2Oylerx9v
+        n0CO5h0FBcJQq2fXPAag9gaHQjCAA+2DSK8qlFUNDIocK3DtVMFv/SYhn1Mo1eGk
+        cBtLRF+NfLm66/tI12UcExPRxgf6NfYe24Eus+ZPq2+fouS90HePlTWVAoGBAM9A
+        H9nf5vQunk8JCVzJvbLg/076GVGEPnCAJT8uor/Tv93eu7/wRXQZnKrFAZ44krh0
+        3S0DGD+Uweu0JXmJENpqIV8ZeCSlUBEGgN9ivue6glOAjCpndeiW+cfbIMHcVsha
+        Mhi+TP00setPZt9IQNbRVTccdTCF+jIDV4W7wQs3AoGAGiRswRf3dpstEpUgPutI
+        sseQsmwlpvoBgJegW3fSErVLE5LHsQYQjc3JS/43iOSDyHbrvux8YFUvpIXG4qWd
+        qMNNQD/oq3cdc87R3Hza11jqiOJWw+Yl1k/Mu/efmlI1K5V2+QMfYBGK9U0gyXyO
+        4y2MdUCU1zTG3+ZufdwlbLkCgYEAgl1Lq7jzhdVtLzn38a3U7ZgqAHvBQU12GT4C
+        L+Qd65w+rElWwD1a8tTJf4G8qtHbOLwKBC5WKmhgMut2RyS4vSrVIwTaVfLGkm8M
+        0XdDrm/bWrsZb/L0cAHHzLdBu6/lxtE1gerycrOa1vFzPDAu2PGEMM5tyL/9yUfg
+        3fZkT7ECgYEA5Obilp8Qa+mJRrFq+9XM9p9Nyy1uZiD0YE4ZhYPXH6fiDO2S/EOH
+        ShnUvZnlRy1XA0pjQp74f9hQswBQE5DQDQSFSaR6vGPKurkW2k+TgdR8gR98OJGU
+        oSM/J2VRPdlFRsQW+5x4BJb1MFiIkfvPIACkXPR4ITLhmuptSQbXh3w=
+        -----END RSA PRIVATE KEY-----
+
+
+taking out my currents for above 
+recording them here for now
+  app_uuid: 2058f324-59b0-452f-a4b2-065e30e7768a
+  private_key: |
+        -----BEGIN RSA PRIVATE KEY-----
+        MIIEpQIBAAKCAQEAy8uLxcS4BMStRiRRV+pDxujhaWJOQzM9kPOOHw7r80DVpbUU
+        DpZFaQdnUpDlIq3ptY8hVnEgLGKzCGlNeot/aWJh7s01CuAgTP1WhfILU7XhlXtb
+        suh++MlhDbkDQsEePcIOGzQCBQHHcxn+DBAwSbN5sNfpB/BQkmXmgXkbTgP8aNEQ
+        Nr8ywypmXYQ5zOnDBFPOBbcrhm4kfUzVtWbQ87ukAyQDsTh0/Tjf76xRf4mRB0Vi
+        pPjjtw7wFGULSckco1ZpnaTwb6NUJrXnI3l1eArPUBFAInrlNYOSYow/+vRG9/Cg
+        0bhcLmVpeKJSPw1PM65rqv0g5dbVO6PlfrDqAwIDAQABAoIBAQC3IB5nBg/9aOXy
+        42ucvktND7KNyeJdjEvEVrbcvcHUAex5TK/LM8kHSbnUfZMIiJI7rXPdgyXP/Ji3
+        9DfE6FkDT36E4SzKqv8bb4IyNn9rJ0Kf2gtaRoTh9cMaW6fMclBEWn3mf+NYsHKS
+        wUaBfIKHl5jACiPCGHWuN5bbvQGGJX5YrHSvaAtvAvSVoqk9e08IZPWkUxTWZq46
+        QNI4Zr5NaeD14xn5YnKvLDmiigZkqwGPj3JlNm2NBjvBgJZjBkF0oYCunPOoFOxS
+        /yjwIGJbvTXkIgeCSyH2e6hXEfCzTK2gu1m2PUa7iCvssNewCz120RHwdp/TG5BH
+        69OJYewxAoGBAPu7Wc3GZYD24qbwFTdGUtQAboJTgW8ZOCRz4u2Tbdo2Oylerx9v
+        n0CO5h0FBcJQq2fXPAag9gaHQjCAA+2DSK8qlFUNDIocK3DtVMFv/SYhn1Mo1eGk
+        cBtLRF+NfLm66/tI12UcExPRxgf6NfYe24Eus+ZPq2+fouS90HePlTWVAoGBAM9A
+        H9nf5vQunk8JCVzJvbLg/076GVGEPnCAJT8uor/Tv93eu7/wRXQZnKrFAZ44krh0
+        3S0DGD+Uweu0JXmJENpqIV8ZeCSlUBEGgN9ivue6glOAjCpndeiW+cfbIMHcVsha
+        Mhi+TP00setPZt9IQNbRVTccdTCF+jIDV4W7wQs3AoGAGiRswRf3dpstEpUgPutI
+        sseQsmwlpvoBgJegW3fSErVLE5LHsQYQjc3JS/43iOSDyHbrvux8YFUvpIXG4qWd
+        qMNNQD/oq3cdc87R3Hza11jqiOJWw+Yl1k/Mu/efmlI1K5V2+QMfYBGK9U0gyXyO
+        4y2MdUCU1zTG3+ZufdwlbLkCgYEAgl1Lq7jzhdVtLzn38a3U7ZgqAHvBQU12GT4C
+        L+Qd65w+rElWwD1a8tTJf4G8qtHbOLwKBC5WKmhgMut2RyS4vSrVIwTaVfLGkm8M
+        0XdDrm/bWrsZb/L0cAHHzLdBu6/lxtE1gerycrOa1vFzPDAu2PGEMM5tyL/9yUfg
+        3fZkT7ECgYEA5Obilp8Qa+mJRrFq+9XM9p9Nyy1uZiD0YE4ZhYPXH6fiDO2S/EOH
+        ShnUvZnlRy1XA0pjQp74f9hQswBQE5DQDQSFSaR6vGPKurkW2k+TgdR8gR98OJGU
+        oSM/J2VRPdlFRsQW+5x4BJb1MFiIkfvPIACkXPR4ITLhmuptSQbXh3w=
+        -----END RSA PRIVATE KEY-----
+
+and change iir app uuid to app uuid
+
+wow it worked!
+but it will fail again when john louis removes this key
+or when u or t or phil go to use it with their app uuid
+
+ok so its working in dev 
+now to branch with eureka
+
+
+
+
+Started GET "/investigator/studies/d2216ad8-5199-11e1-95fe-70cd60fffe66" for 127.0.0.1 at 2012-03-26 12:37:34 -0400
+  Processing by Investigator::StudiesController#show as HTML
+  Parameters: {"id"=>"d2216ad8-5199-11e1-95fe-70cd60fffe66"}
+Existing local CAS session detected for "superadmin". Previous ticket "ST-1332777047rEBBA03079F169EF99F" will be re-used.
+Completed 500 Internal Server Error in 31221ms
+
+Faraday::Error::ConnectionFailed (Connection refused - connect(2)):
+  app/controllers/investigator/studies_controller.rb:16:in `show'
+
+Rendered /Users/magibson/.rvm/gems/ruby-1.9.2-p290@iir/gems/actionpack-3.1.3/lib/action_dispatch/middleware/templates/rescues/_trace.erb (1.0ms)
+Rendered /Users/magibson/.rvm/gems/ruby-1.9.2-p290@iir/gems/actionpack-3.1.3/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (1.0ms)
+Rendered /Users/magibson/.rvm/gems/ruby-1.9.2-p290@iir/gems/actionpack-3.1.3/lib/action_dispatch/middleware/templates/rescues/diagnostics.erb within rescues/layout (4.0ms)
+
+
+Started GET "/favicon.ico" for 127.0.0.1 at 2012-03-26 12:38:06 -0400
+
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+
+Rendered /Users/magibson/.rvm/gems/ruby-1.9.2-p290@iir/gems/actionpack-3.1.3/lib/action_dispatch/middleware/templates/rescues/routing_error.erb within rescues/layout (0.5ms)
+
+
+hmm 
+hwere is this error happneing
+we should try again with console just to make sure thats still working
+
+whats connection refused about?
+that might be that its not happy with my old app uuid??
+in which case we should just update the app uuid in the db 
+prob should do that
+
+
+this is the cuprit
+@phases = Euresource::Phase.find(:all)
+works fine without it
+not surprising
+lets try other app uuid
+though actually that shouldnt make a diff
+
+lets try in console
+
+ Euresource::Phase.find(:all)
+
+ => [#<Euresource::Phase:0x00000102aa90a8 @attributes={"uuid"=>"5b660b29-2413-4a4e-a0b0-b0f351b29f73", "name"=>"Phase 1"}, @options={:loaded_show=>false, :persisted=>true}>, #<Euresource::Phase:0x00000102aa2f00 @attributes={"uuid"=>"b4e3fa0c-54cc-4749-a589-7d8808a34453", "name"=>"Phase 2"}, @options={:loaded_show=>false, :persisted=>true}>, #<Euresource::Phase:0x00000102aa2de8 @attributes={"uuid"=>"e991d87b-d8c9-45d7-b344-77937670ef52", "name"=>"Phase 3"}, @options={:loaded_show=>false, :persisted=>true}>, #<Euresource::Phase:0x00000102a9b340 @attributes={"uuid"=>"43d5aedb-cce4-419e-82a4-ef18474f60fc", "name"=>"Phase 4"}, @options={:loaded_show=>false, :persisted=>true}>, #<Euresource::Phase:0x00000102a91318 @attributes={"uuid"=>"fcf189f0-99ae-41df-80b5-8ff1a29aa051", "name"=>"Unknown"}, @options={:loaded_show=>false, :persisted=>true}>] 
+it took a while but it worked
+
+oh duh i didnt have references up silly
+
+
+holy shit it worked
+it took a really long time but it worked
+now to show those on the page i guess
+
+
+Benjamin Young
+Mar 23 (3 days ago)
+
+to me, Ethan 
+Yeah, my thought is to do this in the controller:
+
+@phases = Euresource::Phase.find(:all)
+
+Then in the view something like:
+
+collection_select_for :phase, @phases
+
+p = @phases[0]
+ => #<Euresource::Phase:0x000001058b2e68 @attributes={"uuid"=>"5b660b29-2413-4a4e-a0b0-b0f351b29f73", "name"=>"Phase 1"}, @options={:loaded_show=>false, :persisted=>true}> 
+
+p.attributes
+ => {"uuid"=>"5b660b29-2413-4a4e-a0b0-b0f351b29f73", "name"=>"Phase 1"} 
+1.9.2-p290 :012 > p.attributes['name']
+ => "Phase 1" 
+
+
+ben wanted this:
+sd.select(:current_id, "<option value='-1'>#{t('application.option_none_selected')}</option>" + options_for_select(studies, sd.object.current_design.id ), {}, {:disabled => !shared_design, :id => "Design"})
+
+dont actually understand that
+is sd study?
+oh i think he copied that from balance
+
+ok tahts done lets look breifly at select
+actually i dont understand that line and its really confusing - il like mine better
+too much going on in one line
+
+ok we got ref test i think
+
+we need a demo doc i think
+
+rake performence:budgets:index_for_pi
+
+ok budgets & reference are working
+
+
+theres a cost analysis dump from tonya email (in sql dump for activites thread 3/22)
+from 3/22 hipchat
+Maybe you'd need to change parameter value
+3:28 PM
+Mark G.	
+do you have a valid request that returns data for that db dump?
+3:28 PM
+Tonya T.	
+The data I give you is from Q003 database, I used the D003 when I doing the test
+3:29 PM
+Tonya T.	
+let me take a look
+3:29 PM
+Mark G.	
+ah!
+3:32 PM
+Tonya T.	
+@"Mark Gibson" , please try this one
+http://localhost:3000/v1/costs/20f90c2c-6707-11e1-b86c-0800200c9a66?location_uuid=9301b148-6703-11e1-b86c-0800200c9a66&indication_uuid=d371ae28-66fc-11e1-b86c-0800200c9a66&phase_uuid=b4e3fa0c-54cc-4749-a589-7d8808a34453&build_tag=42
+3:41 PM
+Mark G.	
+@grigory - give that one whirl - thanks
+3:42 PM
+Mark G.	
+a whirl
+3:44 PM
+Grigory G.	
+Thanks @"Mark Gibson" and @tonya . Works like a charm
+
+https://sites.google.com/a/mdsol.com/knowledgebase/home/departments/engineering/on-demand-portfolio/paas-high-performance-teams/iir/testing-mauth-service/cost_analysis_data.sql?attredirects=0&d=1
+
+mysql -u root cost_analysis_development < ~/Downloads/cost_analysis_data.sql
+
+ok need to try test! of ca
+
+cost analysis works
+need to do activities!
+
+mysql -u root activity_development < ~/Downloads/activity_data.sql
+
+
+cool all 4 are up & going
+
+eureka!
+how do i run eureka
+keep all 4 services up - why not
+foreman with 4(3) services commented out
+fs in 1 terminal
+then bring up web page and show the phases
+then show the code
+and the api for ref
+
+oh i think tonyas post stuff never got merged to develop
+should look in her branch and ask her
+
+need to look up what the ideal dupe does
+the one that doesnt need the custom calls
+
+
+eureka?
+eureka contracts for each service?
+testing for eureka?
+
+fix mauth issue?
+deploy with mauth?
