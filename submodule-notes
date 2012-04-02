@@ -204,7 +204,7 @@ gss | g act
 1: f739dfe980294ab9f25de5fcfb7e476c21ea4adc vendor/apps/activities_service (remotes/origin/feature/add_api_path-1-gf739dfe)
 iact
 git fetch
-git checkout orign/develop
+git checkout origin/develop
 Previous HEAD position was f739dfe... Merge pull request #10 from mdsol/feature/add_api_path
 HEAD is now at ec9daf5... Merge pull request #14 from mdsol/feature/mauth
 bundle install
