@@ -7892,3 +7892,224 @@ so how do i want to run
 its just reference
 so run ref separate
 oh its just cli with ref
+
+
+
+
+
+
+***************
+3/29/12 NJ
+************
+oish - eureka not flying with cucumber at all
+need to mock it out
+rather unclear how to do that
+mock/stub aint able to do that module thing
+the module Euresoure::Phases
+hmmm - webmock??
+
+
+study page html:
+<!DOCTYPE html>
+<html>
+<head>
+<title>IIR</title>
+<link href="/assets/application.css" media="screen" rel="stylesheet" type="text/css" />
+<script src="/assets/application.js" type="text/javascript"></script>
+
+</head>
+<body>
+<div id='header'>
+<div id='banner'>
+<div id='logo'><a href="/" id="iir_logo"><img alt="IIR Logo" src="/assets/logo.gif" /></a></div>
+</div>
+<div id='header-center'>
+<a href="http://localhost:3001/" id="imedidata_logo"><img alt="iMedidata Logo" src="/assets/imedidata.gif" /></a>
+
+</div>
+<div id='user-area'>
+<div id='top_rung'>
+<a href="#" class="help_button"><img alt="Help" src="/assets/help.gif" /></a>
+    <div class='page_level_help'> 
+      <div class='help_option'>
+        <a href="http://iir-webhelp.s3.amazonaws.com/WebHelp/p/WebHelp_ENG/main.htm" id="screen_help" onclick="openScreenHelpPopup(this.href); event.returnValue = false; return false;"><span class="translation_missing" title="translation missing: eng.help.manufacturer.studies.show.help_page">Help Page</span></a>
+      </div> 
+      <div class='help_option'>
+        <a href="http://iir-webhelp.s3.amazonaws.com/WebHelp/p/WebHelp_ENG/main.htm" id="help_table_content" onclick="openHelpContentsPopup(this.href); event.returnValue = false; return false;">Table of Contents</a>
+      </div>
+
+      <div class='help_option'>
+        <a href="http://iir-webhelp.s3.amazonaws.com/WebHelp/p/WebHelp_ENG/iir/p/show_me_videos.htm" id="help_video" onclick="openShowMeVideosPopup(this.href); event.returnValue = false; return false;">Show Me Videos</a>
+      </div> 
+      <div class='help_option'>
+        <a href="http://iir-webhelp.s3.amazonaws.com/WebHelp/p/WebHelp_ENG/iir/p/getting_more_help.htm" id="help_customer_support" onclick="openCustomerSupportPopup(this.href); event.returnValue = false; return false;">Customer Support</a>
+      </div>
+    </div>
+    <script> 
+      $('.page_level_help').hide();
+    </script>
+
+<span id='logout'><a href="http://127.0.0.1:57187/logout">Logout</a></span>
+</div>
+<div id='bottom_rung'>Sammy (sammyjames)</div>
+</div>
+</div>
+
+<div id='navigation_bar'>
+<ul>
+<li class='studies_crumb rich_crumb first'>
+<a href="http://127.0.0.1:57187/"><img alt="Home" src="/assets/home.png" /></a>
+<a href="http://127.0.0.1:57187/" class="second">Study Budget List</a>
+</li>
+<li class='studies_crumb rich_crumb second'>
+<a href="http://127.0.0.1:57187/investigator/studies/6346" class="current">Wooshy</a>
+
+</li>
+</ul>
+
+</div>
+
+<div id='content'>
+
+
+Phase:
+<select>
+</select>
+
+</div>
+<div id='footer'>
+<div class='logo'>
+<a href="http://mdsol.com" target="_blank"><img alt="Medidata Logo" src="/assets/mdsol_logo.gif" /></a>
+</div>
+
+<div class='copy'>
+Medidata Grants Manager ™ IIR 2012.0.1
+<br>
+Copyright © 2012
+<br>
+<a href="http://mdsol.com" target="_blank">Medidata Solutions, Inc.</a>
+</div>
+<div class='clear'></div>
+
+</div>
+</body>
+</html>
+
+
+
+176, 188] in /Users/magibson/.rvm/gems/ruby-1.9.2-p290@iir/gems/capybara-1.1.2/lib/capybara/node/finders.rb
+   176          end
+   177  
+   178          options
+   179        end
+   180  
+   181        def matches_options(node, options)
+=> 182          return false if options[:text]      and not node.text.match(options[:text])
+
+pp node.text.match(options[:text])
+nil
+(rdb:1) pp node.text
+""
+(rdb:1) pp node
+#<Capybara::Element tag="select" path="/html/body/div[3]/div/select">
+(rdb:1) 
+
+its the select it seems not the outside text - wierd!
+
+wow its only text inside the select - thats really wierd
+
+
+*************************
+3/30/12 NJ
+*************************
+phew - got cuc working with eureka
+2 issues
+eureka is still slow as hell - u & t are going to howl and rightly so - ethan
+oh also stage - shouldnt there be an iir_development stage?
+
+ok emailed ethan
+whats next?
+theres going to be comments on pr to fix of course
+
+i think we need next to look into isaac mauth issue
+yea thats a wierd one
+so we need to start a svc - hit it with cli - then alter key
+
+ok first line of key looks like this
+        MIIEpQIBAAKCAQEAy8uLxcS4BMStRiRRV+pDxujhaWJOQzM9kPOOHw7r80DVpbUU
+
+last line looks like this:
+        oSM/J2VRPdlFRsQW+5x4BJb1MFiIkfvPIACkXPR4ITLhmuptSQbXh3w=
+
+lets change that w to a Y like we did for isaac - 2nd to last
+        oSM/J2VRPdlFRsQW+5x4BJb1MFiIkfvPIACkXPR4ITLhmuptSQbXh3Y=
+yup works no proba
+
+wow you can alter end of key with no consequence
+
+end of line 17 ( start at line 6/7 )
+or beginning of line 18
+
+
+7th character on the 3rd to last line
+
+25 lines total
+
+ok i think we're done with private key mystery for now - mysterious but at least illuminated
+
+
+ok next is either indication search or pagination
+pagination might be easier - maybe
+though indication search involves some javascript so that might be fun
+maybe go for that
+
+need to coordinate with tonya on budget steps
+as she has a bunch of stuff there
+in a hanging pr 
+so why is that pr not being merged???
+ask this when meeting is over
+
+for now go ahead with indication
+
+so what the heck with indication
+well lets write scenarios
+
+
+for train need to look at query for indications in reference?
+so can mock it
+
+
+  indications:
+    methods:
+      index: 
+        id: indications.index
+        path: indications.json
+        httpMethod: GET
+        description: "A list of indications."
+        parameters:
+          search_term:
+            type: string
+            description: "A 2+ character search term that filters by indication code and/or the short description"
+            required: false
+            location: query
+
+      show:
+        id: indications.show
+        path: indications/{uuid}.json
+        httpMethod: GET
+        description: "Gets a single indication"
+        parameters:
+          uuid:
+            type: string
+            description: "UUID of the indication"
+            required: true
+            location: path
+
+this is wierd to work with budgets
+because budgets needs to be reworked with eureka
+its frustrating to be on a train - i need to be working this
+out with tonya & ugandhar
+should i write the budeget exists with a phase as 
+ares dupe old or eureka new not yet written
+prob the latter - but it seems a little premature
+
