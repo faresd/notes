@@ -7892,3 +7892,36 @@ so how do i want to run
 its just reference
 so run ref separate
 oh its just cli with ref
+
+
+should try running imed with my key 
+updating app uuid and all
+as shouldnt try that out on tonya
+
+
+dam getting error on running
+
+Completed 500 Internal Server Error in 679ms
+14:25:03 iir.1                 | 
+14:25:03 iir.1                 | ActiveResource::ResourceNotFound (Failed.  Response code = 404.  Response message = Not Found.):
+14:25:03 iir.1                 |   lib/active_resource/extend/mauth_signer.rb:27:in `request'
+14:25:03 iir.1                 |   app/models/user.rb:24:in `find_user'
+14:25:03 iir.1                 |   app/controllers/application_controller.rb:28:in `get_current_user'
+14:25:03 iir.1                 | 
+
+diff than tonyas
+
+woops using new app uuid not old
+lets well lets do old and make sure it works before updating to new
+
+select api_id,uuid,name from apps
+    -> ;
++--------------------------------------+--------------------------------------+-----------+
+| api_id                               | uuid                                 | name      |
++--------------------------------------+--------------------------------------+-----------+
+| a722b962-46a0-11e1-a3e6-00261824db2f | a722b962-46a0-11e1-a3e6-00261824db2f | JazzHands |
+| a9cc880c-492d-11e1-842b-00261824db2f | a9cc880c-492d-11e1-842b-00261824db2f | One Ring  |
+| d38e7edc-5113-11e1-95fe-70cd60fffe66 | d38e7edc-5113-11e1-95fe-70cd60fffe66 | IIR       |
+
+
+UPDATE apps SET uuid = '2058f324-59b0-452f-a4b2-065e30e7768a', api_id = '2058f324-59b0-452f-a4b2-065e30e7768a' WHERE name = 'IIR'
