@@ -413,7 +413,7 @@ alias pdevt="git pull origin development"
 
 alias bk-rebase="mkdir .git/rebase-apply-BAK; cp .git/rebase-apply/* .git/rebase-apply-BAK; rm -rf .git/rebase-apply"
 alias bk-rb="mvdir .git/rebase-apply .git/rebase-apply-BAK"
-alias rebase="git rebase master"
+alias rebase="git rebase"
 alias continue-rebase="git rebase --continue"
 
 #alias delete-remote-branch="git push origin :branch_to_delete"
@@ -428,6 +428,14 @@ alias revert-uncommitted="git reset --hard HEAD"
 alias revert-last-commit="git revert HEAD"
 # git checkout -b feature/branchname origin/feature/branchname
 alias git-check-out-branch="git checkout -b " #feature/branchname origin/feature/branchname
+
+function git-co-remote-branch {
+  git checkout -b $1 origin/$1
+}
+function git-co-remote {
+  git checkout -b feature/$1 origin/feature/$1
+}
+
 alias sc="~/b/script/console"
 #RAILS_ENV=test script/console
 
@@ -447,6 +455,7 @@ alias dump-iir-imed-db="mysqldump -u root --databases imedidata_iir_development 
 alias msq="mysql -u root"
 alias mysql-cost-analysis="mysql -u root cost_analysis_development"
 alias mysql-activities="mysql -u root activity_development"
+alias mysql-ref="mysql -u root references_development"
 
 alias submod-stat="git submodule status"
 alias gss="git submodule status"
@@ -481,15 +490,26 @@ alias cp-mauth="cp ~/random-stuff/iir/mauth.yml config/mauth.yml"
 alias rb19="rvm use ruby-1.9.2-p290"
 
 alias mauth-cli="~/projects/mauth-client/bin/mauth-client"
-alias run-ref="cd ~/r; rvm use ruby-1.9.2-p290@references; rs -p 3007"
+alias run-ref="cd ~/r; rvm use ruby-1.9.2-p290@references; rs -p 3012"
 alias test-ref="rb19; MAUTH_CONFIG_YAML=~/r/config/mauth.yml mauth-cli GET http://localhost:3007/v1/phases"
 alias run-budgets="cd ~/bud; rvm use ruby-1.9.2-p290@budgets; rs -p 3005"
+alias run-budgets-submod="cd ~/ib; rvm use ruby-1.9.2-p290@budgets; rs -p 3005"
 alias test-budgets="rb19; MAUTH_CONFIG_YAML=~/projects/budgets/config/mauth.yml mauth-cli GET http://localhost:3005/v1/budgets/f19a45b4-44ce-45cc-b37f-59ead773211b"
 alias run-cost-analysis="cd ~/ca; rvm use ruby-1.9.2-p290@cost_analysis; rs -p 3008"
 alias run-cost=run-cost-analysis
 alias test-cost="rb19; MAUTH_CONFIG_YAML=~/ca/config/mauth.yml mauth-cli GET 'http://localhost:3008/v1/costs/20f90c2c-6707-11e1-b86c-0800200c9a66?location_uuid=9301b148-6703-11e1-b86c-0800200c9a66&indication_uuid=d371ae28-66fc-11e1-b86c-0800200c9a66&phase_uuid=b4e3fa0c-54cc-4749-a589-7d8808a34453&build_tag=42'"
 alias run-activities="cd ~/a; rvm use ruby-1.9.2-p290@activities; rs -p 3006"
+alias run-activities-submod="cd ~/ia; rvm use ruby-1.9.2-p290@activities; rs -p 3006"
 alias test-activities3="rb19; MAUTH_CONFIG_YAML=~/a/config/mauth.yml mauth-cli GET 'http://localhost:3006/v1/activities?search_term=fee'"
 alias test-activities2="rb19; MAUTH_CONFIG_YAML=~/a/config/mauth.yml mauth-cli GET 'http://localhost:3006/v1/activities?search_term=Radiological'"
 alias test-activities="rb19; MAUTH_CONFIG_YAML=~/a/config/mauth.yml mauth-cli GET 'http://localhost:3006/v1/activities?search_term=Intravascular'"
 alias run-iir="cd ~/i; rvm use ruby-1.9.2-p290@iir; foreman start"
+
+alias cuc-study="cu features/budget/detail.feature:16"
+alias cuc-st2="cu features/budget/detail.feature:28"
+alias cuc-ind="cu features/indication/list.feature:29"
+
+alias eur-deploys="mauth-cli get https://eureka-innovate.imedidata.com/deployments"
+
+alias mysql-bud="mysql -u root budgets_development"
+
