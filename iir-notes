@@ -8145,3 +8145,1316 @@ should i write the budeget exists with a phase as
 ares dupe old or eureka new not yet written
 prob the latter - but it seems a little premature
 
+
+***********************
+4/3/12 office tues
+***********************
+
+so where are we at
+could do some research on private keys
+try encoding & decoding
+lets put 10 minutes into that
+
+could start on indication using eureka no less!
+current phase is really stalled out on tonya adding in budget i think
+and theres paging
+but yea i think indication is the way
+and theres helping out ug & tonya
+
+
+http://stuff-things.net/2007/06/11/encrypting-sensitive-data-with-ruby-on-rails/
+
+#!/usr/bin/env ruby
+
+require 'openssl'
+require 'base64'
+
+public_key_file = 'public.pem';
+string = 'Hello World!';
+
+public_key =
+   OpenSSL::PKey::RSA.new(File.read(public_key_file))
+encrypted_string =
+   Base64.encode64(public_key.public_encrypt(string))
+
+print encrypted_string, "\n"
+
+#!/usr/bin/env ruby
+
+require 'openssl'
+require 'base64'
+
+public_key_file = ;
+string = 'Hello World!';
+
+public_key =
+   OpenSSL::PKey::RSA.new(File.read(public_key_file))
+encrypted_string =
+   Base64.encode64(public_key.public_encrypt(string))
+
+print encrypted_string, "\n"
+
+this is encrypting with public key
+what about encrypt with private key?
+
+
+
+
+http://www.ruby-doc.org/stdlib-1.9.3/libdoc/openssl/rdoc/OpenSSL.html
+
+Documents encrypted with the public key can only be decrypted with the private key.
+
+public_encrypted = key.public_encrypt 'top secret document'
+Documents encrypted with the private key can only be decrypted with the public key.
+
+private_encrypted = key.private_encrypt 'public release document'
+
+Use the opposite key type do decrypt the document
+
+top_secret = key.public_decrypt public_encrypted
+
+public_release = key.private_decrypt private_encrypted
+
+A key can also be loaded from a file.
+
+key2 = OpenSSL::PKey::RSA.new File.read 'private_key.pem'
+key2.public? # => true
+or
+
+key3 = OpenSSL::PKey::RSA.new File.read 'public_key.pem'
+key3.private? # => false
+
+
+
+key = OpenSSL::PKey::RSA.new 2048
+open 'private_key.pem', 'w' do |io| io.write key.to_pem end
+open 'public_key.pem', 'w' do |io| io.write key.public_key.to_pem end
+private_encrypted = key.private_encrypt 'public release document'
+# wrong in doc 
+public_release = key.public_decrypt private_encrypted 
+
+
+continue that tomorrow
+
+
+ok so what the heck do i need to do for indication search
+i need to grab all the in
+
+kevin showed me qpl - not working on now but should write up
+
+login-imedidata.com url
+kevinshroff  Password123
+
+scrool down GM QuickPrice - GM Worldwide or shire
+
+indication 
+type in "heart"
+
+drop down group by
+Therapuetic aread eg "CARDIOVASCULAR" 
+green shading on mouse over
+
+git clone git@github.com:mdsol/quick_price_lookup.git
+
+how should i start on this
+what are my scenarios
+
+
+i think qpls step
+Given /^I am in "([^"]*)" field$/ do |field_name|
+  if field_name=='Locations Search'
+    find("#qpl_location_search").click
+  end  
+  if field_name=='Indication Search'
+    find("#qpl_indication_search").click
+  end  
+
+end
+ 
+in iir is
+#Click on an image located within a selector
+When /^(?:|I )click the "([^"]*)" (?:image|text) within "([^"]*)"$/ do |link, selector|
+  selector = format_selector selector
+  configure_cas_filter_for_logout if link == "Logout"
+  within(selector) do
+    click_on(link)
+  end
+end
+
+but maybe not quite as that is clicking on a link
+in balance there must be something cleaner than qpl
+
+web_steps.rb
+29:    click_button(button)
+33:When /^(?:|I )(?:click|follow|follow the) "([^"]*)"(?: within "([^"]*)")?$/ do |link, selector|
+nope thats click link
+
+none of the balance stpes seem to quite fit
+
+
+**********************
+4/4/12 office wed
+*******************
+
+lets crank on indications
+get qpl scenario written - and then pass it
+
+
+<div class="location_indication_result_container">
+	<!--		indication start from here  -->
+	<div class="location_indication_container">
+			<div class="indication_container">
+				<div class= "selected_location_title">
+					Indication / Therapeutic Area
+				</div>
+				<div id='indication_input_div' class="indication_input_container">
+					<table style='margin: 0px 0px 0px -3px;'>
+<tr>
+<td>
+<!-- %div.ui-widget#myID -->
+<div class='ui-widget'>
+<input class='initialized_input' id='qpl_indication_search' maxlength='256' style='width:202px;' type='text' value='Add Indication/Therapeutic Area'>
+</div>
+</td>
+<td style='margin: 0px 0px 0px 4px; width:100px;'>
+<form accept-charset="UTF-8" action="/qpls/add_ind_to_sel_indications_box" data-remote="true" id="add_indication_form" method="get"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /></div>
+<input id="selected_indication_dropdown_id" name="selected_indication_dropdown_id" type="hidden" />
+<input id="selected_indication_dropdown_name" name="selected_indication_dropdown_name" type="hidden" />
+<a href="#" class="positive button submit  disabled prevent-default" id="add_indication_submit" style="margin-right:0px"><span><img alt="B_add" src="/images/medidata_buttons/b_add.gif?1333468050" />Add</span></a><input class="hidden_submit" name="commit" type="submit" value="Add" />
+</form>
+
+</td>
+</tr>
+</table>
+<script type='text/javascript'>
+  //<![CDATA[
+    jQuery(function() {
+      jQuery("#qpl_indication_search").autocomplete({
+        source: "/qpls/search_indications",
+        minLength: 2,
+        search: function(event, ui) { 
+                $('#qpl_indication_search').addClass('searching');
+        },
+        select: function( event, ui ) {
+                jQuery( "#qpl_indication_search" ).val( ui.item.label );
+                jQuery( "#selected_indication_dropdown_id" ).val( ui.item.value );
+                jQuery( "#selected_indication_dropdown_name").val( ui.item.label );
+          jQuery( "#add_indication_submit").removeClass("disabled");
+                return false;
+                }
+          
+      }
+      )
+    
+      .data("autocomplete")._renderMenu = function(ul, items){
+        var self = this;
+        jQuery.each(items, function(index, item){ 
+          if (item.value == -999) {
+            // redirect after a session timeout or logout
+            window.location.href = item.label;
+          } else if (item.value == -998){
+            // Not found
+            input_val = $('#qpl_indication_search').val();
+            label = item.label+'"'+input_val+'"';
+            ul.append("<li class='ui-menu-item-not-found'>" + label + "</li>" );        
+          } else if (item.value == -1) {
+            // Ther. Area line
+              ul.append("<li class='ui-menu-item-ta'>" + item.label + "</li>" );
+          } else {
+                ul.append(jQuery("<li class='ui-menu-item-indication'></li>").data("item.autocomplete", item).append(jQuery("<a style='width:392px'></a>").html(item.label)));
+          }
+        });
+        ul.removeClass("ui-autocomplete");
+        ul.addClass("ui-autocomplete-indication");
+        $('#qpl_indication_search').removeClass('searching');
+      }
+    });
+  //]]>
+</script>
+<!-- <style> -->
+<!-- .ui-autocomplete-indication { -->
+<!-- max-height: 230px; -->
+<!-- width:400px; -->
+<!-- overflow-y: auto; -->
+<!-- /* prevent horizontal scrollbar */ -->
+<!-- overflow-x: hidden; -->
+<!--
+-->
+<!-- } -->
+<!-- /* IE 6 doesn't support max-height -->
+<!-- * we use height instead, but this forces the menu to always be this tall -->
+<!-- */ -->
+<!-- * html .ui-autocomplete-indication { -->
+<!-- height: 230px; -->
+<!-- width:400px; -->
+<!-- } -->
+<!--
+-->
+<!-- .ui-menu .ui-menu-item-indication { -->
+<!-- font: 11px Arial; -->
+<!-- color: #333333; -->
+<!-- background-color: #ffffff; -->
+<!-- padding-top: 2px; -->
+<!-- padding-bottom: 2px; -->
+<!-- } -->
+<!-- .ui-menu .ui-menu-item-ta { -->
+<!-- background-color: #dddddd; -->
+<!-- font: bold 11px Arial; -->
+<!-- color: #333333; -->
+<!-- line-height: 22px; -->
+<!-- } -->
+<!--
+-->
+<!-- </style> -->
+<!--
+-->
+<!-- <table style="margin: 0px 0px 0px -3px;"> -->
+<!-- <tr><td> -->
+<!-- <div class="ui-widget"> -->
+<!-- <input id="qpl_indication_search" type="text" maxlength="256" style="width:202px;" class="initialized_input" value ="Add Indication/Therapeutic Area"/> -->
+<!-- </div> -->
+<!-- </td> -->
+<!-- <td style="margin: 0px 0px 0px 4px; width:100px;"> -->
+<!-- <%= form_tag "/qpls/add_ind_to_sel_indications_box", :id => "add_indication_form", :method=>"get", :remote=>true do %> -->
+<!-- <%= hidden_field_tag :selected_indication_dropdown_id %> -->
+<!-- <%= hidden_field_tag :selected_indication_dropdown_name %> -->
+<!-- <%= medidata_submit_form_button "Add", :id => "add_indication_submit", :disabled=>true,:icon=>'add', :style => 'margin-right:0px'%> -->
+<!-- <%end%> -->
+<!-- </td></tr> -->
+<!-- </table> -->
+<!--
+-->
+<!-- <script> -->
+<!-- jQuery(function() { -->
+<!-- jQuery("#qpl_indication_search").autocomplete({ -->
+<!-- source: "/qpls/search_indications", -->
+<!-- minLength: 2, -->
+<!-- select: function( event, ui ) { -->
+<!-- jQuery( "#qpl_indication_search" ).val( ui.item.label ); -->
+<!-- jQuery( "#selected_indication_dropdown_id" ).val( ui.item.value ); -->
+<!-- jQuery( "#selected_indication_dropdown_name").val( ui.item.label ); -->
+<!-- jQuery( "#add_indication_submit").removeClass("disabled"); -->
+<!-- return false; -->
+<!-- } -->
+<!--
+-->
+<!-- } -->
+<!-- ) -->
+<!--
+-->
+<!-- .data("autocomplete")._renderMenu = function(ul, items){ -->
+<!-- var self = this; -->
+<!-- jQuery.each(items, function(index, item){ -->
+<!-- if (item.value == -1) -->
+<!-- ul.append("<li class='ui-menu-item-ta'>" + item.label + "</li>" ); -->
+<!-- else -->
+<!-- ul.append(jQuery("<li class='ui-menu-item-indication'></li>").data("item.autocomplete", item).append(jQuery("<a style='width:392px'></a>").html(item.label))); -->
+<!-- }); -->
+<!-- ul.removeClass("ui-autocomplete"); -->
+<!-- ul.addClass("ui-autocomplete-indication"); -->
+<!-- } -->
+<!-- }); -->
+<!-- </script> -->
+<!--
+-->
+<!--
+-->
+<!--
+-->
+<!--
+-->
+<!--
+-->
+<!--
+-->
+<!--
+-->
+
+				</div>	
+
+				<div class="indication_selected_container">
+					
+<ul class="selected_location_list" id="selected_indications_box_list"><li style="margin-top:0.5px;"><table><tr class="check_box_item_table"><td class="left_column"><input checked="checked" class="ind_radio_button_class" id="selected_ind_radio_grp_0" name="selected_ind_radio_grp" type="radio" value="0" /></td> <td class="right_column"><label>All Therapeutic Areas</label></td></tr></table></li></ul>
+				</div>			
+	       </div>
+
+boy is that a mess!
+
+
+_indication_search_input.html.haml
+
+%table{:style => "margin: 0px 0px 0px -3px;"}
+  %tr
+    %td
+      / %div.ui-widget#myID   
+      %div{:class => "ui-widget"}
+        %input#qpl_indication_search.initialized_input{:type => "text",  :maxlength => "256", :style => "width:202px;", :value => "Add Indication/Therapeutic Area"}
+    %td{:style => "margin: 0px 0px 0px 4px; width:100px;"}
+      = form_tag "/qpls/add_ind_to_sel_indications_box", :id => "add_indication_form", :method=>"get", :remote=>true do
+        = hidden_field_tag :selected_indication_dropdown_id
+        = hidden_field_tag :selected_indication_dropdown_name
+        = medidata_submit_form_button "Add", :id => "add_indication_submit", :disabled=>true,:icon=>'add', :style => 'margin-right:0px'
+        
+:javascript
+  jQuery(function() {
+    jQuery("#qpl_indication_search").autocomplete({
+      source: "/qpls/search_indications",
+      minLength: 2,
+      search: function(event, ui) { 
+              $('#qpl_indication_search').addClass('searching');
+      },
+      select: function( event, ui ) {
+              jQuery( "#qpl_indication_search" ).val( ui.item.label );
+              jQuery( "#selected_indication_dropdown_id" ).val( ui.item.value );
+              jQuery( "#selected_indication_dropdown_name").val( ui.item.label );
+        jQuery( "#add_indication_submit").removeClass("disabled");
+              return false;
+              }
+        
+    }
+    )
+  
+    .data("autocomplete")._renderMenu = function(ul, items){
+      var self = this;
+      jQuery.each(items, function(index, item){ 
+        if (item.value == -999) {
+          // redirect after a session timeout or logout
+          window.location.href = item.label;
+        } else if (item.value == -998){
+          // Not found
+          input_val = $('#qpl_indication_search').val();
+          label = item.label+'"'+input_val+'"';
+          ul.append("<li class='ui-menu-item-not-found'>" + label + "</li>" );        
+        } else if (item.value == -1) {
+          // Ther. Area line
+            ul.append("<li class='ui-menu-item-ta'>" + item.label + "</li>" );
+        } else {
+              ul.append(jQuery("<li class='ui-menu-item-indication'></li>").data("item.autocomplete", item).append(jQuery("<a style='width:392px'></a>").html(item.label)));
+        }
+      });
+      ul.removeClass("ui-autocomplete");
+      ul.addClass("ui-autocomplete-indication");
+      $('#qpl_indication_search').removeClass('searching');
+    }
+  });
+
+
+
+     edit_investigator_budget_path(@budget.attributes['uuid'])
+
+dam im banging up against tonyas commit
+and thats gonna take forever i know
+
+QPL_INDICATION-OUTLINE.feature is where its coming from
+
+
+     When I search indication "<keyword>"
+qpl_indication_steps.rb
+1:When /^I search indication "([^"]*)"$/ do |search_val|
+
+When /^I search indication "([^"]*)"$/ do |search_val|
+    fill_in "qpl_indication_search", :with => search_val
+end
+
+When /^I search 
+
+  When I search "Indication" with "pa"
+
+When /^a keyword search is initiated$/ do
+  page.should have_content('ui-menu-item-ta')
+end
+
+ta is for therapeutic area
+
+ source: "/qpls/search_indications",
+config/routes.rb
+64:      get   :search_indications
+app/controllers/qpls_controller.rb
+89:  def search_indications
+
+autocomplete not found
+Uncaught TypeError: Object [object Object] has no method 'autocomplete'
+
+public/javascripts/jquery/development-bundle/themes/ui-lightness/jquery.ui.base.css
+4:@import url("jquery.ui.autocomplete.css");
+
+iir
+jquery rails 1.0.19 - jQuery 1.7.1
+
+qpl
+jqueryrails 0.2.6 (1.4.2 jQuery
+1.5.1 jquery and 1.8.11 jquery seen about the place
+who knows
+
+//= require jquery-ui
+app/views/layouts/quick_price_lookup.html.erb
+9:			<script type="text/javascript" src="javascripts/jquery/js/jquery-ui-1.8.11.custom.min.js"></script>
+15:			<link rel="stylesheet" type="text/css" href="stylesheets/jquery_css/cupertino/jquery-ui-1.8.11.custom.css"></link>				
+
+application.js
+//= require jquery-ui
+
+that was it!
+
+A data source can be:
+
+an Array with local data
+a String, specifying a URL
+a Callback
+
+
+********************
+4/5/12 thurs office
+********************
+
+routes.rb for indications controller
+  namespace 'investigator' do
+    resources 'indications', :only => [:show]
+  end
+
+indications controller show takes search params
+
+this is tonyas - dont use
+http://localhost:3000/investigator/budgets/92dcb0fb-f2e1-4611-83f5-1bafeca3934d/edit
+          
+this is me
+http://localhost:3000/investigator/budgets/729b6850-a0cc-4a85-8066-f96f95006ec0/edit
+
+
+mauth-cli get https://eureka-innovate.imedidata.com/deployments
+find the deployment with the correct baseURI for your deployment, note its UUID, and delete:
+
+mauth-client delete https://eureka-innovate.imedidata.com/deployments/THE-UUID-HERE
+
+
+mauth-cli get https://eureka-innovate.imedidata.com/deployments
+* connect to eureka-innovate.imedidata.com on port 
+* getting our SSL on
+> GET /deployments HTTP/1.1
+> X-MWS-Authentication: MWS 2058f324-59b0-452f-a4b2-065e30e7768a:pq71pf20hXfyCbIpVaXSp/8RFVphyamuEpotb5PjZh6ZeKlqCGCd8Sgq5ulR6JDkz5PN8X+zt0+8TqAfHO0eZM09SUaOtW10Rd8qHRSVatPhkzn4IkInnPJvmpDFOlbMEVWxAcwVSaG1Kad17mwQQWDwReTghB/2mEXLdDc3ztbt3l4kpyqfaOrs8rkGFb1aYzOEA2v9FeCR0uLI1EYQOmEyVD3HS7X9pw5q7kJ+ytUVydD1R1jjmhZHWDB4NslzrQe1VoV1al9kUuUnqQa1l7GEOge/irDmoKYYFMXUX2S13oM44xF3PnocAwclxwwRlP1BOJ+apNewwxLd/ETnSg==
+> X-MWS-Time: 1333649940
+> 
+< HTTP/1.1 200
+< content-type: application/json
+< connection: close
+< status: 200
+< x-powered-by: Phusion Passenger (mod_rails/mod_rack) 3.0.9
+< vary: Accept
+< content-length: 3751
+< x-mws-authentication: MWS 81e3062f-10d5-4e6e-b9f7-ffef3444d3a5:mUKvGoGMZX/diVHHpbAsXAjQgN0UjicJ78z8sgplTT3e3PQkQGolzHIkVJJzX0Hp6VE2TQ3X/pvJ2CMdq+glYeiAQbd/EkdJDxQs81SozEKWUZ/F5VTgPpNvMR4WPFmbmzEnR6y6B3VSCSXF/eh6P88l4HqRt0tSf3BK9FB4K10qszxM8495CwRCafD4tx1f1C9fyCD4RA7qFmyRQ/1/cD1viko82NXiBlvAUvufQkPexwpGH8pMJuTJwm6rbycr7A7bDh0+uwi4E0+iRLtm91SW1r8bq2+LRZxJhnssAdZLrpRp1VS2R3ZThf2o1jzFl/jicVj2dgy0Jp910o5N6w==
+< x-mws-time: 1333649969
+< server: nginx/1.0.6 + Phusion Passenger 3.0.9 (mod_rails/mod_rack)
+< 
+< {
+<   "items": [
+<     {
+<       "apis": [
+<         {
+<           "resource": "apis",
+<           "link": "/apis/references/v1.0.0/rest"
+<         }
+<       ],
+<       "uuid": "2a739839-e369-4241-ad00-f645be543f89",
+<       "stage": "ugandhar",
+<       "baseURI": "http://localhost:3012"
+<     },
+<     {
+<       "apis": [
+< 
+<       ],
+<       "uuid": "39791e04-7f53-4729-8cfc-b067f5ca360e",
+<       "stage": "magibson",
+<       "baseURI": "http://127.0.0.1:3007"
+<     },
+<     {
+<       "apis": [
+<         {
+<           "resource": "apis",
+<           "link": "/apis/cupcakes/v1/rest"
+<         }
+<       ],
+<       "uuid": "fa07cf7d-c17a-4d89-934f-933527830db9",
+<       "stage": "jpetitbon",
+<       "baseURI": "http://jpetitbon.imedidata.com:3000"
+<     },
+<     {
+<       "apis": [
+<         {
+<           "resource": "apis",
+<           "link": "/apis/cupcakes/v1/rest"
+<         }
+<       ],
+<       "uuid": "56cf6306-487b-40ff-bc29-2707a01276c3",
+<       "stage": "jpetitbon",
+<       "baseURI": "http://cupcakes-jpetitbon.imedidata.local:3000"
+<     },
+<     {
+<       "apis": [
+<         {
+<           "resource": "apis",
+<           "link": "/apis/references/v1.0.0/rest"
+<         }
+<       ],
+<       "uuid": "c3c0614a-6ee2-4569-a2f5-96c10c8675a6",
+<       "stage": "magibson",
+<       "baseURI": "https://localhost:3008"
+<     },
+<     {
+<       "apis": [
+< 
+<       ],
+<       "uuid": "9a76904c-56d1-4024-a1bd-a50a853db588",
+<       "stage": "magibson",
+<       "baseURI": "http://localhost:3007"
+<     },
+<     {
+<       "apis": [
+<         {
+<           "resource": "apis",
+<           "link": "/apis/cupcakes/v1/rest"
+<         }
+<       ],
+<       "uuid": "9256caf5-7d64-47e3-9ec0-52809ceb3014",
+<       "stage": "jpetitbon",
+<       "baseURI": "http://jpetitbon.imedidata.local:3000"
+<     },
+<     {
+<       "apis": [
+<         {
+<           "resource": "apis",
+<           "link": "/apis/references/v1.0.0/rest"
+<         }
+<       ],
+<       "uuid": "1f832784-b9cc-42ef-a2a1-9070ce8a2c5a",
+<       "stage": "magibson",
+<       "baseURI": "http://localhost:3011"
+<     },
+<     {
+<       "apis": [
+<         {
+<           "resource": "apis",
+<           "link": "/apis/cupcakes/v1/rest"
+<         }
+<       ],
+<       "uuid": "bf725f6d-3f2f-4664-9db7-38c6f4864362",
+<       "stage": "ethan",
+<       "baseURI": "http://ebaz.local:3001"
+<     },
+<     {
+<       "apis": [
+<         {
+<           "resource": "apis",
+<           "link": "/apis/budgets/v1.0.0/rest"
+<         }
+<       ],
+<       "uuid": "d0e244dd-e8c1-41c5-b466-c665ae007ed1",
+<       "stage": "magibson",
+<       "baseURI": "http://localhost:3005"
+<     },
+<     {
+<       "apis": [
+<         {
+<           "resource": "apis",
+<           "link": "/apis/cupcakes/v1/rest"
+<         }
+<       ],
+<       "uuid": "8d79f949-8660-42a7-922c-24eadc844c04",
+<       "stage": "jpetitbon",
+<       "baseURI": "http://jpetitbon.local:3000"
+<     },
+<     {
+<       "apis": [
+<         {
+<           "resource": "apis",
+<           "link": "/apis/references/v1.0.0/rest"
+<         }
+<       ],
+<       "uuid": "7069cb03-492a-4cde-979a-044f00528799",
+<       "stage": "magibson",
+<       "baseURI": "https://localhost:3009"
+<     },
+<     {
+<       "apis": [
+<         {
+<           "resource": "apis",
+<           "link": "/apis/references/v1.0.0/rest"
+<         }
+<       ],
+<       "uuid": "aa3037c0-cd3e-4cb1-b09a-62123dc7a326",
+<       "stage": "ugandhar",
+<       "baseURI": "https://localhost:3010"
+<     },
+<     {
+<       "apis": [
+<         {
+<           "resource": "apis",
+<           "link": "/apis/eureka/v1/rest"
+<         }
+<       ],
+<       "uuid": "84e0d0e3-07f7-42a9-a597-befae51e3c1b",
+<       "stage": "innovate",
+<       "baseURI": "https://eureka-innovate.imedidata.com"
+<     },
+<     {
+<       "apis": [
+<         {
+<           "resource": "apis",
+<           "link": "/apis/references/v1.0.0/rest"
+<         }
+<       ],
+<       "uuid": "34023bd0-5792-42a6-ad00-840ec30c2758",
+<       "stage": "byoung",
+<       "baseURI": "http://byoung.local:3007"
+<     }
+<   ]
+< }
+< 
+
+
+so actually can go ahead with cuc
+with mocking eureka for now
+
+
+*********************
+4/6/12 fri office 
+*******************
+way behind as usual
+	|CODE and SHORT_DESC                                                                                                |
+	|(053.13) Herpes Zoster With Other Nervous System Complications; Postherpetic Polyneuropathy                   |
+	|(EXANTHEM) Viral Diseases Accompanied By Exanthem Group                                                       |
+	|(070.1) Hepatitis A, Viral, without Mention of Hepatic Coma, Infectious Hepatitis                          |
+	|(070.2) Hepatitis B, Viral, with Hepatic Coma                                                              |
+	|(070.3) Hepatitis B, Viral, without Mention of Hepatic Coma, Serum Hepatitis                               |
+
+
+test out ref ind svc with mauth cli - make sure it actually works - index that is
+
+create indication
+ref rails console
+Indication.create(:short_desc => "sammy pox")
+mysql -u root budgets_development
+mysql -u root references_development
+
+
+      var self = this;
+      jQuery.each(items, function(index, item){ 
+        if (item.value == -999) {
+          // redirect after a session timeout or logout
+          window.location.href = item.label;
+        } else if (item.value == -998){
+          // Not found
+          input_val = $('#indication_search').val();
+          label = item.label+'"'+input_val+'"';
+          ul.append("<li class='ui-menu-item-not-found'>" + label + "</li>" );        
+        } else if (item.value == -1) {
+          // Ther. Area line
+            ul.append("<li class='ui-menu-item-ta'>" + item.label + "</li>" );
+        } else {
+              ul.append(jQuery("<li class='ui-menu-item-indication'></li>").data("item.autocomplete", item).append(jQuery("<a style='width:392px'></a>").html(item.label)));
+        }
+      });
+      ul.removeClass("ui-autocomplete");
+      ul.addClass("ui-autocomplete-indication");
+      $('#indication_search').removeClass('searching');
+    }
+  });
+refactor
+
+i think theres a lot going on in ccss
+thats doing the formatting
+
+public/stylesheets/quick_price_lookup.css
+323:input.searching {
+
+how does css get imported? does it import all of 
+
+ok layout has to be dealt with next
+lets go back to testing out eureka
+and if doesnt work go see ethan
+which means loading it up on my laptop
+
+
+ok what to try with indication index:
+first try through cli tool
+and make sure it works
+next try with rails console eureka - fail
+then try wiping out depoloyments
+and maybe wiping out apis?
+and cleaning up deployments
+
+
+ok cli tool it
+
+there is 1 row in indications
+select * from indications;
++----+------+------------+------+------------------+------------------+
+| id | code | short_desc | uuid | indication_group | therapeutic_area |
++----+------+------------+------+------------------+------------------+
+|  1 | NULL | sammy pox  | 1    | NULL             | NULL             |
++----+------+------------+------+------------------+------------------+
+
+
+maybe i should load up phils file
+as the nulls may be problematic
+or just update nulls
+
+update indications set code = "123", indication_group="ind grp test", therapeutic_area="therapeutic area test"
+where id = 1;
+
+mauth-cli GET http://localhost:3012/v1/indications?search_term="sam"
+
+HTTP/1.1 200
+< content-type: application/json; charset=utf-8
+< date: Fri, 06 Apr 2012 18:28:46 GMT
+< x-rack-cache: miss
+< x-mws-authentication: MWS 2058f324-59b0-452f-a4b2-065e30e7768a:EuuwyjuEmyN1w4L+sEC1t8shkQcTSt18EIlaPWrXNf0xiyrkCFsuYlj3zIWslAvRO8snQ475mVVQ3OOAtNBpG3FasOJkLt0dD74M/sItx4mDHt4acn1LcLkoE+ZvLC6B/Wf3JoOIkk9FMD5u1RRTlhXJxxNaDQNRJ1PZvl+U2cRYlM+CbDN0hp/eAzPaKdqaR43Nx4DLpL9p7olY2dUkvju6toLiJrW3W1OSOV8P+ORldC+Zk52IRLVSQqoc9ZcKYej8bUwXSINxKbIZ0EU4pfGTs6f7VzEohFbI40SzfWeKwaullDBmjUhggUdwXQpcV67fCW2TE8+Ioi1uV2Gcvw==
+< x-mws-time: 1333736926
+< x-ua-compatible: IE=Edge
+< etag: "9c00805756cb9510223198c2174a8d36"
+< cache-control: max-age=0, private, must-revalidate
+< x-runtime: 0.564883
+< content-length: 129
+< server: WEBrick/1.3.1 (Ruby/1.9.2/2011-07-09)
+< connection: close
+< 
+< [{"code":"123","indication_group":"ind grp test","short_desc":"sammy pox","therapeutic_area":"therapeutic area test","uuid":"1"}]
+
+
+it works - shocking
+
+
+rails console
+
+~/i (feature/indication-dropdown) $ rails console
+Loading development environment (Rails 3.1.3)
+ruby-1.9.2-p290 :001 > Euresource::Indication.find(:all)
+NameError: uninitialized constant ResourceInvalid
+	from /Users/magibson/.rvm/gems/ruby-1.9.2-p290@iir/bundler/gems/eureka-client-03a99f0015cf/lib/euresource.rb:272:in `error_class_for_response'
+	from /Users/magibson/.rvm/gems/ruby-1.9.2-p290@iir/bundler/gems/eureka-client-03a99f0015cf/lib/euresource.rb:245:in `handle_response!'
+	from /Users/magibson/.rvm/gems/ruby-1.9.2-p290@iir/bundler/gems/eureka-client-03a99f0015cf/lib/euresource.rb:108:in `find_every'
+	from /Users/magibson/.rvm/gems/ruby-1.9.2-p290@iir/bundler/gems/eureka-client-03a99f0015cf/lib/euresource.rb:35:in `find'
+	from (irb):1
+	from /Users/magibson/.rvm/gems/ruby-1.9.2-p290@iir/gems/railties-3.1.3/lib/rails/commands/console.rb:45:in `start'
+	from /Users/magibson/.rvm/gems/ruby-1.9.2-p290@iir/gems/railties-3.1.3/lib/rails/commands/console.rb:8:in `start'
+	from /Users/magibson/.rvm/gems/ruby-1.9.2-p290@iir/gems/railties-3.1.3/lib/rails/commands.rb:40:in `<top (required)>'
+	from script/rails:6:in `require'
+	from script/rails:6:in `<main>'
+
+need to load up actual phil data into indication
+and get it all printing out proper
+at some point need to go over to laptop
+
+
+LOAD DATA LOCAL INFILE 'references.indications.csv' 
+INTO TABLE indications 
+FIELDS TERMINATED BY ',' 
+OPTIONALLY ENCLOSED BY '"'
+LINES TERMINATED BY '\n' 
+(code, short_desc, uuid, indication_group, therapeutic_area);
+
+
+
+
+
+ ~/i (feature/indication-dropdown) $ mauth-cli get https://eureka-innovate.imedidata.com/deployments
+* connect to eureka-innovate.imedidata.com on port 
+* getting our SSL on
+> GET /deployments HTTP/1.1
+> X-MWS-Authentication: MWS 2058f324-59b0-452f-a4b2-065e30e7768a:Jgc4Y5nnQ8HC0esJi28Hw+hLx6UNDKp3dOBKDsfXzO2mjwvD6sqOBhIpvkuVIZn8lI6MeA+hmIuYDLoBVuBBBpvcnnDGjehVjxRubnjXNAxJzb6dh6PomSKwfhJGl+39P8qInSo1RH1AXjMWwS6Z1mT5lYIB3fpayv+3N4ApGtBKufFK11ZYw7VCo29Nzoo5awN7TPp6vRK2vHVp1VxZ/K0zAa0eJ0RXkqiUe5PrF4oKAi+kx9mJFGDrki3G3l+jC7LdcFVHSsbUThLXbOv7DXYtXI0h5D79DrLGHFhsRYTF92gSb38Qj2c21eFXU9W9p2oDSQGPqPZ+p254yljF1A==
+> X-MWS-Time: 1333741263
+> 
+< HTTP/1.1 200
+< content-type: application/json
+< connection: close
+< status: 200
+< x-powered-by: Phusion Passenger (mod_rails/mod_rack) 3.0.9
+< vary: Accept
+< content-length: 3751
+< x-mws-authentication: MWS 81e3062f-10d5-4e6e-b9f7-ffef3444d3a5:uXGXvvO6G9RkGMrqGfxb422/L6zFdJmZiMAmcPBcc9IV6oNhwHFjbfAZWfsBdB2+678wI5DkwpOfb9NkFcaTkvptHCHWSy9FsHmwzQ3NYYihp9Mn8jua1iNKsqR8nKEmcx5PL8WLyTuJFrG2BQ0OrxHMGNh91EV4GaLv3TfXek693zNltEyGqW0uX3A4X4GdbKtCocATuz7843KOUsoaeA8WA7izFHUkrTLh17zSW0lQe0zuSFPHpdSL0iNkU+NE6ZAw8P8Riq4V2oE0AQqCaWJVln8MA5zM811j9mlBRwTk81LUaUh7rGzXUL6bHTOWOXtWIHp6otLln3DhpulyGA==
+< x-mws-time: 1333741291
+< server: nginx/1.0.6 + Phusion Passenger 3.0.9 (mod_rails/mod_rack)
+< 
+< {
+<   "items": [
+<     {
+<       "apis": [
+<         {
+<           "resource": "apis",
+<           "link": "/apis/references/v1.0.0/rest"
+<         }
+<       ],
+<       "uuid": "2a739839-e369-4241-ad00-f645be543f89",
+<       "stage": "ugandhar",
+<       "baseURI": "http://localhost:3012"
+<     },
+<     {
+<       "apis": [
+< 
+<       ],
+<       "uuid": "39791e04-7f53-4729-8cfc-b067f5ca360e",
+<       "stage": "magibson",
+<       "baseURI": "http://127.0.0.1:3007"
+<     },
+<     {
+<       "apis": [
+<         {
+<           "resource": "apis",
+<           "link": "/apis/cupcakes/v1/rest"
+<         }
+<       ],
+<       "uuid": "fa07cf7d-c17a-4d89-934f-933527830db9",
+<       "stage": "jpetitbon",
+<       "baseURI": "http://jpetitbon.imedidata.com:3000"
+<     },
+<     {
+<       "apis": [
+<         {
+<           "resource": "apis",
+<           "link": "/apis/cupcakes/v1/rest"
+<         }
+<       ],
+<       "uuid": "56cf6306-487b-40ff-bc29-2707a01276c3",
+<       "stage": "jpetitbon",
+<       "baseURI": "http://cupcakes-jpetitbon.imedidata.local:3000"
+<     },
+<     {
+<       "apis": [
+<         {
+<           "resource": "apis",
+<           "link": "/apis/references/v1.0.0/rest"
+<         }
+<       ],
+<       "uuid": "c3c0614a-6ee2-4569-a2f5-96c10c8675a6",
+<       "stage": "magibson",
+<       "baseURI": "https://localhost:3008"
+<     },
+<     {
+<       "apis": [
+< 
+<       ],
+<       "uuid": "9a76904c-56d1-4024-a1bd-a50a853db588",
+<       "stage": "magibson",
+<       "baseURI": "http://localhost:3007"
+<     },
+<     {
+<       "apis": [
+<         {
+<           "resource": "apis",
+<           "link": "/apis/cupcakes/v1/rest"
+<         }
+<       ],
+<       "uuid": "9256caf5-7d64-47e3-9ec0-52809ceb3014",
+<       "stage": "jpetitbon",
+<       "baseURI": "http://jpetitbon.imedidata.local:3000"
+<     },
+<     {
+<       "apis": [
+<         {
+<           "resource": "apis",
+<           "link": "/apis/references/v1.0.0/rest"
+<         }
+<       ],
+<       "uuid": "1f832784-b9cc-42ef-a2a1-9070ce8a2c5a",
+<       "stage": "magibson",
+<       "baseURI": "http://localhost:3011"
+<     },
+<     {
+<       "apis": [
+<         {
+<           "resource": "apis",
+<           "link": "/apis/cupcakes/v1/rest"
+<         }
+<       ],
+<       "uuid": "bf725f6d-3f2f-4664-9db7-38c6f4864362",
+<       "stage": "ethan",
+<       "baseURI": "http://ebaz.local:3001"
+<     },
+<     {
+<       "apis": [
+<         {
+<           "resource": "apis",
+<           "link": "/apis/budgets/v1.0.0/rest"
+<         }
+<       ],
+<       "uuid": "d0e244dd-e8c1-41c5-b466-c665ae007ed1",
+<       "stage": "magibson",
+<       "baseURI": "http://localhost:3005"
+<     },
+<     {
+<       "apis": [
+<         {
+<           "resource": "apis",
+<           "link": "/apis/cupcakes/v1/rest"
+<         }
+<       ],
+<       "uuid": "8d79f949-8660-42a7-922c-24eadc844c04",
+<       "stage": "jpetitbon",
+<       "baseURI": "http://jpetitbon.local:3000"
+<     },
+<     {
+<       "apis": [
+<         {
+<           "resource": "apis",
+<           "link": "/apis/references/v1.0.0/rest"
+<         }
+<       ],
+<       "uuid": "7069cb03-492a-4cde-979a-044f00528799",
+<       "stage": "magibson",
+<       "baseURI": "https://localhost:3009"
+<     },
+<     {
+<       "apis": [
+<         {
+<           "resource": "apis",
+<           "link": "/apis/references/v1.0.0/rest"
+<         }
+<       ],
+<       "uuid": "aa3037c0-cd3e-4cb1-b09a-62123dc7a326",
+<       "stage": "ugandhar",
+<       "baseURI": "https://localhost:3010"
+<     },
+<     {
+<       "apis": [
+<         {
+<           "resource": "apis",
+<           "link": "/apis/eureka/v1/rest"
+<         }
+<       ],
+<       "uuid": "84e0d0e3-07f7-42a9-a597-befae51e3c1b",
+<       "stage": "innovate",
+<       "baseURI": "https://eureka-innovate.imedidata.com"
+<     },
+<     {
+<       "apis": [
+<         {
+<           "resource": "apis",
+<           "link": "/apis/references/v1.0.0/rest"
+<         }
+<       ],
+<       "uuid": "34023bd0-5792-42a6-ad00-840ec30c2758",
+<       "stage": "byoung",
+<       "baseURI": "http://byoung.local:3007"
+<     }
+<   ]
+< }
+
+
+mauth-client delete https://eureka-innovate.imedidata.com/deployments/THE-UUID-HERE
+
+
+mauth-cli delete https://eureka-innovate.imedidata.com/deployments/2a739839-e369-4241-ad00-f645be543f89
+
+204
+
+mauth-cli delete https://eureka-innovate.imedidata.com/deployments/39791e04-7f53-4729-8cfc-b067f5ca360e
+mauth-cli delete https://eureka-innovate.imedidata.com/deployments/c3c0614a-6ee2-4569-a2f5-96c10c8675a6
+mauth-cli delete https://eureka-innovate.imedidata.com/deployments/9a76904c-56d1-4024-a1bd-a50a853db588
+mauth-cli delete https://eureka-innovate.imedidata.com/deployments/1f832784-b9cc-42ef-a2a1-9070ce8a2c5a
+mauth-cli delete https://eureka-innovate.imedidata.com/deployments/d0e244dd-e8c1-41c5-b466-c665ae007ed1
+mauth-cli delete https://eureka-innovate.imedidata.com/deployments/7069cb03-492a-4cde-979a-044f00528799
+mauth-cli delete https://eureka-innovate.imedidata.com/deployments/aa3037c0-cd3e-4cb1-b09a-62123dc7a326
+
+
+
+mauth-cli delete http://eureka-innovate.imedidata.com/apis/references/v1
+MAUTH_CONFIG_YAML=~/r/config/mauth.yml mauth-cli delete http://eureka-innovate.imedidata.com/apis/references/v1
+
+https!
+
+mauth-cli delete https://eureka-innovate.imedidata.com/apis/references/v1.0.0
+mauth-cli delete https://eureka-innovate.imedidata.com/apis/budgets/v1.0.0
+
+require 'eureka-client'
+eureka_config = YAML.load_file('config/eureka.yml')[Rails.env]
+mauth_config = YAML.load_file('config/mauth.yml')[Rails.env]
+eureka_config['mauth_config'] = mauth_config
+eureka_config['logger'] = Rails.logger
+ec = Eureka::Client.new(eureka_config)
+
+references_api = YAML.load_file 'config/api_document.yml'
+ec.deploy_apis!([references_api])
+
+development:
+  eureka:
+    baseURI: https://eureka-innovate.imedidata.com/
+  deployment:
+    apis:
+      - name: resources 
+        version: v1.0.0
+    baseURI: http://localhost:3007
+  stage: iir-development
+
+
+mysql -v -u root references_development < references.load_data.sql
+
+LOAD DATA LOCAL INFILE 'indications.csv' 
+INTO TABLE indications 
+FIELDS TERMINATED BY ',' 
+OPTIONALLY ENCLOSED BY '"'
+LINES TERMINATED BY '\n' 
+(code, short_desc, uuid, indication_group, therapeutic_area);
+
+
+
+try out and see if all indications come up in dropdown
+
+
+
+*********************
+4/9/12 monday office
+*********************
+
+way behind as usual
+
+lets track time in time
+
+912 need to get data from ref dump showing up
+data is in table
+917 data coming through - wrong format
+
+
+here is the proper format:
+ANTI-INFECTIVE
+(007.2) Coccidiosis: Cryptosporidiosis (Arc Cryptosporidial Diarrhea, Diarrhoea)
+(008.61) Enteritis due to Rotavirus, Rotaviral Diarrhea, Diarrhoea
+(009.2) Infectious Diarrhea
+(110.9) Tinea of Unspecified Site, Dermatophytosis, Ringworm Nos (Tinea Capitis, Head, Scalp)
+(132.0) Pediculus Capitis (Head Louse, Head Lice)
+(098.0) Gonococcal Infection, Acute, Urethritis (Gonorrhea, Gonorrhoea of Lower Genitourinary Tract)
+(098.15) Gonococcal Cervicitis, Acute (Gonorrhea, Gonorrhoea of Cervix)
+CARDIOVASCULAR
+(411.1) Ischemic, Ischaemia Heart Disease: Unstable Angina
+(746.9) Unspecified Anomaly of Heart, Congenital Heart Defect
+
+
+923 what comes back from eureka?
+does the api describe this
+
+nope
+  indications:
+    methods:
+      index: 
+        id: indications.index
+        path: indications.json
+        httpMethod: GET
+        description: "A list of indications."
+        parameters:
+          search_term:
+            type: string
+            description: "A 2+ character search term that filters by indication code and/or the short description"
+            required: false
+            location: query
+
+926 either get from debuuger exam or from  contract docs
+
+https://sites.google.com/a/mdsol.com/knowledgebase/home/departments/engineering/on-demand-portfolio/services/medidata-services/phile-service-contract-page
+
+
+ Attribute	 Type	 Description
+ uuid
+ String	 Database independent unique identifier.
+ code	 String	 ICD9 standard code or Mdsol generated code.
+ indication_group	 String	 Name of the parent Indication Group. Maybe empty if the item is a therapeutic area or an indication group.
+ short_desc	 String	 Short description.
+ therapeutic_area
+ String	 Therapeutic area.
+
+cool got code in there
+
+many things need to happen:
+
+946 - noticed funny behvior on qpl - characterized
+if input is same as previous then wont bring up dropdown - need to change that
+in both old & new
+
+many things:
+need categories
+word wrap
+nice box/layout - hard
+scrollbar
+have to be selectable!
+and be able to arrow down
+and highlight on mouse over
+
+talked with mike about ui issues - 10 min
+1004
+what should i do next
+all of these are hard actually
+
+lets prior:
+
+layout
+categories
+scrollbar
+highlight
+selectable
+arrow down
+word wrap
+
+thats huge - that will take me all week!
+and all of those are separate tasks with many hours each
+
+heart,
+
+1028 done talking with mike - about stuff - 20 min or so
+
+lets do indication group!
+lets see how qpl does it
+layout is a biggie
+
+keep the codes mike
+more mike talk - 1038
+
+ok how does qpl do its categories
+
+1039 tonya budget chat eureka question
+
+1054 - done yapping with ugandhar - about grigory stuff on fri
+still helping tonya
+
+1120 done talking with bill
+email listing people
+talk with ellen about moving bill
+help tonya,bill
+1130
+
+1132 - u has ?
+1139 - discussion with u & m about arrows
+
+        } else if (item.value == -1) {
+          // Ther. Area line
+            ul.append("<li class='ui-menu-item-ta'>" + item.label + "</li>" );
+        } else {
+              ul.append(jQuery("<li class='ui-menu-item-indication'></li>").data("item.autocomplete", item).append(jQuery("<a style='width:392px'></a>").html(item.label)));
+        }
+
+the 1st is ta category
+the 2nd is an item!
+
+1143 - coding - woopee
+
+onc is a goodcompletion
+
+1153 tonya hipchat budget prob
+1207 - done hopefullly chatting with t & u & b
+
+qpls_controllers
+  # event for search for indications after an auto-complete of 2 chars in the indication search input box
+  def search_indications
+    search_string=params[:term].strip
+    if search_string.length >= 2
+      search_results = IndicationSearch.search(search_string)
+      ind_search_result_to_show = IndicationSearch.format_indication_search_results(search_results)
+      if ind_search_result_to_show.nil? or ind_search_result_to_show.length == 0
+        render :nothing => true 
+        return
+      end
+      render :json => ind_search_result_to_show.collect{ |item2| {:value => item2.display_id, :label => "#{item2.display_label}"} }
+    end
+  end
+
+1230 done talking with bill - 20 min
+
+phil jammed everything into value label one hash
+i stumbled on these things working as object i guess
+
+      search_results = IndicationSearch.search(search_string)
+      ind_search_result_to_show = IndicationSearch.format_indication_search_results(search_results)
+
+  # main method to return results of a search that returns all TA/grp/indications for a minimum 2 letter search
+  def self.search(search_val)  
+    sql_str="select ta_id,Ther_area,indgrp_id,ind_group,indication_id, indication, short_desc"
+    sql_str+=" from v_qpl_indmap_search"
+    sql_str+=" where Lower(short_desc) like Lower('%#{search_val}%')"
+    sql_str+="        OR Lower(indication) LIKE Lower('%#{search_val}%')"
+    sql_str+=" union all" 
+    sql_str+="      select id ta_id,code Ther_area,null,null,null,NULL,null from indmap" 
+    sql_str+="      where type='Therapeutic Area' and lower(code) like lower('%#{search_val}%')"
+    sql_str+=" union all"
+    sql_str+="      select a.id,a.code, b.id, b.code, null, null, b.short_desc from "
+    sql_str+="      (select id,code,short_desc from indmap where type='Therapeutic Area') a,"
+    sql_str+="      (select id,parent_indmap_id,code,short_desc from indmap where type='Indication Group') b"
+    sql_str+="      where b.parent_indmap_id = a.id and (lower(b.code) like Lower('%#{search_val}%')"
+    sql_str+="      or lower(b.short_desc) like lower ('%#{search_val}%'))"
+    sql_str+=" order by 2,4,6"
+    
+    search_results=find_by_sql sql_str
+    converted_results = convert_for_dropdown(search_results)
+    converted_results
+    
+  end
+
+
+  # this conversion function inserts TA group rows for every new TA found in the list, in order to provide the exact contents for the indication dropdown
+  def self.convert_for_dropdown(results_set)
+    dropdown_collection = []
+    current_ta_name = ''
+    results_set.each do |row|
+      if row.ther_area != current_ta_name
+        current_ta_name = row.ther_area
+        ta_row = IndicationSearch.new
+        ta_row.ther_area = row.ther_area
+        ta_row.indication_id = -1
+        dropdown_collection << ta_row
+      end
+      dropdown_collection << row
+    end
+    
+    dropdown_collection
+  end
+
+
+  # utility function to process indication searches
+  def self.format_indication_search_results(search_results)
+    ind_search_result_to_show = []
+    if !search_results.nil? && search_results.length>0
+      search_results.each do |item|
+        display_name = format_indication_display_name(item)
+        obj=IndicationSearchResultItem.new
+        # here we tweak the results so every row has an indication id
+        if !item.indication_id.nil?
+          obj.display_id=item.indication_id
+        elsif !item.indgrp_id.nil?
+          obj.display_id = item.indgrp_id
+        else
+          obj.display_id = item.ta_id
+        end
+        
+        obj.display_label=display_name
+        ind_search_result_to_show<<obj
+      end
+    else
+      ind_search_result_to_show = ClientBase.create_result_not_found_row
+    end    
+        
+    ind_search_result_to_show
+  end
+
+
+1245 - 1 minute ugandhar help
+1246 bill pr
+
+1257 done with pr
+
+114 chatter with bill
+
+wow results not sorted by group - darn
+gotta sort
+
+
+125 email listings folk
+
+bill
+tonya
+226
+
+311
+did some more work
+its occurring to me i should finish off phase for tomorrow
+
+349 
+ok good stopping point
+got categories/groups therapeutic areas working
+
+lets do a commit and actually a push so can bring up on laptop
+and go over to finishing phase and readying tonya demo 350

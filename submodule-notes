@@ -1,3 +1,20 @@
+updating a submod
+ss "wip stuff from branch im working on"
+dev
+pdev
+git fetch
+make-branch update-bud-submod
+cd ~/ib
+git checkout origin/develop
+rvm use ruby-1.9.2-p290@budgets
+bundle install
+cp ~/random-stuff/iir/mauth.yml config/mauth.yml
+bundle exec rake db:migrate
+git add
+git commit
+
+
+
 http://book.git-scm.com/5_submodules.html
 
 http://chrisjean.com/2009/04/20/git-submodules-adding-using-removing-and-updating/
