@@ -9458,3 +9458,31 @@ got categories/groups therapeutic areas working
 
 lets do a commit and actually a push so can bring up on laptop
 and go over to finishing phase and readying tonya demo 350
+
+bill chat
+419
+need to make sql statement
+to update for demo
+
+update budgets
+set description = "well this is a test description - this is only a test - test test test",
+    principal_investigator_name = "Sammy James",
+    phase_uuid = "43d5aedb-cce4-419e-82a4-ef18474f60fc"
+where id = 1;
+
+
+http://localhost:3007/v1/phases
+[{"uuid":"5b660b29-2413-4a4e-a0b0-b0f351b29f73","name":"Phase 1"},{"uuid":"b4e3fa0c-54cc-4749-a589-7d8808a34453","name":"Phase 2"},{"uuid":"e991d87b-d8c9-45d7-b344-77937670ef52","name":"Phase 3"},{"uuid":"43d5aedb-cce4-419e-82a4-ef18474f60fc","name":"Phase 4"},{"uuid":"fcf189f0-99ae-41df-80b5-8ff1a29aa051","name":"Unknown"}]
+
+
+select id, phase_uuid, description, principal_investigator_name from budgets;
++----+--------------------------------------+------------------------------------------------------------------------+-----------------------------+
+| id | phase_uuid                           | description                                                            | principal_investigator_name |
++----+--------------------------------------+------------------------------------------------------------------------+-----------------------------+
+|  1 | 5b660b29-2413-4a4e-a0b0-b0f351b29f73 | well this is a test description - this is only a test - test test test | Sammy James                 |
++----+--------------------------------------+------------------------------------------------------------------------+-----------------------------+
+1 row in set (0.00 sec)
+
+
+thats phase1
+
