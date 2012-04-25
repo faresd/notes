@@ -6,3 +6,35 @@ controller query model
 model sign request and send request off to imedidata
 make request just like curlmaker does
 
+
+
+4/16/12
+INDICATIONS:
+the font is no good
+#and javascript should be in sep file
+~and then gotta do all the scenarios
+#alsoi containing box going way out - just get rid of 
+#not catching resource not found!
+# lets catch that 500!
+# and get rid of that box
+# sep js file
+~scenarios
+indication as a partial ?
+#cucmber is broken
+
+##eureka is broken - focus on cuc
+
+#500 ->
+#no results matching "search"
+
+##need to style no results matching!!
+
+Scenario: When Investigator Sponsor enters 2 characters for indication search then search results will not be returned; spaces at the beginning or end of a keyword search should be truncated before search.
+
+Scenario Outline: Investigator Sponsor can search for an indication by entering the Code.
+
+
+??Scenario Outline: I can search for an indication, indication group or therapeutic area by keyword. 3 or more characters will initiate a keyword search; Special characters can be used for search.
+
+
+failure - 500 - error msg in box

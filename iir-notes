@@ -2919,31 +2919,7 @@ documented that
 and whats confusing is the priv keys have sam MIIE prefix
 i think i will just reuse my working pair for now i think it will be fine
 -----BEGIN RSA PRIVATE KEY-----
-MIIEoQIBAAKCAQEAzFFKXyGP2tmS9GAw0yjuDcjYn35KvNsmMc6L8JqLhXIhEF7t
-xP/s9Z4/gq5ESPD1JdcRCUMkoXF9p/b/L25V/+08szyYdWUz4Wwh/wdu41xcT1lU
-SOmz5ApPO9Z5BTTZprW/BZaI1YYlCugwjjaNrN0vwXghI5Ak6zF3GuSgqnLQYBC3
-HgAGMsWYy9XT07uLpgDbOOSsz9iDN3e/QVSyPAIrZr7F/x7Ej/ftbiMsn0Mz87fv
-PEbhoScH422v9nBUH90IW++nKuIYuc5giaLLTO2iyJAIHd5jQFtVgNp52286MV31
-dcBvzPH1YEnmVRj6M4JJoQUi9g6/bO3CQauYywIBIwKCAQEAhkQMTSSu/Yeptoha
-mWQKJlDI3damJFV/f9DfnhxqUGDxKAPeE74fX5Pgl7RYwjfxjeUZ0uL60H3HmkM5
-+pj2r36kO0UTutwax1Wv8Lu95d2bvx1x5sV2NsTyPUPL3tmWV5wBL47O8rc86ekJ
-9w3oEoK4+3rT8sxwCEUTwTcnwHYna+0KZ4XIhaHHYbLbZO/M7tm0TCxta+yoslZ5
-iB8lg1PtqOj9r8qwaXYzrUP2BvcltSjhmKIhNNAfSvem2+InXTyOWu14QvbUNQae
-qwj577t5+5BDH6OuQLHYfC74fEd+d5UsXMwZUKZJS3r/uynxPUwJDowH+EYDHGhF
-3sLDKwKBgQD+laNfF114az967EBIcjW4y8C39pHdK7al1J73r1LXiImwYsZZA0PI
-tpqmD2SsUMsoHn1c+D7S6KFYvGcnTTFR7oo8z8/1yPvI45DBRqyp76fjwMQmWf0g
-wDntHcvB69OIomUVQuA0YpQxe47wOY/pRPS3dtUju4YZMlVR9P7oWwKBgQDNdBrk
-BO07PvQa/P/ONzpNFb0ySNeNTc/+EK47JwocDQPk1mlaPkJes1Bc58Zi9fTSc6NR
-Ol9AXQYxnq8QT4KwB52Z4F1ISekjLIF2KG4JMz63fdoXcld8Ha6ZY0zOgGaM70Jl
-CdYrJ0p1v8gjCdnvvcvzr+B4qncnD13vtuh8UQKBgB0YanFEf7X9oNrZK+sFvP8t
-OpiudxH2XgRS0FbSNVp2ARt5ALm3OvJeAwup/OB+QxqHJEUjr2iPnWk6GmrkQCae
-6zomYOjjxQEEEIseBRq8TbOhAHlpXsHqFT+rokIMUrCHloYWRYJUaLUysUAGlBqo
-y4KufsJBUSdzd3cUr2sDAoGAEZw80bdHiLxAzxz/+7uXSG+T370Zykh/is460d7G
-Wi0AVXF2vpefSfIc1MNoxqdeIKrTe/2wZJpCXAZJhQ4hJQf3kNi3idpzEaS6o7pS
-kxMFYC9b1h++Wxh8rg/TYihDTeifSn0vnUyCuaK5YhbJiZPs6QByU3xTWx6TBesb
-PdsCgYB+y7H5MQSw4fFzsoxdDALRpBjbddirKwXxOLiwhV3z1rk0pLoPnrsQddOL
-32wtUFuYNS+wSu/480r9u0JLsriKKcf241z2XCdHJ2slpHDD9imL5wDxmtKm4Th9
-xO9tGPVwzbM5YEKnbtalWcGBv3AjOZshBl3Zut8lIBSftMvTVA==
+
 -----END RSA PRIVATE KEY-----
 
 
@@ -3022,31 +2998,6 @@ Create a new yaml file, ensure it has the following format:
 
      :private_key_str: | 
           -----BEGIN RSA PRIVATE KEY-----
-               MIIEowIBAAKCAQEA34ajaK5gm/UM4PxHyrIF+gcBr6cacLqWdSzfGOz6KdBLCZXz
-               HYWX/9sEL7XgWuXhhXsJr8bgNibUToghgK+cE9QVUnipDSogc2Ds2FJE5rlJBFtf
-               PLrw11OT20teCTeFpaXl2pE/C+ItlW9Ip2QYNF5v9eHHxMdBzJC7yckiCfLaY58/
-               wT+KaxiFZsaw15LMGHeiqMeGt1kRGqfREIm+drOiMjD5P49uOMn2Ye5RbdF1JkhV
-               v1wogqABWpAV1d8akpBh3bytoyH4Wgwi4lLeAVSc0glnh6+ED3wq0+7p1X/OufTE
-               rEJNDyRRg9hiTLnXMKWpX24yX5TI5cucDp6DPQIDAQABAoIBAB+C5JCCXL4/upQR
-               HLHXjP4ldLhlj1WrCED2lXD3H4E7iwiL6h0UU0xPfPSY6EsIM1XU9ZWhLMSVjsKP
-               cGGq4A7vjB33QqXHdZGubVVFq872+fMySmfOVtuUPbjhlB0qhZ3HmHLKnR+4wAJc
-               ENsAQmVHlvML5FS6Xm1PThnxT+ok3ezJHq7wEdHeWxgKffUrbv6JHK1p4wHn9s3B
-               DU/Ljnfi04Q6q7yr5COzarpBiego7NqHqcMmQnZAfzUdYW9sNu9skjYpm0u5JFJv
-               5NAD9pLaA2lOCeJo9tkxQyzX+7GNvC0X7fHrrREgHJQsoMOjN5RacOc/xHdy7aWK
-               /K0HbmUCgYEA9DXh2obI8I0s2pYRXO5pMNPkpm3ouhjIJGh0cBUO8gkyqwRy3JOl
-               NG/mewJRPt3gynBe+T8B0ZEEzKItP3LdMoKQyMiUa/4mKq6Q33ZxabgilrnfG7wR
-               QlCWUOmrEf1r6KIKqPtIQVpxR5ms85P2j6OJHWSFm5MojHQ1iawSjfMCgYEA6lEf
-               XDGadnT7rxJHRObvW8KzbRmv/N2o0UW5tVv+EyC+IpGghSa62WXQmbk3RDl3VJRe
-               q+tkBUzL56xfOFeZ5/YwCvHcizOkqJRk7F0I+mabD1cbVAMtnTUgo4Um32vdGT+Q
-               Br9sZkp1pQUKkmAYgVXqVOdpKjrp8o83hh+Zhg8CgYEAlFgOw/HQKd93+afjEDJ6
-               j4CHilmFX1YibYtN/6+rDndr4dqn8zl0xy+aL+quc6PQIuizqHAPqL+QzMVO+xXJ
-               LB+H14+QKTGO+apksnl+VxvVVv29e1l4mnHdfXUTx6/LVtrn4tIRiDFqUnYVSzj8
-               MzDB36rqRiDUJs2IoAJ4muUCgYAt80KnHcMgv8griPYY+QCvifsNxh/RAtb8UyQc
-               ALJOpfkjZlOISRQTVfgWbU/9PRe9qmr2Y+71ax4BjLgPoH46EvlQ7CVH1xTPSmqQ
-               P55nHIAD/h0J2KW1UpnX92CsJ8bwEJr598gWNzvi5J4yHk4v7t1JUSg6c9s1Cgjl
-               cIT22QKBgHayTw+K3CIf8f7j8Bso6JuKhJV4Hz7D5U0HFiKqSl5Hxl+V4LoaYtOR
-               pdqtQCNnVLrDcXaLNOknjDEvi1qtA5acbyiRS9dyE/Plv4p96rsyQY6PviU6gbKI
-               cmWAExNsM5QZHHIToW855bFXm+rCZvCn3oYUA1tyvDQqZbZUX8pQ
                -----END RSA PRIVATE KEY-----
     :app_uuid: d38e7edc-5113-11e1-95fe-70cd60fffe66
     :host: http://localhost:3001
@@ -3376,8 +3327,6 @@ l;ets go to curlgen
 so headers has key value pairs for headers
 
 
-i think priv key has to be as one string with \n
-"-----BEGIN RSA PRIVATE KEY-----\nMIIEowIBAAKCAQEA34ajaK5gm/UM4PxHyrIF+gcBr6cacLqWdSzfGOz6KdBLCZXz\nHYWX/9sEL7XgWuXhhXsJr8bgNibUToghgK+cE9QVUnipDSogc2Ds2FJE5rlJBFtf\nPLrw11OT20teCTeFpaXl2pE/C+ItlW9Ip2QYNF5v9eHHxMdBzJC7yckiCfLaY58/\nwT+KaxiFZsaw15LMGHeiqMeGt1kRGqfREIm+drOiMjD5P49uOMn2Ye5RbdF1JkhV\nv1wogqABWpAV1d8akpBh3bytoyH4Wgwi4lLeAVSc0glnh6+ED3wq0+7p1X/OufTE\nrEJNDyRRg9hiTLnXMKWpX24yX5TI5cucDp6DPQIDAQABAoIBAB+C5JCCXL4/upQR\nHLHXjP4ldLhlj1WrCED2lXD3H4E7iwiL6h0UU0xPfPSY6EsIM1XU9ZWhLMSVjsKP\ncGGq4A7vjB33QqXHdZGubVVFq872+fMySmfOVtuUPbjhlB0qhZ3HmHLKnR+4wAJc\nENsAQmVHlvML5FS6Xm1PThnxT+ok3ezJHq7wEdHeWxgKffUrbv6JHK1p4wHn9s3B\nDU/Ljnfi04Q6q7yr5COzarpBiego7NqHqcMmQnZAfzUdYW9sNu9skjYpm0u5JFJv\n5NAD9pLaA2lOCeJo9tkxQyzX+7GNvC0X7fHrrREgHJQsoMOjN5RacOc/xHdy7aWK\n/K0HbmUCgYEA9DXh2obI8I0s2pYRXO5pMNPkpm3ouhjIJGh0cBUO8gkyqwRy3JOl\nNG/mewJRPt3gynBe+T8B0ZEEzKItP3LdMoKQyMiUa/4mKq6Q33ZxabgilrnfG7wR\nQlCWUOmrEf1r6KIKqPtIQVpxR5ms85P2j6OJHWSFm5MojHQ1iawSjfMCgYEA6lEf\nXDGadnT7rxJHRObvW8KzbRmv/N2o0UW5tVv+EyC+IpGghSa62WXQmbk3RDl3VJRe\nq+tkBUzL56xfOFeZ5/YwCvHcizOkqJRk7F0I+mabD1cbVAMtnTUgo4Um32vdGT+Q\nBr9sZkp1pQUKkmAYgVXqVOdpKjrp8o83hh+Zhg8CgYEAlFgOw/HQKd93+afjEDJ6\nj4CHilmFX1YibYtN/6+rDndr4dqn8zl0xy+aL+quc6PQIuizqHAPqL+QzMVO+xXJ\nLB+H14+QKTGO+apksnl+VxvVVv29e1l4mnHdfXUTx6/LVtrn4tIRiDFqUnYVSzj8\nMzDB36rqRiDUJs2IoAJ4muUCgYAt80KnHcMgv8griPYY+QCvifsNxh/RAtb8UyQc\nALJOpfkjZlOISRQTVfgWbU/9PRe9qmr2Y+71ax4BjLgPoH46EvlQ7CVH1xTPSmqQ\nP55nHIAD/h0J2KW1UpnX92CsJ8bwEJr598gWNzvi5J4yHk4v7t1JUSg6c9s1Cgjl\ncIT22QKBgHayTw+K3CIf8f7j8Bso6JuKhJV4Hz7D5U0HFiKqSl5Hxl+V4LoaYtOR\npdqtQCNnVLrDcXaLNOknjDEvi1qtA5acbyiRS9dyE/Plv4p96rsyQY6PviU6gbKI\ncmWAExNsM5QZHHIToW855bFXm+rCZvCn3oYUA1tyvDQqZbZUX8pQ\n-----END RSA PRIVATE KEY-----\n"
 
 
 
@@ -6461,37 +6410,13 @@ lets first make mauth.yml - do a git ignore on it and then make sample
 
 YOUR NEW PERSONAL UUID IS: (app_uuid)
 
-2058f324-59b0-452f-a4b2-065e30e7768a
+2058
 
 lets dig up private key that should still be valid from iir
   private_key: |
         -----BEGIN RSA PRIVATE KEY-----
-        MIIEpQIBAAKCAQEAy8uLxcS4BMStRiRRV+pDxujhaWJOQzM9kPOOHw7r80DVpbUU
-        DpZFaQdnUpDlIq3ptY8hVnEgLGKzCGlNeot/aWJh7s01CuAgTP1WhfILU7XhlXtb
-        suh++MlhDbkDQsEePcIOGzQCBQHHcxn+DBAwSbN5sNfpB/BQkmXmgXkbTgP8aNEQ
-        Nr8ywypmXYQ5zOnDBFPOBbcrhm4kfUzVtWbQ87ukAyQDsTh0/Tjf76xRf4mRB0Vi
-        pPjjtw7wFGULSckco1ZpnaTwb6NUJrXnI3l1eArPUBFAInrlNYOSYow/+vRG9/Cg
-        0bhcLmVpeKJSPw1PM65rqv0g5dbVO6PlfrDqAwIDAQABAoIBAQC3IB5nBg/9aOXy
-        42ucvktND7KNyeJdjEvEVrbcvcHUAex5TK/LM8kHSbnUfZMIiJI7rXPdgyXP/Ji3
-        9DfE6FkDT36E4SzKqv8bb4IyNn9rJ0Kf2gtaRoTh9cMaW6fMclBEWn3mf+NYsHKS
-        wUaBfIKHl5jACiPCGHWuN5bbvQGGJX5YrHSvaAtvAvSVoqk9e08IZPWkUxTWZq46
-        QNI4Zr5NaeD14xn5YnKvLDmiigZkqwGPj3JlNm2NBjvBgJZjBkF0oYCunPOoFOxS
-        /yjwIGJbvTXkIgeCSyH2e6hXEfCzTK2gu1m2PUa7iCvssNewCz120RHwdp/TG5BH
-        69OJYewxAoGBAPu7Wc3GZYD24qbwFTdGUtQAboJTgW8ZOCRz4u2Tbdo2Oylerx9v
-        n0CO5h0FBcJQq2fXPAag9gaHQjCAA+2DSK8qlFUNDIocK3DtVMFv/SYhn1Mo1eGk
-        cBtLRF+NfLm66/tI12UcExPRxgf6NfYe24Eus+ZPq2+fouS90HePlTWVAoGBAM9A
-        H9nf5vQunk8JCVzJvbLg/076GVGEPnCAJT8uor/Tv93eu7/wRXQZnKrFAZ44krh0
-        3S0DGD+Uweu0JXmJENpqIV8ZeCSlUBEGgN9ivue6glOAjCpndeiW+cfbIMHcVsha
-        Mhi+TP00setPZt9IQNbRVTccdTCF+jIDV4W7wQs3AoGAGiRswRf3dpstEpUgPutI
-        sseQsmwlpvoBgJegW3fSErVLE5LHsQYQjc3JS/43iOSDyHbrvux8YFUvpIXG4qWd
-        qMNNQD/oq3cdc87R3Hza11jqiOJWw+Yl1k/Mu/efmlI1K5V2+QMfYBGK9U0gyXyO
-        4y2MdUCU1zTG3+ZufdwlbLkCgYEAgl1Lq7jzhdVtLzn38a3U7ZgqAHvBQU12GT4C
-        L+Qd65w+rElWwD1a8tTJf4G8qtHbOLwKBC5WKmhgMut2RyS4vSrVIwTaVfLGkm8M
-        0XdDrm/bWrsZb/L0cAHHzLdBu6/lxtE1gerycrOa1vFzPDAu2PGEMM5tyL/9yUfg
-        3fZkT7ECgYEA5Obilp8Qa+mJRrFq+9XM9p9Nyy1uZiD0YE4ZhYPXH6fiDO2S/EOH
-        ShnUvZnlRy1XA0pjQp74f9hQswBQE5DQDQSFSaR6vGPKurkW2k+TgdR8gR98OJGU
-        oSM/J2VRPdlFRsQW+5x4BJb1MFiIkfvPIACkXPR4ITLhmuptSQbXh3w=
-        -----END RSA PRIVATE KEY-----
+
+
 
 /Users/magibson/.rvm/gems/ruby-1.9.2-p290@budgets/gems/rake-0.9.2.2/lib/rake/ext/module.rb:36:in `const_missing': uninitialized constant MAuth::Rack::RequestAuthentictor (NameError)
 
@@ -7181,7 +7106,7 @@ and config it up - i dont think its configged up in my submod
 nmap -p 23 costanalysis-sandbox-94aa1353.cz4lsbnwubdn.us-east-1.rds.amazonaws.com
 
 taking out old appuuid in imedidata
-    :app_uuid: 63566d60-4c62-11e1-b86c-0800200c9a66 
+    :app_uuid: 63566d
 i dont think it works anymore
 putting in mine
 oh need to change private key too
@@ -7190,30 +7115,6 @@ old imedidata private key:
     :private_key: | 
                     -----BEGIN RSA PRIVATE KEY-----
                     MIIEpAIBAAKCAQEAtJQ15Qxju7lrXyXL8eRHQNa4KvG1Lief+reSwhVTAUTWqk1L
-                    RcZGh+fpu5IYG2LnL+nRiwBOirqTgsTt4EblTp7k8uzdawPg4Zfk7Y20OZ/F+LrQ
-                    /0JF2fGtdZvqyH4IY6GHtPvBEBZ5ERM5pJMMgk7WGp6ocNhpwwaE/ATAOTrnNAFt
-                    X2MwQ5e0IihZYywM0iDuddBVI5pqtgE6WvJQ2KFk//9VZqYax2kxDOT/QSIJDQht
-                    uP9Ruc4Km+T8X27GVL6Vm1QX65wlOiVGGL67/FLuluDkBqIeUaNPYstFxBP8MEoH
-                    qhYf7D5vHV0JItLmnGTPn0p7fqx9rNtcvR2ERQIDAQABAoIBAFTQ4FeK8DU2LAZu
-                    vFILRKRhtfMFwHHDTtL18kqStX/9E06+K0LElFA1T4U4Y3ZJiAjrK+674Cgs5igf
-                    0xLqeb3px+OJ+Z3QHooXTAF/80y1jMj9Bjk+qYxqhWyeJTKyb8JMFm+dZ9rkk0y/
-                    2O1B3DhASzQJnVgTbemaYE/280ptY6j8yIL8zJCDS77LexWx0uySwXINF+ZhRs2Q
-                    qpshGg4ijL07+PpzSr4KF05vewk93FO0j87AHq27FHO06aguWB81ubsyFHkalQhP
-                    AnCF2db6yD9r1spfIdgR2+QTjZ8JtUjq16SSh+lhGEr7CtapJvjOaibvsPigQw7N
-                    mjCC3ikCgYEA5+fl4uI8sp+4cpzvz3c7mRcUuKSirBsVYChQpdNUlzw09+ebvzS4
-                    jvxNXWnPD49mfKo1eifpGckVqMJlUQexVtDHsLhs7sYuDCZhDUOh9xExm/B89sQT
-                    jQ4PfeX+M9Xyasb6Ke4f2HHX/TXOlMF4daECkdTKlTuHiVtryMBxATMCgYEAx1cl
-                    9Rviv3aIC+UAK5GlsqI72OXdjkIkwk8WUswlm4tz513xVQon6xcIJ7rIA79uSo5L
-                    qXBR+CdUJlAuXzy6UpxiEeeLkKTluNjrEhkOYOnT3nMPVEAYiYUDtaCqqJ8DV85G
-                    GQ1++4x9Fdb2UCwpJNYDqFkYsR3tBReQVkb7VKcCgYAStVOHXSb2Zgo0PNLf0sed
-                    Dw6d4rI43ip4SmhPKGBPnwzK3wVihHdLGbGIEqwgnjnvXq/XvfaBHQbBSYVw5wT4
-                    cvlZGVe4X4aBdmsn7cfYLavp35nFMoY9P+AiEPbT6bOXx5uQ3GP3Sx/Yjomu2HjG
-                    TInvh9Ib/eRuQVDNrjCvnwKBgQCZZj4mhkQS9OMyzBI6dQWfFuuZOSMrM0lYYkYa
-                    h1E1hrY1yPxLZdpcNkgnUrxS7gCwzRn6lR3vKky+gxt8XJ5BrmhlwNqM/+hsPDmB
-                    ntiKycYqPD8CpaR8R2kYX0CVLHEFJA6bfuBGMdGceeTow2MSHsOHzLCMtCvOrFh9
-                    nHgSpwKBgQCF6vCKSV9iwbrayJq9WhUkvAeIKx8Ip5BskmqrbWXBXT1GL7JEINQw
-                    7uM1WCa1Bvc418HjR32VjOpch/LHEVlbiLQmqcjXUJU38WRpkEvUeQtbFcKCxi8u
-                    g3WJze/uHz/BG4tOGLEYD/HnYVOBkW75GzJbY7vFWAnYJ7V1652+DQ==
                     -----END RSA PRIVATE KEY-----
 
 dam its not working!!!
@@ -7644,64 +7545,16 @@ from branch feature/mauth-key - as mauth.yml no lnonger in git
   iir_app_uuid: d38e7edc-5113-11e1-95fe-70cd60fffe66
   private_key: |
         -----BEGIN RSA PRIVATE KEY-----
-        MIIEpQIBAAKCAQEAy8uLxcS4BMStRiRRV+pDxujhaWJOQzM9kPOOHw7r80DVpbUU
-        DpZFaQdnUpDlIq3ptY8hVnEgLGKzCGlNeot/aWJh7s01CuAgTP1WhfILU7XhlXtb
-        suh++MlhDbkDQsEePcIOGzQCBQHHcxn+DBAwSbN5sNfpB/BQkmXmgXkbTgP8aNEQ
-        Nr8ywypmXYQ5zOnDBFPOBbcrhm4kfUzVtWbQ87ukAyQDsTh0/Tjf76xRf4mRB0Vi
-        pPjjtw7wFGULSckco1ZpnaTwb6NUJrXnI3l1eArPUBFAInrlNYOSYow/+vRG9/Cg
-        0bhcLmVpeKJSPw1PM65rqv0g5dbVO6PlfrDqAwIDAQABAoIBAQC3IB5nBg/9aOXy
-        42ucvktND7KNyeJdjEvEVrbcvcHUAex5TK/LM8kHSbnUfZMIiJI7rXPdgyXP/Ji3
-        9DfE6FkDT36E4SzKqv8bb4IyNn9rJ0Kf2gtaRoTh9cMaW6fMclBEWn3mf+NYsHKS
-        wUaBfIKHl5jACiPCGHWuN5bbvQGGJX5YrHSvaAtvAvSVoqk9e08IZPWkUxTWZq46
-        QNI4Zr5NaeD14xn5YnKvLDmiigZkqwGPj3JlNm2NBjvBgJZjBkF0oYCunPOoFOxS
-        /yjwIGJbvTXkIgeCSyH2e6hXEfCzTK2gu1m2PUa7iCvssNewCz120RHwdp/TG5BH
-        69OJYewxAoGBAPu7Wc3GZYD24qbwFTdGUtQAboJTgW8ZOCRz4u2Tbdo2Oylerx9v
-        n0CO5h0FBcJQq2fXPAag9gaHQjCAA+2DSK8qlFUNDIocK3DtVMFv/SYhn1Mo1eGk
-        cBtLRF+NfLm66/tI12UcExPRxgf6NfYe24Eus+ZPq2+fouS90HePlTWVAoGBAM9A
-        H9nf5vQunk8JCVzJvbLg/076GVGEPnCAJT8uor/Tv93eu7/wRXQZnKrFAZ44krh0
-        3S0DGD+Uweu0JXmJENpqIV8ZeCSlUBEGgN9ivue6glOAjCpndeiW+cfbIMHcVsha
-        Mhi+TP00setPZt9IQNbRVTccdTCF+jIDV4W7wQs3AoGAGiRswRf3dpstEpUgPutI
-        sseQsmwlpvoBgJegW3fSErVLE5LHsQYQjc3JS/43iOSDyHbrvux8YFUvpIXG4qWd
-        qMNNQD/oq3cdc87R3Hza11jqiOJWw+Yl1k/Mu/efmlI1K5V2+QMfYBGK9U0gyXyO
-        4y2MdUCU1zTG3+ZufdwlbLkCgYEAgl1Lq7jzhdVtLzn38a3U7ZgqAHvBQU12GT4C
-        L+Qd65w+rElWwD1a8tTJf4G8qtHbOLwKBC5WKmhgMut2RyS4vSrVIwTaVfLGkm8M
-        0XdDrm/bWrsZb/L0cAHHzLdBu6/lxtE1gerycrOa1vFzPDAu2PGEMM5tyL/9yUfg
-        3fZkT7ECgYEA5Obilp8Qa+mJRrFq+9XM9p9Nyy1uZiD0YE4ZhYPXH6fiDO2S/EOH
-        ShnUvZnlRy1XA0pjQp74f9hQswBQE5DQDQSFSaR6vGPKurkW2k+TgdR8gR98OJGU
         oSM/J2VRPdlFRsQW+5x4BJb1MFiIkfvPIACkXPR4ITLhmuptSQbXh3w=
         -----END RSA PRIVATE KEY-----
 
 
 taking out my currents for above 
 recording them here for now
-  app_uuid: 2058f324-59b0-452f-a4b2-065e30e7768a
+  app_uuid: 2058f324-
   private_key: |
         -----BEGIN RSA PRIVATE KEY-----
-        MIIEpQIBAAKCAQEAy8uLxcS4BMStRiRRV+pDxujhaWJOQzM9kPOOHw7r80DVpbUU
-        DpZFaQdnUpDlIq3ptY8hVnEgLGKzCGlNeot/aWJh7s01CuAgTP1WhfILU7XhlXtb
-        suh++MlhDbkDQsEePcIOGzQCBQHHcxn+DBAwSbN5sNfpB/BQkmXmgXkbTgP8aNEQ
-        Nr8ywypmXYQ5zOnDBFPOBbcrhm4kfUzVtWbQ87ukAyQDsTh0/Tjf76xRf4mRB0Vi
-        pPjjtw7wFGULSckco1ZpnaTwb6NUJrXnI3l1eArPUBFAInrlNYOSYow/+vRG9/Cg
-        0bhcLmVpeKJSPw1PM65rqv0g5dbVO6PlfrDqAwIDAQABAoIBAQC3IB5nBg/9aOXy
-        42ucvktND7KNyeJdjEvEVrbcvcHUAex5TK/LM8kHSbnUfZMIiJI7rXPdgyXP/Ji3
-        9DfE6FkDT36E4SzKqv8bb4IyNn9rJ0Kf2gtaRoTh9cMaW6fMclBEWn3mf+NYsHKS
-        wUaBfIKHl5jACiPCGHWuN5bbvQGGJX5YrHSvaAtvAvSVoqk9e08IZPWkUxTWZq46
-        QNI4Zr5NaeD14xn5YnKvLDmiigZkqwGPj3JlNm2NBjvBgJZjBkF0oYCunPOoFOxS
-        /yjwIGJbvTXkIgeCSyH2e6hXEfCzTK2gu1m2PUa7iCvssNewCz120RHwdp/TG5BH
-        69OJYewxAoGBAPu7Wc3GZYD24qbwFTdGUtQAboJTgW8ZOCRz4u2Tbdo2Oylerx9v
-        n0CO5h0FBcJQq2fXPAag9gaHQjCAA+2DSK8qlFUNDIocK3DtVMFv/SYhn1Mo1eGk
-        cBtLRF+NfLm66/tI12UcExPRxgf6NfYe24Eus+ZPq2+fouS90HePlTWVAoGBAM9A
-        H9nf5vQunk8JCVzJvbLg/076GVGEPnCAJT8uor/Tv93eu7/wRXQZnKrFAZ44krh0
-        3S0DGD+Uweu0JXmJENpqIV8ZeCSlUBEGgN9ivue6glOAjCpndeiW+cfbIMHcVsha
-        Mhi+TP00setPZt9IQNbRVTccdTCF+jIDV4W7wQs3AoGAGiRswRf3dpstEpUgPutI
-        sseQsmwlpvoBgJegW3fSErVLE5LHsQYQjc3JS/43iOSDyHbrvux8YFUvpIXG4qWd
-        qMNNQD/oq3cdc87R3Hza11jqiOJWw+Yl1k/Mu/efmlI1K5V2+QMfYBGK9U0gyXyO
-        4y2MdUCU1zTG3+ZufdwlbLkCgYEAgl1Lq7jzhdVtLzn38a3U7ZgqAHvBQU12GT4C
-        L+Qd65w+rElWwD1a8tTJf4G8qtHbOLwKBC5WKmhgMut2RyS4vSrVIwTaVfLGkm8M
-        0XdDrm/bWrsZb/L0cAHHzLdBu6/lxtE1gerycrOa1vFzPDAu2PGEMM5tyL/9yUfg
-        3fZkT7ECgYEA5Obilp8Qa+mJRrFq+9XM9p9Nyy1uZiD0YE4ZhYPXH6fiDO2S/EOH
-        ShnUvZnlRy1XA0pjQp74f9hQswBQE5DQDQSFSaR6vGPKurkW2k+TgdR8gR98OJGU
-        oSM/J2VRPdlFRsQW+5x4BJb1MFiIkfvPIACkXPR4ITLhmuptSQbXh3w=
+
         -----END RSA PRIVATE KEY-----
 
 and change iir app uuid to app uuid
@@ -9486,3 +9339,1161 @@ select id, phase_uuid, description, principal_investigator_name from budgets;
 
 thats phase1
 
+ok finally got phase selection from budget
+so commit that to laptop
+and make sure runs there for demo
+then need to write a scenario
+
+
+should merge into indication branch? and run demo from that?
+
+
+**********************
+4/10/12 tues office reveal day
+************************
+
+850
+858
+write scenario for phase budget and do pr
+
+merge either branch or dev into indication branch so can easily slip in indication half bake
+
+indication - do scenario and pr?
+do layout?
+
+balance more web steps
+Then /^the "(.+)" field should have "(.+)" selected$/ do |field, value|
+  nokodoc=Nokogiri::HTML.parse(source)
+  if (label = nokodoc.search("//label").detect{|l| l.text.include?(field) })
+    field_element = nokodoc.search("//*[@id='#{label.attributes['for']}']").first
+    if field_element.name.downcase == 'select'
+      selected_option = field_element.children.detect{|child| child.attributes['selected'] } || field_element.children.first # first child is selcted by default 
+      text = selected_option.text
+    else
+      text = field_element.value
+    end
+  else
+    text=nokodoc.search("//div[@id='#{field.downcase.gsub(" ", "_")}']/select/option[@selected = 'selected']").text
+  end
+  text.should == value
+end
+
+balance treatment schedule steps
+Then /^the treatment for visit (\d+) arm (\d+) should have "([^"]*)" selected$/ do |visit, regime, value|
+  locator = "treatment_schedule_treatment_regime_visits_attributes_visit_#{visit}_regime_#{regime}_treatment_id"
+  text = page.all(:xpath, ".//select[@id='#{locator}']/option[@selected = 'selected']").first.text
+  text.should == value
+end
+
+Then /^the treatment for visit (\d+) arm (\d+) should have none selected$/ do |visit, regime|
+  locator = "treatment_schedule_treatment_regime_visits_attributes_visit_#{visit}_regime_#{regime}_treatment_id"
+  option = page.all(:xpath, ".//select[@id='#{locator}']/option[@selected = 'selected']").first
+  option.should == nil
+end
+
+Then /^the Visit Type for visit (\d+) should have "([^"]*)" selected$/ do |visit, value|
+  locator = "visits_#{visit}_event_type"
+  text = page.all(:xpath, ".//select[@id='#{locator}']/option[@selected = 'selected']").first.text
+  text.should == value
+end
+
+
+******************
+4/11/12 wed office
+*******************
+
+adobe connect
+http://mdsol.adobeconnect.com/kevins/
+kshroff
+Password12345
+
+in at 850 
+nytimes
+bill...
+958
+ 
+let finish off phase and make a pr!
+
+
+ok this is confusing
+edit.feature:18
+budget
+ Given I have a budget with "principal_investigator_name:Dr. Feel Good, description: Effect of Nasonex as a Vasodilator on Reynaud's Disease" for study "Sushi"
+	When I go to the "Sushi budget detail" page
+
+
+Failing Scenarios:
+cucumber features/budget/edit.feature:18 # Scenario: Investigator Sponsor can see Principal Investigator Name and Description on the Budget Details page.
+cucumber features/budget/edit.feature:92 # Scenario: Investigator sponsor should be able to see a dropdown list of phases on
+budget detail page
+cucumber features/study/detail.feature:16 # Scenario: Investigator sponsor should be able to see a dropdown list of phases on
+budget detail page
+
+dev
+Failing Scenarios:
+cucumber features/study/detail.feature:16 # Scenario: Investigator sponsor should be able to see a dropdown list of phases on
+budget detail page
+
+
+need to get all failing scenarios passing
+
+study detail needs to go away - its now budget edit
+its removed from git i had it lingering around
+
+
+cucumber features/budget/edit.feature:18
+passes now - fixed
+
+Failing Scenarios:
+cucumber features/budget/edit.feature:91 # Scenario: Investigator sponsor should be able to see a dropdown list of phases on
+budget detail page
+cucumber features/study/list.feature:17 # Scenario: Investigator sponsor on Study list page should see Status Icons, Study Name, Phase, Indication, Principle Investigator, Total Cost and Last Modified date for all his studies
+cucumber features/study/navigation.feature:90 # Scenario: Investigator sponsor should be able to click on the study name, which has no budget for it; it will create a budget and go to the budget detail page
+cucumber features/study/navigation.feature:105 # Scenario: Investigator sponsor having access to only one study, which has no budget for it, it will create a budget and redirect to budget detail page of that study
+
+
+cucumber features/budget/edit.feature:91
+thats what im currently working on
+
+cucumber features/study/list.feature:17
+
+No mocked service response found for '/api/v2/users/fake-uuid/studies.json' 
+
+ When I go to the "study index" page                                                                                                                                                   # features/step_definitions/navigation_steps.rb:5
+
+Given /^I have access to the following budgets:$/ do |table_name|
+  @budgets = []
+  table_name.hashes.each do |hash|
+    phase_id = rand(1000)
+    indication_id = rand(1000)
+    @budgets << register_budget(hash["Study Name"], {"phase_uuid" => phase_id, 
+                                                      "indication_uuid" => indication_id,
+                                                      "principal_investigator_name" => hash["Principle Investigator"] ,
+                                                      "current_status" => {"name" => hash["Status"], 
+                                                            "date_created" => hash["Last Modified"] },
+                                                      "total_cost" => hash["Total Cost"]})
+    register_phase({:uuid => phase_id}, hash["Phase"])
+    register_indication({:uuid => indication_id}, hash["Indication"])
+  end
+  @budgets = @budgets.sort_by{|x| Date.parse(x["current_status"]["date_created"])}.reverse
+  Euresource::UserBudget.stub(:find).and_return(BudgetMock.new({"data" => @budgets}))
+end
+
+
+cucumber features/study/list.feature:17
+    And I am logged in as "testuser" with name "Test User"                                                                                                                                # features/step_definitions/session_steps.rb:23
+      <Euresource::Phase (class)> received :find with unexpected arguments
+        expected: ({:uuid=>257})
+             got: ({:uuid=>"68742"}) (RSpec::Mocks::MockExpectationError)
+      ./app/models/phase.rb:6:in `get_name'
+      ./app/controllers/investigator/studies_controller.rb:26:in `block in index'
+      ./app/controllers/investigator/studies_controller.rb:20:in `map!'
+      ./app/controllers/investigator/studies_controller.rb:20:in `index'
+      ./features/step_definitions/session_steps.rb:36:in `/^I am logged in as "([^\"]*)" with name "([^\"]*)"$/'
+      features/study/list.feature:22:in `And I am logged in as "testuser" with name "Test User"'
+
+
+fixed stuff
+still a bunch of failures - prob broke stuff
+Failing Scenarios:
+cucumber features/budget/edit.feature:18 # Scenario: Investigator Sponsor can see Principal Investigator Name and Description on the Budget Details page.
+cucumber features/budget/edit.feature:28 # Scenario: Investigator Sponsor sees empty Principal Investigator Name and Description on an blank Budget Details page.
+cucumber features/budget/edit.feature:51 # Scenario: The Description field counts the number of characters entered, and display the message
+cucumber features/budget/edit.feature:61 # Scenario: Investigator Sponsor user can only type 4000 characters in the Description field.
+cucumber features/budget/edit.feature:61 # Scenario: Investigator Sponsor user can only type 4000 characters in the Description field.
+cucumber features/budget/edit.feature:61 # Scenario: Investigator Sponsor user can only type 4000 characters in the Description field.
+cucumber features/budget/edit.feature:87 # Scenario: Investigator sponsor should be able to see a dropdown list of phases on
+
+
+this is confusing
+so i have a budget with "stuff" - stuff may or may not have phase in it
+a budget HAS to have a phase mocked out as phase of the budget will be queried for on budget page
+or should there be a step and the budget has phase yada
+and that would be a required step
+and get rid of the "phase:Phase 1, ...."
+
+features/budget/edit.feature
+19:  Given I have a budget with "principal_investigator_name:Dr. Feel Good, description: Effect of Nasonex as a Vasodilator on Reynaud's Disease" for study "Sushi"
+79:  Given I have a budget for study "Wooshy"
+89:  Given I have a budget with "phase:Phase 3" for study "Wooshy"
+
+will this work? shgould test those who are calling this
+features/study/navigation.feature
+20: And I have a budget for study "Sushi"
+
+that is working but why???
+how is phase query slipping through
+must be getting mocked somewhere
+lets investigate this
+
+the reason it works is this:
+  def self.get_name phase_uuid
+    if phase_uuid
+      begin
+        rec =  Euresource::Phase.find(:uuid => phase_uuid)
+        rec ? rec.attributes["name"] : nil
+      rescue Euresource::ResourceNotFound => e
+        nil
+      end
+
+its catching the eureka call and returning nil
+so the exception is supressed
+and for this scenario we dont care about phase
+and thats key
+
+
+this scenario doesnt care about phase
+thouch one could add phase to this scenario actuall
+@Release2012.1.0
+@PB11347-01
+@Validation
+Scenario: Investigator Sponsor can see Principal Investigator Name and Description on the Budget Details page.
+  Given I have a budget with "principal_investigator_name:Dr. Feel Good, description: Effect of Nasonex as a Vasodilator on Reynaud's Disease" for study "Sushi"
+	When I go to the "Sushi budget detail" page
+	Then the "Principal Investigator" field should contain "Dr. Feel Good"
+	And the "Description" field should contain "Effect of Nasonex as a Vasodilator on Reynaud's Disease"
+
+
+i think reg_budget which is really mock budget
+
+
+***********************
+4/12/12 thurs office
+**********************
+
+need to crank on phase mock - cleaning it up as it was a mess
+
+
+@current_user not defined/set where set?
+session steps
+
+Given /^a user exists with name: "([^"]*)"$/ do |name|
+  @current_user = register_user(name)
+
+Given(/^I am logged in as "([^\"]*)" with name "([^\"]*)"$/) do |login,full_name|
+  Capybara.current_session.reset!
+  @current_user = register_user(full_name,login) # creates/sets @current_user
+
+were in a new object new scope @current_user not there
+
+
+cucumber features/study/navigation.feature:90
+failing & a bunch of others
+
+    undefined method `[]' for #<BudgetMock:0x0000010527a140 @attribs={}> (NoMethodError)
+      ./features/step_definitions/navigation_steps.rb:95:in `stub_budget_creation'
+
+
+need to take out register budget! and other registyers!
+
+Failing Scenarios:
+cucumber features/budget/edit.feature:18 # Scenario: Investigator Sponsor can see Principal Investigator Name and Description on the Budget Details page.
+cucumber features/budget/edit.feature:28 # Scenario: Investigator Sponsor sees empty Principal Investigator Name and Description on an blank Budget Details page.
+cucumber features/budget/edit.feature:51 # Scenario: The Description field counts the number of characters entered, and display the message
+cucumber features/budget/edit.feature:61 # Scenario: Investigator Sponsor user can only type 4000 characters in the Description field.
+cucumber features/budget/edit.feature:61 # Scenario: Investigator Sponsor user can only type 4000 characters in the Description field.
+cucumber features/budget/edit.feature:61 # Scenario: Investigator Sponsor user can only type 4000 characters in the Description field.
+cucumber features/budget/edit.feature:87 # Scenario: Investigator sponsor should be able to see a budgets phase selected
+budget detail page
+
+
+cucumber features/budget/edit.feature:18
+
+    Given I have a budget with "principal_investigator_name:Dr. Feel Good, description: Effect of Nasonex as a Vasodilator on Reynaud's Disease, phase:Phase 3" for study "Sushi" # features/step_definitions/budget_steps.rb:2
+  When I go to the "Sushi budget detail" page                                                                                                                                   # features/step_definitions/navigation_steps.rb:5
+      <Euresource::Phase (class)> received :find with unexpected arguments
+        expected: (:all)
+             got: ({:uuid=>{}}) (RSpec::Mocks::MockExpectationError)
+      ./app/models/phase.rb:6:in `get_name'
+  
+18 passes!
+
+Failing Scenarios:
+cucumber features/budget/edit.feature:28 # Scenario: Investigator Sponsor sees empty Principal Investigator Name and Description on an blank Budget Details page.
+cucumber features/budget/edit.feature:51 # Scenario: The Description field counts the number of characters entered, and display the message
+cucumber features/budget/edit.feature:61 # Scenario: Investigator Sponsor user can only type 4000 characters in the Description field.
+cucumber features/budget/edit.feature:61 # Scenario: Investigator Sponsor user can only type 4000 characters in the Description field.
+cucumber features/budget/edit.feature:61 # Scenario: Investigator Sponsor user can only type 4000 characters in the Description field.
+cucumber features/budget/edit.feature:87 # Scenario: Investigator sponsor should be able to see a budgets phase selected
+
+
+clean up navigation steps
+
+edit _feature 28 javascript - headed! description count
+
+Failing Scenarios:
+cucumber features/budget/edit.feature:52 # Scenario: The Description field counts the number of characters entered, and display the message
+cucumber features/budget/edit.feature:62 # Scenario: Investigator Sponsor user can only type 4000 characters in the Description field.
+cucumber features/budget/edit.feature:62 # Scenario: Investigator Sponsor user can only type 4000 characters in the Description field.
+cucumber features/budget/edit.feature:62 # Scenario: Investigator Sponsor user can only type 4000 characters in the Description field.
+cucumber features/budget/edit.feature:88 # Scenario: Investigator sponsor should be able to see a budgets phase selected
+budget detail page
+
+
+cucumber features/budget/edit.feature:52
+also headed - javascript character counting
+
+cucumber features/budget/edit.feature:62
+
+cucumber features/budget/edit.feature:88
+thats our actual scenario!
+actually this is now subsumed buy growing sceanrio
+that needs to be added to
+
+div id='phase'>
+Phase:
+<select id="_phase" name="[phase]"><option value="Phase 1">Phase 1</option>
+<option value="Phase 2">Phase 2</option>
+
+<option value="Phase 3" selected="selected">Phase 3</option>
+<option value="Phase 4">Phase 4</option>
+<option value="Unknown">Unknown</option></select>
+</div>
+
+phase 3 is selected - its my step that aint right
+need to learn proper capybara
+
+page.find("#phase option[selected]").text
+
+ok everything passes
+but should refactor everything to use the new way if possible
+
+take out register budget 3 things fail
+
+phew - phase is done
+back to indication
+where did i leave off?
+
+
+
+ok good stopping point
+got categories/groups therapeutic areas working
+lets prior:
+
+layout
+categories
+scrollbar
+highlight
+selectable
+arrow down
+word wrap
+
+categories is done
+lets do layout
+
+so i should grab all the css from qpl
+apply it and see what it looks like
+
+i dont think including the gem worked as im ont seeing those things listed in css part
+
+
+
+
+csss im seeing in qpl for dropdown
+
+.ui-menu .ui-menu-item a.ui-state-hover, .ui-menu .ui-menu-item a.ui-state-active {
+font-weight: normal;
+margin: -1px;
+}
+.ui-menu .ui-menu-item a {
+text-decoration: none;
+display: block;
+padding: 0;
+width: 680px;
+}
+.ui-menu .ui-menu-item a {
+text-decoration: none;
+display: block;
+padding: .2em .4em;
+line-height: 1.5;
+zoom: 1;
+}
+.ui-widget-content .ui-corner-all {
+-moz-border-radius: 0px;
+-webkit-border-radius: 0px;
+border-radius: 0px;
+}
+.ui-widget-content .ui-state-hover {
+background: #E1EDCE;
+font-weight: normal;
+color: #333;
+border: 1px solid #E1EDCE;
+}
+.ui-widget-content .ui-state-hover {
+background: #E1EDCE;
+font-weight: normal;
+color: #333;
+border: 1px solid #E1EDCE;
+}
+.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus {
+border: 1px solid #74B2E2;
+background: #E4F1FB url(images/ui-bg_glass_100_e4f1fb_1x400.png) 50% 50% repeat-x;
+font-weight: bold;
+color: #0070A3;
+}
+.ui-widget-content a {
+color: #362B36;
+}
+.ui-corner-all {
+-moz-border-radius: 6px;
+-webkit-border-radius: 6px;
+border-radius: 6px;
+}
+.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus {
+border: 1px solid #74B2E2;
+background: #E4F1FB url(images/ui-bg_glass_100_e4f1fb_1x400.png) 50% 50% repeat-x;
+font-weight: bold;
+color: #0070A3;
+}
+qplsmedia="screen"
+body a {
+color: #105BAC;
+}
+Inherited from li.ui-menu-item-indication.ui-menu-item
+qplsmedia="screen"
+.ui-menu .ui-menu-item-indication {
+font: 11px Arial;
+color: #333;
+}
+user agent stylesheetli {
+text-align: -webkit-match-parent;
+}
+Inherited from ul.ui-menu.ui-widget.ui-widget-content.ui-corner-all.ui-autocomplete-indication
+.ui-widget {
+font-family: Arial,sans-serif;
+font-size: 11px;
+}
+.ui-widget {
+font-family: Arial,sans-serif;
+font-size: 11px;
+}
+.ui-menu {
+list-style: none;
+}
+.ui-widget-content {
+color: #362B36;
+}
+.ui-widget {
+font-family: Lucida Grande, Lucida Sans, Arial, sans-serif;
+font-size: 1.1em;
+}
+user agent stylesheetul, menu, dir {
+list-style-type: disc;
+}
+Inherited from body
+qplsmedia="screen"
+body {
+font: normal 10pt Arial,sans-serif;
+color: #333;
+}
+Metrics
+Properties
+DOM Breakpoints
+Event Listeners
+70event.layerX and event.layerY are broken and deprecated in WebKit. They will be removed from the engine in the near future.
+
+
+
+
+
+<ul class="ui-menu ui-widget ui-widget-content ui-corner-all ui-autocomplete-indication" role="listbox" aria-activedescendant="ui-active-menuitem" style="position: relative; z-index: 1; display: block; width: 400px; top: -538px; left: -508px; "><li class="ui-menu-item-ta">ANTI-INFECTIVE</li><li class="ui-menu-item-indication ui-menu-item" role="menuitem"><a style="width:392px" class="ui-corner-all" tabindex="-1">(770.7) Other Respiratory Conditions of Fetus and Newborns, Congenital Pneumonia, Bronchopulmonary Dysplasia</a></li><li class="ui-menu-item-ta">CENTRAL NERVOUS SYSTEM</li><li class="ui-menu-item-indication ui-menu-item" role="menuitem"><a style="width:392px" class="ui-corner-all" tabindex="-1">(850.) Concussion</a></li><li class="ui-menu-item-ta">GASTROINTESTINAL</li><li class="ui-menu-item-indication ui-menu-item" role="menuitem"><a style="width:392px" class="ui-corner-all" tabindex="-1">(576.9) Biliary Tract, Other Disorders of: Bile Concentration Study, Cholestasis, Biliary Hypomotility</a></li><li class="ui-menu-item-ta">ONCOLOGY</li><li class="ui-menu-item-indication ui-menu-item" role="menuitem"><a style="width:392px" class="ui-corner-all" tabindex="-1">(162.9) Neoplasm, Malignant, of Bronchus &amp; Lung, Unspecified (Lung Cancer, Pulmonary Cancer)</a></li><li class="ui-menu-item-indication ui-menu-item" role="menuitem"><a style="width:392px" class="ui-corner-all" tabindex="-1">(ONCOLOGY) Therapeutic Area</a></li><li class="ui-menu-item-ta">OPHTHALMOLOGY</li><li class="ui-menu-item-indication ui-menu-item" role="menuitem"><a style="width:392px" class="ui-corner-all" tabindex="-1">(375.9) Disorders of Lacrimal System, Unspecified, Tear Concentration</a></li><li class="ui-menu-item-ta">PAIN AND ANESTHESIA</li><li class="ui-menu-item-indication ui-menu-item" role="menuitem"><a style="width:392px" class="ui-corner-all" tabindex="-1">(780.93) Oncology Pain, Cancer Pain (DEI Code)</a></li><li class="ui-menu-item-ta">RESPIRATORY SYSTEM</li><li class="ui-menu-item-indication ui-menu-item" role="menuitem"><a style="width:392px" class="ui-corner-all" tabindex="-1">(466.0) Bronchitis, Acute Bronchitis</a></li><li class="ui-menu-item-indication ui-menu-item" role="menuitem"><a style="width:392px" class="ui-corner-all" tabindex="-1">(466.1) Bronchiolitis, Acute Bronchiolitis</a></li><li class="ui-menu-item-indication ui-menu-item" role="menuitem"><a style="width:392px" class="ui-corner-all" tabindex="-1">(493.81) Other Form of Asthma; Exercise Induced Bronchospasm</a></li><li class="ui-menu-item-indication ui-menu-item" role="menuitem"><a style="width:392px" class="ui-corner-all" tabindex="-1">(493.9) Asthma, Unspecified, Asthma Bronchial (Allergic Nos), Bronchitis, Allergic, Asthmatic, Allergy</a></li><li class="ui-menu-item-indication ui-menu-item" role="menuitem"><a style="width:392px" class="ui-corner-all" tabindex="-1">(493.90) Asthma, Unspecified (Allergic NOS Asthma, Bronchial Asthma, Allergic/Asthmatic Bronchitis)</a></li><li class="ui-menu-item-indication ui-menu-item" role="menuitem"><a style="width:392px" class="ui-corner-all" tabindex="-1">(493.91) Asthma, Unspecified (Allergic NOS Asthma, Bronchial Asthma, Allergic/Asthmatic Bronchitis) With Status Asthmaticus</a></li><li class="ui-menu-item-indication ui-menu-item" role="menuitem"><a style="width:392px" class="ui-corner-all" tabindex="-1">(493.92) Asthma, Unspecified (Allergic NOS Asthma, Bronchial Asthma, Allergic/Asthmatic Bronchitis) With (Acute) Exacerbation</a></li><li class="ui-menu-item-indication ui-menu-item" role="menuitem"><a style="width:392px" class="ui-corner-all" tabindex="-1">(515.) Postinflammatory Pulmonary Fibrosis, Chronic or Unspecified, Chronic Obstructive Broncho-pneumonia</a></li><li class="ui-menu-item-indication ui-menu-item" role="menuitem"><a style="width:392px" class="ui-corner-all" tabindex="-1">(518.89) Lung Diseases Nos, Pulmolithiasis, Other, Nec, Broncholithiasis, Unspecified Respiratory Tract Infection, Pulmonary Disease, Pneumopathy, Pulmonary Infection</a></li><li class="ui-menu-item-indication ui-menu-item" role="menuitem"><a style="width:392px" class="ui-corner-all" tabindex="-1">(519.9) Respiratory System Disease, Unspecified, Chronic Aspecific Respiratory Ailment, Cara, Exercise Induced Bronchospasm, Respiratory Syncytial Virus, (RSV)</a></li><li class="ui-menu-item-indication ui-menu-item" role="menuitem"><a style="width:392px" class="ui-corner-all" tabindex="-1">(485.) Bronchopneumonia, Organism Unspecified</a></li><li class="ui-menu-item-indication ui-menu-item" role="menuitem"><a style="width:392px" class="ui-corner-all" tabindex="-1">(490.) Bronchitis, not specified as Acute or Chronic (Inflammatory Bronchial Reaction)</a></li><li class="ui-menu-item-indication ui-menu-item" role="menuitem"><a style="width:392px" class="ui-corner-all" tabindex="-1">(491.2) Bronchitis, Chronic, Obstructive, Chronic Bronchitis</a></li><li class="ui-menu-item-indication ui-menu-item" role="menuitem"><a style="width:392px" class="ui-corner-all" tabindex="-1">(491.21) Bronchitis, Chronic Bronchitis with Acute Exacerbations, AECB, Acute Exacerbations of Chronic Obstructive Pulmonary Disease</a></li><li class="ui-menu-item-indication ui-menu-item" role="menuitem"><a style="width:392px" class="ui-corner-all" tabindex="-1">(491.8) Bronchitis, Chronic Bronchitis, Other Chronic Bronchitis, Obliterans Bronchiolitis</a></li><li class="ui-menu-item-indication ui-menu-item" role="menuitem"><a style="width:392px" class="ui-corner-all" tabindex="-1">(491.9) Bronchitis, Chronic, Unspecified, Chronic Bronchitis</a></li><li class="ui-menu-item-indication ui-menu-item" role="menuitem"><a style="width:392px" class="ui-corner-all" tabindex="-1">(494.) Bronchiectasis</a></li></ul>
+
+
+<ul class="ui-menu ui-widget ui-widget-content ui-corner-all ui-autocomplete-indication" role="listbox" aria-activedescendant="ui-active-menuitem" style="position: relative; z-index: 1; display: block; width: 400px; top: -538px; left: -508px; ">
+
+
+background-attachment: scroll;
+background-clip: border-box;
+background-color: white;
+background-image: none;
+background-origin: padding-box;
+border-bottom-color: #DDD;
+border-bottom-left-radius: 6px;
+border-bottom-right-radius: 6px;
+border-bottom-style: solid;
+border-bottom-width: 1px;
+border-left-color: #DDD;
+border-left-style: solid;
+border-left-width: 1px;
+border-right-color: #DDD;
+border-right-style: solid;
+border-right-width: 1px;
+border-top-color: #DDD;
+border-top-left-radius: 6px;
+border-top-right-radius: 6px;
+border-top-style: solid;
+border-top-width: 1px;
+color: #362B36;
+display: block;
+float: left;
+font-family: Arial, sans-serif;
+font-size: 11px;
+font-style: normal;
+font-variant: normal;
+font-weight: normal;
+height: 230px;
+left: -508px;
+line-height: normal;
+list-style-image: none;
+list-style-position: outside;
+list-style-type: none;
+margin-bottom: 0px;
+margin-left: 0px;
+margin-right: 0px;
+margin-top: 0px;
+max-height: 230px;
+overflow-x: hidden;
+overflow-y: auto;
+padding-bottom: 2px;
+padding-left: 2px;
+padding-right: 2px;
+padding-top: 2px;
+position: relative;
+top: -538px;
+width: 385px;
+z-index: 1;
+Styles
+:active	:hover
+:focus	:visited
+
+*********************
+4/13/12 fri office
+**********************
+
+lets get a box around dem autocomp items
+
+<ul class="ui-menu ui-widget ui-widget-content ui-corner-all ui-autocomplete-indication" role="listbox" aria-activedescendant="ui-active-menuitem" style="position: relative; z-index: 1; display: block; width: 400px; top: -538px; left: -508px; ">
+
+where does that come from?
+
+~/q (master) $ ack listbox
+public/javascripts/jquery/development-bundle/ui/jquery-ui-1.8.11.custom.js
+4668:				role: "listbox",
+
+public/javascripts/jquery/development-bundle/ui/jquery.ui.autocomplete.js
+455:				role: "listbox",
+
+hmmm - do i need to shove in jquery.ui.autocomplete
+or does it come with?
+jquery is in there somewhere
+and autocomp works once i did that require/include ????
+its a gem silly
+
+~/.rvm/gems/ruby-1.9.2-p290@iir/gems/jquery-rails-1.0.19
+
+ ~/.rvm/gems/ruby-1.9.2-p290@iir/gems/jquery-rails-1.0.19 $ ack autocomplete
+vendor/assets/javascripts/jquery-ui.js
+4933:$.widget( "ui.autocomplete", {
+4955:			.addClass( "ui-autocomplete-input" )
+4956:			.attr( "autocomplete", "off" )
+4960:				"aria-autocomplete": "list",
+4963:			.bind( "keydown.autocomplete", function( event ) {
+5020:			.bind( "keypress.autocomplete", function( event ) {
+5026:			.bind( "focus.autocomplete", function() {
+5034:			.bind( "blur.autocomplete", function( event ) {
+5051:			.addClass( "ui-autocomplete" )
+5058:				// the user clicks somewhere outside of the autocomplete
+5079:					var item = ui.item.data( "item.autocomplete" );
+5088:					var item = ui.item.data( "item.autocomplete" ),
+5135:			.removeClass( "ui-autocomplete-input" )
+5136:			.removeAttr( "autocomplete" )
+5138:			.removeAttr( "aria-autocomplete" )
+5164:				response( $.ui.autocomplete.filter(array, request.term) );
+5176:					autocompleteRequest: ++requestIndex,
+5178:						if ( this.autocompleteRequest === requestIndex ) {
+5183:						if ( this.autocompleteRequest === requestIndex ) {
+5214:		this.element.addClass( "ui-autocomplete-loading" );
+5229:			this.element.removeClass( "ui-autocomplete-loading" );
+5305:			.data( "item.autocomplete", item )
+5329:$.extend( $.ui.autocomplete, {
+5334:		var matcher = new RegExp( $.ui.autocomplete.escapeRegex(term), "i" );
+
+
+so its there as a gem silly
+so were fine there
+
+~/.rvm/gems/ruby-1.9.2-p290@iir/gems/jquery-rails-1.0.19 $ ack listbox
+vendor/assets/javascripts/jquery-ui.js
+5368:				role: "listbox",
+ 
+
+from index.html.erb
+				<div id='indication_input_div' class="indication_input_container">
+					<%=render :partial => 'indication_search_input' %>
+				</div>	
+
+
+from iir indication:
+            <!-- %div.ui-widget#myID -->
+            <div class='ui-widget'>
+              <input class='initialized_input' id='indication_search' maxlength='256' style='width:202px;' type='text' value='Add Indication/Therapeutic Area'>
+            </div>
+          </td>
+          <td style='margin: 0px 0px 0px 4px; width:100px;'>
+            <form accept-charset="UTF-8" action="/qpls/add_ind_to_sel_indications_box" data-remote="true" id="add_indication_form" method="get"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /></div>
+                  <input id="selected_indication_dropdown_id" name="selected_indication_dropdown_id" type="hidden" />
+                  <input id="selected_indication_dropdown_name" name="selected_indication_dropdown_name" type="hidden" />
+                  
+            </form>
+          </td>
+        </tr>
+
+
+
+<ul class="ui-menu ui-widget ui-widget-content ui-corner-all ui-autocomplete-indication"
+ role="listbox"
+ aria-activedescendant="ui-active-menuitem"
+ style="position: relative; z-index: 1; width: 1093px; top: -35px; left: 22px; display: none; "
+>
+
+<li class="ui-menu-item-ta">Acute Respiratory Infections Group</li>
+<li class="ui-menu-item-indication ui-menu-item" role="menuitem">
+<a style="width:392px" class="ui-corner-all" tabindex="-1">(466.0) Bronchitis, Acute Bronchitis</a></li>
+<li class="ui-menu-item-indication ui-menu-item" role="menuitem">
+<a style="width:392px" class="ui-corner-all" tabindex="-1">(466.1) Bronchiolitis, Acute Bronchiolitis</a></li>
+...
+http://stackoverflow.com/questions/1529570/jquery-autocomplete-scroll-bar-not-coming-in-ie
+jquery.autocomplete.css
+
+and
+
+jquery.autocomplete.js
+
+~/q (master) $ ack jquery.ui.autocomplete.css
+public/javascripts/jquery/development-bundle/themes/base/jquery.ui.base.css
+4:@import url("jquery.ui.autocomplete.css");
+
+public/javascripts/jquery/development-bundle/themes/ui-lightness/jquery.ui.base.css
+4:@import url("jquery.ui.autocomplete.css");
+
+this css is not in gem nor in iir ????
+
+http://code.google.com/p/jquery-ui/source/browse/trunk/themes/base/jquery.ui.autocomplete.css?spec=svn3882&r=3882
+its there
+
+http://docs.jquery.com/UI/Autocomplete
+
+http://stackoverflow.com/questions/6237396/how-do-i-add-jquery-ui-to-a-ruby-on-rails-3-1-app
+If you have jquery-rails on Gemfile, just do:
+//= require jquery-ui
+or
+//= require jquery-ui.min
+both will work fine. If not, try to update jquery-rails gem
+Don't forget the css files, here I followed some articles on that other answer: Rails 3.1 and Jquery UI images and got it working by this way:
+*= require jquery-ui/jquery-ui.css
+this is the path for files:
+vendor/assets/stylesheets/jquery-ui/jquery-ui.css 
+vendor/assets/images/jquery-ui/images/ (your theme images)
+
+
+https://github.com/joliss/jquery-ui-rails
+group :assets do
+  gem 'jquery-ui-rails'
+end
+
+should check my css with example - may be out of date
+
+
+wait part of the css is ui-autocomplete-indication
+we surely dont get that from css lib
+
+whats this about!
+      ul.removeClass("ui-autocomplete");
+      ul.addClass("ui-autocomplete-indication");
+
+public/stylesheets/quick_price_lookup.css
+280:  .ui-autocomplete-indication {
+291:* html .ui-autocomplete-indication {
+
+/*  FROM indication partial*/
+  .ui-autocomplete-indication {
+  max-height: 230px;
+  width:400px;
+  overflow-y: auto;
+  /* prevent horizontal scrollbar */
+  overflow-x: hidden;
+
+}
+/* IE 6 doesn't support max-height
+ * we use height instead, but this forces the menu to always be this tall
+ */
+* html .ui-autocomplete-indication {
+  height: 230px;
+  width:400px;
+}
+
+ .ui-menu .ui-menu-item-indication {
+    font: 11px Arial;
+    color: #333333;
+    background-color: #ffffff;
+    padding-top: 2px;
+    padding-bottom: 2px;
+} 
+.ui-menu .ui-menu-item-ta {
+    background-color: #dddddd;
+    font: bold 11px Arial;
+    color: #333333;
+    line-height: 22px;
+}
+
+.ui-menu .ui-menu-item-not-found {
+    background-color: #f0f0f0;
+    font: bold 11px Arial;
+    color: #333333;
+    text-align: center;
+    line-height: 50px;
+	padding: 0px;
+	border: 1px solid #dddddd;
+}
+
+
+missed this
+Usage
+In your Gemfile, add:
+
+group :assets do
+  gem 'jquery-ui-rails'
+end
+Require Everything
+To require all jQuery UI modules, add the following to your application.js:
+
+//= require jquery.ui.all
+Also add the jQuery UI CSS to your application.css:
+
+/*
+ *= require jquery.ui.all
+ */
+All images required by jQuery UI are automatically served through the asset pipeline, so you are good to go! For example, this code will add a datepicker:
+
+$(function() {
+  $('.datepicker').datepicker();
+});
+
+
+./app/assets/stylesheets/application.css
+this is where all css lives
+
+progress - got a box - with that css stuff
+no scrollbar and shading and highlighting
+but progress!
+does wordwrap awkwardly
+needs lots of work
+
+next l;ets try to get scrollbar
+
+
+media="screen"
+.ui-autocomplete-indication {
+max-height: 230px;
+width: 400px;
+overflow-y: auto;
+overflow-x: hidden;
+}
+
+max height puts in scroll bar
+
+yes! scrollbar!
+
+lets do shading
+
+.ui-menu .ui-menu-item-ta {
+background-color: #DDD;
+font: bold 11px Arial;
+color: #333;
+line-height: 22px;
+}
+
+clicking on item does not go into box!
+
+clicking on box initially does not clear out init text
+
+lets do clicking on item
+
+
+so i think phil/qpl was returning "(code) short descrip" for label
+and code for value
+
+ok selected is going in
+
+spinner
+search icon
+text go away on click
+font
+
+.initialized_input {
+	font-family: Arial,sans-serif;
+	font-size: 11px;
+	color:#666666;	
+	background: #fff url('/images/search.png') 99% no-repeat;
+	color:#666666	
+}
+
+app/views/qpls/_indication_search_input.html.haml
+7:        %input#qpl_indication_search.initialized_input{:type => "text",  :maxlength => "256", :style => "width:202px;", :value => "Add Indication/Therapeutic Area"}
+104:/                 <input id="qpl_indication_search" type="text" maxlength="256" style="width:202px;" class="initialized_input" value ="Add Indication/Therapeutic Area"/>
+
+public/javascripts/application.js
+21:		$('#qpl_indication_search').addClass('initialized_input');
+29:			$('#qpl_indication_search').removeClass('initialized_input');
+40:		$('#qpl_location_search').addClass('initialized_input');
+47:			$('#qpl_location_search').removeClass('initialized_input');
+
+
+wow - this is in application.js - what the hell is it doing there???
+	// Only when the the input say "Add..." and the user click in the field, does it get cleared
+	$('#qpl_indication_search').click(function(){
+		if($('#qpl_indication_search').val() == 'Add Indication/Therapeutic Area') {
+			$('#qpl_indication_search').removeClass('initialized_input');
+			$('#qpl_indication_search').addClass('ready_input');
+			$('#qpl_indication_search').val('');			
+		}
+	});
+
+ok initial text is disappearing - that was confusing
+need proper css font & style for initialized_input & ready input
+
+i think were done
+
+well 
+the font is no good
+and javascript should be in sep file
+and then gotta do all the scenarios
+alsoi containing box going way out - just get rid of 
+
+not catching resource not found!
+
+lets catch that 500!
+and get rid of that box
+sep js file
+scenarios
+indication as a partial ?
+
+
+
+***********************
+4/16/12 monday office
+**********************
+
+so dam were all broken with new eureka
+i should work on passing scenarios actually as that doesnt involve eureka
+
+to come back to:
+the font is no good
+and javascript should be in sep file
+and then gotta do all the scenarios
+alsoi containing box going way out - just get rid of 
+
+not catching resource not found!
+
+lets catch that 500!
+and get rid of that box
+sep js file
+scenarios
+indication as a partial ?
+
+
+cucmber is broken
+Using the default profile...
+/Users/magibson/projects/iir/features/step_definitions/navigation_steps.rb:117: syntax error, unexpected $end, expecting keyword_end (SyntaxError)
+
+broken scenarios!
+
+Failing Scenarios:
+cucumber features/budget/detail.feature:16 # Scenario: Investigator sponsor should be able to see a dropdown list of phases on
+budget detail page
+cucumber features/budget/edit.feature:17 # Scenario: Investigator Sponsor can see Principal Investigator Name, Description
+and Phase on the Budget Details page.
+cucumber features/budget/edit.feature:30 # Scenario: Investigator Sponsor sees empty Principal Investigator Name and Description on an blank Budget Details page.
+cucumber features/budget/edit.feature:41 # Scenario: Investigator Sponsor user can enter Principal Investigator Name and Description on an blank Budget Details page.
+cucumber features/budget/edit.feature:53 # Scenario: The Description field counts the number of characters entered, and display the message
+cucumber features/budget/edit.feature:63 # Scenario: Investigator Sponsor user can only type 4000 characters in the Description field.
+cucumber features/budget/edit.feature:63 # Scenario: Investigator Sponsor user can only type 4000 characters in the Description field.
+cucumber features/budget/edit.feature:63 # Scenario: Investigator Sponsor user can only type 4000 characters in the Description field.
+cucumber features/budget/edit.feature:79 # Scenario: Investigator sponsor should be able to see a dropdown list of phases on
+budget detail page
+cucumber features/indication/list.feature:29 # Scenario: I can search for an indication, indication group or therapeutic area
+by keyword. 2 or more characters will initiate a keyword search; searches are
+case-insensitive. Special characters can be used for search.
+cucumber features/study/navigation.feature:18 # Scenario: Investigator sponsor should be able to navigate back to study list page from budget detail page
+cucumber features/study/navigation.feature:46 # Scenario: Investigator sponsor when visits the budget detail page, the name of the study should appear on the navigation bar.
+cucumber features/study/navigation.feature:89 # Scenario: Investigator sponsor should be able to click on the study name, which has no budget for it; it will create a budget and go to the budget detail page
+cucumber features/study/navigation.feature:104 # Scenario: Investigator sponsor having access to only one study, which has no budget for it, it will create a budget and redirect to budget detail page of that study
+
+ouch
+
+
+budget/detail.feature needs to be git rm! its now budget/edit
+
+cucumber features/budget/edit.feature:17
+this failed because i changed call which then eludes the mock:
+budgets_controller
+ # this needs to change with new eureka to (:all,:uuid => params[:id]
+    # new eureka not actually ready yet but soon
+    @budget = Euresource::Budgets.find(:uuid => params[:id])
+
+
+only 2 failures now
+Failing Scenarios:
+cucumber features/budget/edit.feature:42 # Scenario: Investigator Sponsor user can enter Principal Investigator Name and Description on an blank Budget Details page.
+cucumber features/indication/list.feature:29 # Scenario: I can search for an indication, indication group or therapeutic area
+by keyword. 2 or more characters will initiate a keyword search; searches are
+case-insensitive. Special characters can be used for search.
+
+so *Principal Investigator is principal_investigator_name
+should it be principal_investigator
+so fill_in can take either label text or id
+currently it converts to id format
+When /^I fill in "([^"]*)" with "([^"]*)"$/ do |selector, value|
+  selector = downcase_underscore selector
+
+which i suspect i put in there to make some other test pass?
+lets see why i did that
+
+theres a I fill in in web_steps that has been commented out
+and I fill in in navigation is new
+but they are different
+web steps is label based
+and the nav one is id based
+hmmmmm
+filling in by label is kinda nice actually
+maybe stick with that?
+
+i didnt realize i broke a step - shoulda run all cuc
+
+
+ok took id'ing in fill in step
+  # selector = downcase_underscore selector
+and it passes
+in fact doesnt need * - must do contains
+
+cucumber features/indication/list.feature:29
+
+so now we are at our indication - good 
+
+the i am in and i fill in needs to be ids
+as find indication search indication box is an id doesnt have associated label
+
+
+*************************
+4/18/12 wed office
+*********************
+alright lets crank
+lets get indications working with refactor
+can use new eureka gem
+i have call wrong
+its 
+:all, :params => {:search_term => 'sldkfj'}
+which will change the mock too
+but even though not in yet can still put into my gem
+and run
+need to debug javascript in chrome
+
+well it works live
+which only makes the cuc more mysterious
+hmmmm
+well fix cuc mock thats borken now by new api
+
+wierd
+now its not even hitting the javascript ?????
+but it did yesterday
+what the hell is going on???
+the changes i made shouldnt effect that
+
+ah - its failing where it should on the mock silly
+
+ugandhar good idea - do mocking in dev mode
+see where it fails
+chrome selenium still cant do breakpoints
+
+to have cuc launch chrome - which ya still  cant debug javascript so 
+no compelling reason to do this at the moment that i know of
+http://collectiveidea.com/blog/archives/2011/09/27/use-chrome-with-cucumber-capybara/
+Capybara.register_driver :chrome do |app|
+  Capybara::Selenium::Driver.new(app, :browser => :chrome)
+end
+
+Capybara.javascript_driver = :chrome
+Step 2 – Install chromedriver
+
+If you’re using homebrew on OS X (and why wouldn’t you?) simply install using:
+brew install chromedriver
+
+INDICATIONS:
+the font is no good
+and javascript should be in sep file
+and then gotta do all the scenarios
+alsoi containing box going way out - just get rid of 
+not catching resource not found!
+lets catch that 500!
+and get rid of that box
+sep js file
+scenarios
+indication as a partial ?
+500 ->
+no results matching "search"
+
+  $(document).ready(jQuery(function() {
+    = javascript_include_tag :defaults, "delegate", "field_mapper"
+
+app/assets/javascript
+
+<%= stylesheet_link_tag "application" %>
+<%= javascript_include_tag "application" %>
+
+http://guides.rubyonrails.org/asset_pipeline.html
+layouts/application.html.haml
+6:    = javascript_include_tag :application
+
+  <script src="/assets/budget.js?body=1" type="text/javascript"></script>
+
+from rally - 
+plan - user stories - epic investigor sponsor budget proposal
+kevins mini scenarios:
+
+Study Details - Phase / Indication / Location / Description (8)
+#Investigator Sponsor user can see name of the study in read only mode on the Study Details page.
+#Investigator Sponsor user can enter Principle Investigator's Name on the Study Details page.   
+#Investigator Sponsor user can select Phase on the Budget Details page: Phase I, Phase II, Phase III, Phase IV  
+Investigator Sponsor user can see United States for location. The control will still be visible but disabled.
+              (Help tip over hover will be nice)
+Investigator Sponsor user can search for Indication by entering ICD Code in the field and see the matching indication.
+#Investigator Sponsor user can search for Indication by entering keyword and see the matching indications.
+               At least two letters need to be entered for the results to be displayed. 
+#?Investigator Sponsor user can search and select Indication on the Budget Details page.
+              Even though Theraputic Ares and Indication Groups will be displayed, only Indication can be selected. 
+#Investigator Sponsor user can enter Description on the Budget Details page. The field has character limit of 4000 characters with a counter.
+#Investigator Sponsor user cannot enter more than 4000 characters in the Description field.
+
+
+scenario for this one? certainly have this functioning
+and i select abc and i see abc in the indication box
+#Investigator Sponsor user can search and select Indication on the Budget Details page.
+              Even though Theraputic Ares and Indication Groups will be displayed, only Indication can be selected. 
+
+
+*****************
+4/19/12 thurs office
+*********************
+
+ok lets get that pr done already
+go thru scenarios in qpl - grigory kevin?ben?
+make pr of scenario
+and then do the 500 not found
+
+tried to put eureka upgracde in
+got dev working
+mocks broke
+fixed most of them
+still getting problem with 
+ cucumber features/study/navigation.feature:17
+  And I click the "Study Budget List" text within "Navigation Bar"                                        # features/step_definitions/navigation_steps.rb:41
+      undefined method `attributes' for #<Hash:0x00000102f7bf40> (NoMethodError)
+      ./app/controllers/investigator/studies_controller.rb:23:in `block in index'
+   
+somehow hash/attributes is getting into mock - and i have no idea how???
+class Budget < Euresource::UserBudget
+  #Retrieves list of budgetsthat belong to an user
+  def self.get_investigator_studies user_uuid
+    begin
+      Euresource::UserBudget.find(:all, :params => {:user_id => user_uuid})
+
+as ive cleaned up the 2 UserBudget mocks
+
+gonna commit what i have to 
+feature/eur-upgrade branch
+
+
+No Results Matching "zzz"
+
+ You can adjust how long this period is (the default is 2 seconds):
+
+Capybara.default_wait_time = 5
+
+
+
+
+************************
+4/20/12 fri office
+*******************
+ok lets get a scenario written for ta's
+and do pr
+
+i think in order to get step written need working stuff to test it on
+as its not at all obvious stuff
+so do step with implementation i think
+
+*********************
+4/23 mon office
+*****************
+
+wait should if getting exception return some error ajax indication call?
+and what would that be?
+if my ajax call for indications fails what should the user see in the ui? nothing? an error message? not found message?
+and if error message should that be on the top of page or in the indication dropdown?
+Ben Y.
+10:08 AM
+"Results not available. Please try again and contact your study administrator if the problem persists."
+10:11 AM
+Mike Glintz joined the room
+Mark G.
+ok - mike likes that too - msg appears in dropdown itself
+
+ find("ul.ui-autocomplete-indication").all("li")
+
+      # @indications = [IndicationMock.new("abcd"),IndicationMock.new("abc"),IndicationMock.new("babc")]
+
+***************
+4/24/12 tues office
+*****************
+
+sprint to reveal!
+
+.ui-widget-content .ui-state-hover {
+background: #E1EDCE;
+font-weight: normal;
+color: #333;
+border: 1px solid #E1EDCE;
+}
+.ui-widget-content .ui-state-hover {
+background: #E1EDCE;
+font-weight: normal;
+color: #333;
+border: 1px solid #E1EDCE;
+}
+
+this is the green bit:
+.ui-widget-content .ui-state-hover {
+background: #E1EDCE;
+
+
+~/q/public/stylesheets (master) $ ack ui-state-hover
+jquery_css/cupertino/jquery-ui-1.8.11.custom.css
+71:.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus { border: 1px solid #74b2e2; background: #e4f1fb url(images/ui-bg_glass_100_e4f1fb_1x400.png) 50% 50% repeat-x; font-weight: bold; color: #0070a3; }
+72:.ui-state-hover a, .ui-state-hover a:hover { color: #0070a3; text-decoration: none; }
+96:.ui-state-hover .ui-icon, .ui-state-focus .ui-icon {background-image: url(images/ui-icons_2694e8_256x240.png); }
+391:.ui-menu .ui-menu-item a.ui-state-hover,
+
+jquery_css/ui-lightness/jquery-ui-1.8.11.custom.css
+71:.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus { border: 1px solid #fbcb09; background: #fdf5ce url(images/ui-bg_glass_100_fdf5ce_1x400.png) 50% 50% repeat-x; font-weight: bold; color: #c77405; }
+72:.ui-state-hover a, .ui-state-hover a:hover { color: #c77405; text-decoration: none; }
+96:.ui-state-hover .ui-icon, .ui-state-focus .ui-icon {background-image: url(images/ui-icons_ef8c08_256x240.png); }
+372:.ui-menu .ui-menu-item a.ui-state-hover,
+
+
+.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus { border: 1px solid #74b2e2; background: #e4f1fb url(images/ui-bg_glass_100_e4f1fb_1x400.png) 50% 50% repeat-x; font-weight: bold; color: #0070a3; }
+
+.ui-state-hover a, .ui-state-hover a:hover { color: #0070a3; text-decoration: none; }
+007 that seems to be blue not green ???
+
+e4 iw white ??
+e1edce seems to be pale yellow???
+#7CF3CC seems to be green
+
+yes it becomes .ui-state-hover when hover over it
+
+
+***********************
+04/25/12 wed office
+*********************
+start of new sprint
+morning devoured by car insurance
