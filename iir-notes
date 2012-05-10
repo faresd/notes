@@ -10728,3 +10728,18 @@ indication finally done - phew
 
 ok lets do sceanrio for ux
 oh lets do the count chars too
+
+update budgets set phase_uuid = '5b660b29-2413-4a4e-a0b0-b0f351b29f73' where id = 2;
+
+update budgets set indication_uuid = '699877c1-7d38-4c89-b799-b84213235908' where id = 3;
+
+update budgets set principal_investigator_name = 'Jammy Sames' where id = 2;
+
+update budgets set principal_investigator_name = 'Jamie Sams' where id = 3;
+
+update budgets set description = 'well where to begin really, i have so much to say. so little time, discuss...' where id = 3;
+
+update budgets set description = 'well i dont know - so many things to describe really' where id = 2;
+
+update budgets set site_percent_overhead = 11.23 where id = 2;
+
