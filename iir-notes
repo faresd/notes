@@ -10497,3 +10497,234 @@ yes it becomes .ui-state-hover when hover over it
 *********************
 start of new sprint
 morning devoured by car insurance
+
+
+need to finish up indication stuff
+
+scenario for errors
+
+scenario for sorting
+
+actually both of these are good grigory items
+
+zoom bug - scenario?
+cut & paste - scenario?
+empty ta bug - lets do that one 1st - scenario? scenario pass?
+i think thats with sorting
+2 char whitespace - need to imp whitespace & scenario
+
+
+empty ta bug - lets do that one 1st - scenario? scenario pass?
+i think thats with sorting
+yup
+
+mike is gonna look at zoom bug - thats nice
+fixed sorting bug - hold off and see if grigory wants to eventually do scenario for that
+hold off on pr then til scenario is written
+the branch is feature/sort-indic
+
+cut & paste - low priority? ask kevin
+NEXT RELEASE!
+
+need to look at whitespace
+
+i should probably clear out some branches
+
+ok then lets move on from indication
+and either me or girogory will do 2 scenarios:
+error, indication sort
+
+oh wait theres the whitespace issue too
+
+
+jquery solution for trimming white space:
+http://stackoverflow.com/questions/3307520/how-would-i-trim-the-input-to-a-jquery-auto-complete-box
+      source: 
+        function( request, response ) {
+          var matcher = new RegExp(jQuery.trim(request.term).replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"), "i" );
+          response(jQuery.grep("/investigator/indications", function(value) {
+            return matcher.test( value.label || value.value || value );
+          }));
+        }
+
+cant get this to work - value seems to be just /
+but actually can just do trim in rails backend i guess
+
+
+******************
+4/26/12 thurs
+***************
+
+phew - finally got that dam pr pulled
+so now its on to locations
+leave the rest of indications for grigory to make scenarios
+
+so on to location
+lets look at wireframe
+1st scenario - oh kevin did it check it out
+
+
+**************
+4/27/12 fri office
+*******************
+
+options_for_select([["Dollar", "$"], ["Kroner", "DKK"]])
+  <option value="$">Dollar<%roption>\n<option value="DKK">Kroner</ption>
+
+page.should have_css("#study_location select[disabled]")
+
+mike question on greying out
+
+input, textarea, select {
+  //background: #F9F9F9;
+  border: 1px solid #CDCDCD;
+  color: #818181;
+  color: #666666;
+}
+
+taking out select - and background per mike
+so get nice blue dropdown buttons
+
+************
+4/30/12 mon office
+******************
+
+ok so css is good for now
+where we at?
+
+study location is more or less laid out - but not yet on page but that will come
+well actually how do we do layout without brs?
+
+http://www.yourhtmlsource.com/stylesheets/csslayout.html
+
+divs are the way! da hell with tables
+
+lets do 
+#1 red required stars
+#2 bigger princ invest
+# 3 div layout
+# 4 descrip to sep column
+# 5 study overhead
+...
+
+
+
+wow css vertical layout is awful!
+http://www.mightymeta.co.uk/superstretch-a-vertically-fluid-layout-using-css/
+  
+http://www.alistapart.com/articles/css-floats-101/
+
+2 char min 10 pt
+
+************
+5/1/12 tues office
+******************
+
+ok call me crazy but im gonna try bootstrap
+
+lets go for study overhead
+
+
+ok budget subclass is all setup to then put stubs in for querying from gui
+total and all
+ill bet some are rturning nil which we can turn into 0's i suppose
+also could update db with real vals
+
+*******************
+5/2/12 wed office
+*******************
+currency
+
+put in study total and study total currency
+currency comes from budget model
+which now properly subclasses Euresource::Budget
+
+
+**********************
+5/3/12 thurs office
+**********************
+
+ugh - it looks awful in firefox
+firefox is more important than chrome
+i should switch to firefox for testing
+once i get it looking nice in firefox
+next pr i guess?
+
+
+***********
+5/4 fri
+************
+  # Return an error page
+  def render_internal_server_error(exception)
+    puts "exception "+exception.to_s
+    exception.backtrace.each{|b| puts b}
+
+
+DO SCENARIO FOR ERROR!
+and maybe formatting
+
+
+****
+5/8 mon office
+******
+
+end of sprint ruch
+do mfg or do scenario
+
+doesnt work 
+trying to unify 
+screw it
+
+# A step for checking for the existence of array of text on a page within a particular section.
+# You can also specify types like "image" that will search the alt text instead
+Then /^I should (?:see the|see) "([^"]*)"(?: )(.+)?(?: within the|within)? "([^"]*)"?/ do |text,type,selector|
+  if !selector && Capybara.current_driver == :rack_test && Capybara.current_session.driver.response.headers['Content-Type'] =~ /json/i
+    assert(source.include?(text))
+  else  
+    selector = format_selector selector
+    within(selector) do
+      text.split(",").each do |string|
+        if type == "image"
+          assert page.has_css?("img[alt='#{string}']")
+        elsif type == 'selected'
+          value = page.find("#{selector} option[selected]").text
+          value.should == text
+        else
+          assert page.has_css?("*", :text => string)
+        end
+      end
+    end
+  end
+end
+
+*******
+5/9 wed office
+***********
+1st day of new sprint
+
+#finish off indciation ux
+#need mike
+
+TODO
+and finiish off pix perf
+need to do overhead and scenario
+and date scenario? even though date is messed up
+and status scenario?
+count chars indenting take out
+
+
+964 pixels - design for that
+right flush study total
+description expand
+indication error msg - mike
+indication highlighting & word wrap
+reduce size of indication 1st actually
+
+
+scenarioe - potetnially for grigory
+kevin is doing mfr scenario
+
+indication finally done - phew
+
+ok lets do sceanrio for ux
+oh lets do the count chars too
